@@ -1,0 +1,45 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Detalhes do Empréstimo</title>
+            <style>
+                body { font-family: Arial, sans-serif; }
+                .container { width: 100%; max-width: 800px; margin: 0 auto; }
+                .header { text-align: center; }
+                .section { margin-bottom: 20px; }
+                .section h2 { border-bottom: 1px solid #ddd; padding-bottom: 10px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Detalhes do Empréstimo</h1>
+                </div>
+                <div class="section">
+                    <h2>Informações do Aluno</h2>
+                    <p><strong>Nome:</strong> <%= emprestimo.nome %></p>
+                    <p><strong>Celular:</strong> <%= emprestimo.celular %></p>
+                    <p><strong>Email:</strong> <%= emprestimo.email %></p>
+                    <p><strong>Loja:</strong> <%= emprestimo.loja %></p>
+                </div>
+                <div class="section">
+                    <h2>Detalhes do Empréstimo</h2>
+                    <p><strong>Data da Solicitação:</strong> <%= emprestimo.dataSolicitacao %></p>
+                    <p><strong>Previsão de Entrega:</strong> <%= emprestimo.dataPrevista %></p>
+                </div>
+                <div class="section">
+                    <h2>Livros Emprestados</h2>
+                    <ul>
+                        <% emprestimo.livros.forEach(livro => { %>
+                            <li><%= livro.titulo %> - <%= livro.autor %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+                <div class="section">
+                    <h2>Descrição</h2>
+                    <p><%= emprestimo.descricao %></p>
+                </div>
+            </div>
+        </body>
+        </html>

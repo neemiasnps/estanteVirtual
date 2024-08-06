@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Nichele</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Estilos customizados -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" href="./favicon-16x16.png" type="image/png">
+</head>
+<body>
+
+    <!-- Desktop Navbar -->
+    <nav>
+        <div class="nav-wrapper custom-navbar">
+            <a href="#" class="brand-logo custom-logo">Biblioteca</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Home</a></li>
+                <li><a href="/contato">Contato</a></li>
+                <li id="menu-dropdown-container" style="display: none;">
+                    <a class="dropdown-trigger" href="#" data-target="dropdown-menu">Menu</a>
+                    <!-- Dropdown Structure -->
+                    <ul id="dropdown-menu" class="dropdown-content">
+                        <li><a href="/gerenciar_alunos"><i class="material-icons">people</i>Alunos</a></li>
+                        <li><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                        <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Requisição</a></li>
+                    </ul>
+                </li>
+                <!-- Logout icon -->
+                <li id="logout-link-container" style="display: none;">
+                    <a href="#" id="logout-link">
+                        <i class="material-icons">logout</i>
+                    </a>
+                </li>
+                <li id="login-link-container"><a href="#" id="modal-login-link">Login</a></li>
+            </ul>
+            <!-- Mobile Menu -->
+            <ul class="sidenav" id="mobile-demo">
+                <li><a href="/"><i class="material-icons">home</i>Home</a></li>
+                <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
+                <li class="menu-item"><a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a></li>
+                <li class="menu-item"><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                <li class="menu-item"><a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Requisição</a></li>
+                <!-- Divider -->
+                <li class="divider"></li>
+                <li id="logout-link-mobile" style="display: none;">
+                    <a href="#" id="logout-link">
+                        <i class="material-icons">logout</i> Sair
+                    </a>
+                </li>
+                <li id="login-link-container-mobile"><a href="#" id="modal-login-link-mobile"><i class="material-icons">login</i>Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+<div class="container">
+    <div id="livros-container" class="row">
+        <!-- Aqui serão inseridos os cards dos livros -->
+    </div>
+    <ul id="pagination-controls" class="pagination center-align">
+        <!-- Controles de paginação serão inseridos aqui -->
+    </ul>
+</div>
+
+<!-- Modal de Login -->
+<div id="modal-login" class="modal">
+    <div class="modal-content">
+        <h4>Login</h4>
+        <div class="row">
+            <form class="col s12" id="form-login">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">email</i>
+                        <input id="email" type="text" class="validate" required>
+                        <label for="email">E-mail</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">lock</i>
+                        <input id="password" type="password" class="validate" required>
+                        <label for="password">Senha</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light" type="submit" name="action">Login
+                    <i class="material-icons right">login</i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="page-footer custom-footer">
+    <!-- <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Conteúdo do Rodapé</h5>
+                <p class="grey-text text-lighten-4">Você pode usar linhas e colunas aqui para organizar o conteúdo do seu rodapé.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+            </div>
+        </div>
+    </div> -->
+    <div class="footer-copyright">
+        <div class="container">
+            © 2024 Nemis Consultoria & Representações
+            <a class="grey-text text-lighten-4 right" href="#!">Grupo Nichele ®</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="/js/scripts.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

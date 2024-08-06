@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Alunos</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Estilos customizados -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <!-- Link para o arquivo scripts.js -->
+    <script src="/js/gerenciar_alunos.js" defer></script>
+    <!-- Link para o jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Link para o jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper custom-navbar">
+            <a href="#" class="brand-logo custom-logo">Biblioteca</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Home</a></li>
+                <li><a href="/contato">Contato</a></li>
+                <li id="menu-dropdown-container" style="display: none;">
+                    <a class="dropdown-trigger" href="#" data-target="dropdown-menu">Menu</a>
+                    <!-- Dropdown Structure -->
+                    <ul id="dropdown-menu" class="dropdown-content">
+                        <li><a href="/gerenciar_alunos"><i class="material-icons">people</i>Alunos</a></li>
+                        <li><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                        <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Requisição</a></li>
+                    </ul>
+                </li>
+                <!-- Logout icon -->
+                <li id="logout-link-container" style="display: none;">
+                    <a href="#" id="logout-link">
+                        <i class="material-icons">logout</i>
+                    </a>
+                </li>
+                <li id="login-link-container"><a href="#" id="modal-login-link">Login</a></li>
+            </ul>
+            <!-- Mobile Menu -->
+            <ul class="sidenav" id="mobile-demo">
+                <li><a href="/"><i class="material-icons">home</i>Home</a></li>
+                <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
+                <li class="menu-item"><a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a></li>
+                <li class="menu-item"><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                <li class="menu-item"><a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Requisição</a></li>
+                <!-- Divider -->
+                <li class="divider"></li>
+                <li id="logout-link-mobile" style="display: none;">
+                    <a href="#" id="logout-link">
+                        <i class="material-icons">logout</i> Sair
+                    </a>
+                </li>
+                <li id="login-link-container-mobile"><a href="#" id="modal-login-link-mobile"><i class="material-icons">login</i>Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <!-- Botão de adicionar aluno à esquerda -->
+            <div class="col s6 left-align">
+                <a class="btn-floating btn-large waves-effect waves-light blue modal-trigger" href="#modal-add-aluno">
+                    <i class="material-icons">add</i>
+                </a>
+            </div>
+
+            <!-- Campo de busca de aluno à direita -->
+            <div class="col s6 right-align">
+                <div class="input-field">
+                    <input id="search" type="text" class="validate">
+                    <label for="search">Buscar Aluno</label>
+                    <i class="material-icons prefix" id="search-icon">search</i>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome Completo</th>
+                        <th>CPF</th>
+                        <th>Celular</th>
+                        <th>E-mail</th>
+                        <th>Loja</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="alunos-table-body">
+                    <!-- Linhas da tabela serão inseridas aqui -->
+                </tbody>
+            </table>
+            <!-- Controles de Paginação -->
+            <ul class="pagination" id="pagination-controls"></ul>
+        </div>
+    </div>
+
+    <!-- Modal de Adicionar Aluno -->
+    <div id="modal-add-aluno" class="modal modal-custom-height">
+        <div class="modal-content">
+            <h5>Adicionar Aluno</h5>
+            <div class="row">
+                <form class="col s12" id="form-add-aluno">
+                    <div class="row">
+                        <div class="input-field col s12 l4">
+                            <i class="material-icons prefix">fingerprint</i>
+                            <input id="cpf" name="cpf" type="text" class="validate custom-input" required>
+                            <label for="cpf">CPF</label>
+                        </div>
+                        <div class="input-field col s12 l8">
+                            <i class="material-icons prefix">account_circle</i>
+                            <input id="nome_completo" type="text" class="validate" required>
+                            <label for="nome_completo">Nome Completo</label>
+                        </div>
+                        <div class="input-field col s12 l4">
+                            <i class="material-icons prefix">phone</i>
+                            <input id="celular" type="text" class="validate" required>
+                            <label for="celular">Celular</label>
+                        </div>
+                        <div class="input-field col s12 l8">
+                            <i class="material-icons prefix">email</i>
+                            <input id="email" type="email" class="validate" required>
+                            <label for="email">E-mail</label>
+                        </div>
+                        <div class="input-field col s12 larger-col">
+                            <i class="material-icons prefix">store</i>
+                            <select id="loja" name="loja">
+                                <option value="" disabled selected>Escolha a loja</option>
+                                <option value="Araucária">Araucária</option>
+                                <option value="Campo Largo">Campo Largo</option>
+                                <option value="Fazenda Rio Grande">Fazenda Rio Grande</option>
+                                <option value="Mateus Leme">Mateus Leme</option>
+                                <option value="Pinhais">Pinhais</option>
+                                <option value="Pinheirinho">Pinheirinho</option>
+                                <option value="Santa Felicidade">Santa Felicidade</option>
+                                <option value="Tá Na Mão">Tá Na Mão</option>
+                                <option value="Tintas Brigadeiro Franco">Tintas Brigadeiro Franco</option>
+                                <option value="Tintas Campo Comprido">Tintas Campo Comprido</option>
+                                <option value="Tintas Castro">Tintas Castro</option>
+                                <option value="Tintas Portão">Tintas Portão</option>
+                                <option value="Vero. Nichele">Vero. Nichele</option>
+                                <option value="Xaxim">Xaxim</option>
+                            </select>
+                            <label for="loja">Loja</label>
+                        </div>
+                        <!-- Switch -->
+                        <div class="switch">
+                          <label>
+                            Off
+                            <input checked type="checkbox" id="status-switch">
+                            <span class="lever"></span>
+                            On
+                          </label>
+                        </div>
+                        <p></p>
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Cadastrar
+                            <i class="material-icons right">save</i>
+                        </button>
+                        <button class="btn red modal-close" type="button" id="btn-cancelar-modal">Cancelar
+                            <i class="material-icons right">cancel</i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Editar Aluno -->
+    <div id="modal-edit-aluno" class="modal modal-custom-height">
+        <div class="modal-content">
+            <h5>Editar Aluno</h5>
+                <div class="row">
+                    <form class="col s12" id="form-edit-aluno">
+                        <div class="row">
+                            <input type="hidden" id="edit-id-aluno"> <!-- Campo oculto para armazenar o ID do aluno -->
+                                <div class="input-field col s12 l4">
+                                    <i class="material-icons prefix">fingerprint</i>
+                                        <input id="edit-cpf" name="cpf" type="text" class="validate custom-input" disabled>
+                                            <label for="edit-cpf">CPF</label>
+                                        </div>
+                                        <div class="input-field col s12 l8">
+                                            <i class="material-icons prefix">account_circle</i>
+                                            <input id="edit-nome-completo" type="text" class="validate" required>
+                                            <label for="edit-nome-completo">Nome Completo</label>
+                                        </div>
+                                        <div class="input-field col s12 l4">
+                                            <i class="material-icons prefix">phone</i>
+                                            <input id="edit-celular" type="text" class="validate" required>
+                                            <label for="edit-celular">Celular</label>
+                                        </div>
+                                        <div class="input-field col s12 l8">
+                                            <i class="material-icons prefix">email</i>
+                                            <input id="edit-email" type="email" class="validate" required>
+                                            <label for="edit-email">E-mail</label>
+                                        </div>
+                                        <div class="input-field col s12 larger-col">
+                                            <i class="material-icons prefix">store</i>
+                                            <select id="edit-loja" name="loja">
+                                                <option value="" disabled>Escolha a loja</option>
+                                                <option value="Araucária">Araucária</option>
+                                                <option value="Campo Largo">Campo Largo</option>
+                                                <option value="Fazenda Rio Grande">Fazenda Rio Grande</option>
+                                                <option value="Mateus Leme">Mateus Leme</option>
+                                                <option value="Pinhais">Pinhais</option>
+                                                <option value="Pinheirinho">Pinheirinho</option>
+                                                <option value="Santa Felicidade">Santa Felicidade</option>
+                                                <option value="Tá Na Mão">Tá Na Mão</option>
+                                                <option value="Tintas Brigadeiro Franco">Tintas Brigadeiro Franco</option>
+                                                <option value="Tintas Campo Comprido">Tintas Campo Comprido</option>
+                                                <option value="Tintas Castro">Tintas Castro</option>
+                                                <option value="Tintas Portão">Tintas Portão</option>
+                                                <option value="Vero. Nichele">Vero. Nichele</option>
+                                                <option value="Xaxim">Xaxim</option>
+                                            </select>
+                                            <label for="edit-loja">Loja</label>
+                                        </div>
+                            <!-- Switch -->
+                            <div class="switch">
+                              <label>
+                                Off
+                                <input type="checkbox" id="edit-switch">
+                                <span class="lever"></span>
+                                On
+                              </label>
+                            </div>
+                                        <p></p>
+                                        <button class="btn waves-effect waves-light" type="submit" name="action">Salvar
+                                            <i class="material-icons right">save</i>
+                                        </button>
+                                        <button class="btn red modal-close" type="button" id="btn-cancelar-modal">Cancelar
+                                            <i class="material-icons right">cancel</i>
+                                        </button>
+                                    </div>
+                                </form>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+    <!-- Modal de Confirmar Exclusão -->
+    <div id="modal-delete-aluno" class="modal">
+                    <div class="modal-content">
+                        <h5>Confirmar Exclusão</h5>
+                        <p>Você tem certeza que deseja excluir este aluno?</p>
+                        <div class="modal-footer">
+                            <a href="#!" class="modal-close btn-flat">Cancelar</a>
+                            <a href="#!" class="btn red" id="confirm-delete">Excluir</a>
+                        </div>
+                    </div>
+    </div>
+
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/scripts.js"></script>
+    
+    </body>
+</html>

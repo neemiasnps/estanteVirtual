@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Empréstimos</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Estilos customizados -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <!-- Link para o jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Link para o jQuery Mask Plugin -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <!-- Link para o arquivo scripts.js -->
+    <script src="/js/gerenciar_emprestimos.js" defer></script>
+    <script src="/js/scripts.js"></script>
+</head>
+<body>
+    <nav>
+        <div class="nav-wrapper custom-navbar">
+            <a href="#" class="brand-logo custom-logo">Biblioteca</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="/">Home</a></li>
+                <li><a href="/contato">Contato</a></li>
+                <li id="menu-dropdown-container" style="display: none;">
+                    <a class="dropdown-trigger" href="#" data-target="dropdown-menu">Menu</a>
+                    <!-- Dropdown Structure -->
+                    <ul id="dropdown-menu" class="dropdown-content">
+                        <li><a href="/gerenciar_alunos"><i class="material-icons">people</i>Alunos</a></li>
+                        <li><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                        <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Requisição</a></li>
+                    </ul>
+                </li>
+                <!-- Logout icon -->
+                <li id="logout-link-container" style="display: none;">
+                    <a href="#" id="logout-link">
+                        <i class="material-icons">logout</i>
+                    </a>
+                </li>
+                <li id="login-link-container"><a href="#" id="modal-login-link">Login</a></li>
+            </ul>
+            <!-- Mobile Menu -->
+            <ul class="sidenav" id="mobile-demo">
+                <li><a href="/"><i class="material-icons">home</i>Home</a></li>
+                <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
+                <li class="menu-item"><a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a></li>
+                <li class="menu-item"><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                <li class="menu-item"><a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Requisição</a></li>
+                <!-- Divider -->
+                <li class="divider"></li>
+                <li id="logout-link-mobile" style="display: none;">
+                    <a href="#" id="logout-link">
+                        <i class="material-icons">logout</i> Sair
+                    </a>
+                </li>
+                <li id="login-link-container-mobile"><a href="#" id="modal-login-link-mobile"><i class="material-icons">login</i>Login</a></li>
+            </ul>
+        </div>
+    </nav>
+
+            <div class="container">
+                <div class="row">
+                    <!-- Botão de adicionar empréstimo à esquerda -->
+                    <!--<div class="col s12 m6 l2 left-align"> -->
+                    <div class="col s12 m6 l2 ">
+                        <a class="btn-floating btn-large waves-effect waves-light blue modal-trigger" href="#modal-add-emprestimo">
+                            <i class="material-icons">add</i>
+                        </a>
+                    </div>
+                </div>
+            
+                    <div class="row">
+                        <!-- Campo de busca de empréstimo ao centro -->
+                        <div class="col s12 m6 l6">
+                            <div class="input-field">
+                                <input id="search" type="text" class="validate" />
+                                <label for="search">Buscar ID Empréstimo</label>
+                                <!-- <i class="material-icons icon-right" id="search-icon">search</i> -->
+                            </div>
+                        </div>
+
+                        <!-- Campo de filtrar empréstimo à direita -->
+                        <div class="col s12 m6 l5">
+                            <div class="input-field">
+                                <select id="status-filter">
+                                    <!-- <option value="" disabled selected>Filtrar por Status</option>-->
+                                    <option value="todos">Todos</option>
+                                    <option value="em_andamento">Em Andamento</option>
+                                    <option value="finalizado">Finalizado</option>
+                                </select>
+                                <label for="status-filter">Status do Empréstimo</label>
+                                <!-- <i class="material-icons icon-right">filter_list</i> -->
+                            </div>
+                        </div>
+                    </div>
+
+        <div class="row">
+            <table class="striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Loja</th>
+                        <!-- <th>Quantidade de Livros</th> -->
+                        <th>Data Solicitação</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="emprestimos-table-body">
+                    <!-- Linhas da tabela serão inseridas aqui -->
+                </tbody>
+            </table>
+            <!-- Controles de Paginação -->
+            <ul class="pagination" id="pagination-controls"></ul>
+        </div>
+
+        
+        <!-- Modal de Adicionar Empréstimo -->
+        <div id="modal-add-emprestimo" class="modal modal-custom-height">
+            <div class="modal-content">
+                <ul id="tabs-swipe-demo" class="tabs">
+                    <li class="tab col s6"><a class="active" href="#swipe-1">Aluno</a></li>
+                    <li class="tab col s6"><a href="#swipe-2">Livros</a></li>
+                    <li class="tab col s6"><a href="#swipe-3">Observações</a></li>
+                </ul>
+                <div id="swipe-1" class="col s12">
+                    <div id="section-aluno" class="col s12">
+                        <p></p>
+                        <form class="col s12" id="form-add-aluno">
+                            <!-- Informações do Aluno -->
+                            <div class="row">
+                                <div class="input-field col s12 l5">
+                                    <i class="material-icons prefix">search</i>
+                                    <input id="cpf" name="cpf" type="text" class="validate custom-input" required>
+                                    <label for="cpf">CPF</label>
+                                </div>
+                                <div class="input-field col s12 l1">
+                                    <a class="btn-floating waves-effect waves-light" id="search-aluno" type="button">
+                                        <i class="material-icons">search</i>
+                                    </a>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">123</i>
+                                    <input id="idAluno" name="idAluno" type="text" class="validate" disabled/>
+                                    <label for="idAluno">ID</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">account_circle</i>
+                                    <input id="nome" name="nome" type="text" class="validate" disabled/>
+                                    <label for="nome">Nome</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">phone</i>
+                                    <input id="celular" name="celular" type="text" class="validate" disabled />
+                                    <label for="celular">Celular</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">email</i>
+                                    <input id="email" name="email" type="email" class="validate" disabled />
+                                    <label for="email">Email</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">store</i>
+                                    <input id="loja" name="loja" type="text" class="validate" disabled />
+                                    <label for="loja">Loja</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="swipe-2" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row">
+                                <p></p>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">search</i>
+                                    <input type="text" id="autocomplete-input" class="autocomplete">
+                                    <label for="autocomplete-input">Buscar livro</label>
+                                </div>
+                                <div>
+                                    <a id="add-to-table-fab" class="btn-floating btn-meddium waves-effect waves-light teal">
+                                        <i class="material-icons">get_app</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="striped" required>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Genêro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="livros-table-body">
+                            <!-- Linhas da tabela serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                    <ul id="pagination-controls" class="pagination">
+                        <!-- Controles de paginação serão inseridos aqui -->
+                    </ul>
+
+                </div>
+                <div id="swipe-3" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row">
+                                <p></p>
+                                <!-- Campo Data da Solicitação -->
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">calendar_today</i>
+                                    <input type="text" id="data-solicitacao" class="datepicker" required>
+                                    <label for="data-solicitacao">Data da Solicitação</label>
+                                </div>
+                                
+                                 <!-- Campo Data da Devolução -->
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">calendar_today</i>
+                                    <input type="text" id="data-devolucao" class="datepicker" disabled>
+                                    <label for="data-devolucao">Data da Devolução</label>
+                                </div>
+
+                                <!-- Campo Character Counter -->
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">mode_edit</i>
+                                    <textarea id="character-counter" class="materialize-textarea" data-length="120"></textarea>
+                                    <label for="character-counter">Descrição</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn waves-effect waves-light" id="btn-salvar">
+                    Salvar
+                    <i class="material-icons right">save</i>
+                </button>
+                <button class="btn red modal-close" type="button" id="btn-cancelar-modal">
+                    Cancelar
+                    <i class="material-icons right">cancel</i>
+                </button>
+            </div>
+        </div>
+
+        
+        <!-- Modal de Visualizar Empréstimo -->
+        <div id="modal-view-emprestimo" class="modal modal-custom-height">
+            <div class="modal-content">
+                <ul id="tabs-swipe-demo" class="tabs">
+                    <li class="tab col s4"><a class="active" href="#swipe-1">Aluno</a></li>
+                    <li class="tab col s4"><a href="#swipe-2">Livros</a></li>
+                    <li class="tab col s4"><a href="#swipe-3">Observações</a></li>
+                </ul>
+                <div id="swipe-1" class="col s12">
+                    <form class="col s12" id="form-view-aluno">
+                        <!-- Informações do Aluno -->
+                        <div class="row">
+                            <p></p>
+                            <div class="input-field col s12 l6">
+                                <i class="material-icons prefix">search</i>
+                                <input id="cpf-view" name="cpf-view" type="text" class="validate" disabled>
+                                <label for="cpf-view">CPF</label>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <i class="material-icons prefix">123</i>
+                                <input id="idAluno-view" name="idAluno-view" type="text" class="validate" disabled/>
+                                <label for="idAluno-view">ID</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s12 l6">
+                                <i class="material-icons prefix">account_circle</i>
+                                <input id="nome-view" name="nome-view" type="text" class="validate" disabled/>
+                                <label for="nome-view">Nome</label>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <i class="material-icons prefix">phone</i>
+                                <input id="celular-view" name="celular-view" type="text" class="validate" disabled />
+                                <label for="celular-view">Celular</label>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <i class="material-icons prefix">email</i>
+                                <input id="email-view" name="email-view" type="email" class="validate" disabled />
+                                <label for="email-view">Email</label>
+                            </div>
+                            <div class="input-field col s12 l6">
+                                <i class="material-icons prefix">store</i>
+                                <input id="loja-view" name="loja-view" type="text" class="validate" disabled />
+                                <label for="loja-view">Loja</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div id="swipe-2" class="col s12">
+                    <table class="striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Gênero</th>
+                            </tr>
+                        </thead>
+                        <tbody id="livros-table-body-view">
+                            <!-- Linhas da tabela serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                    <ul id="pagination-controls" class="pagination">
+                        <!-- Controles de paginação serão inseridos aqui -->
+                    </ul>
+                </div>
+                <div id="swipe-3" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row">
+                                <p></p>
+                                <!-- Campo Data da Solicitação -->
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">calendar_today</i>
+                                    <input type="text" id="data-solicitacao-view" class="datepicker" disabled>
+                                    <label for="data-solicitacao-view">Data da Solicitação</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">calendar_today</i>
+                                    <input type="text" id="data-devolucao-view" class="datepicker" disabled>
+                                    <label for="data-devolucao-view">Data da Devolução</label>
+                                </div>
+
+                                <!-- Campo Descrição -->
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">mode_edit</i>
+                                    <textarea id="descricao-view" class="materialize-textarea" data-length="120" disabled></textarea>
+                                    <label for="descricao-view">Descrição</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn red modal-close" type="button" id="btn-fechar-modal">Fechar
+                    <i class="material-icons right">close</i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Modal de Editar Empréstimo -->
+        <div id="modal-edit-emprestimo" class="modal modal-custom-height">
+            <div class="modal-content">
+                <ul id="tabs-swipe-demo" class="tabs">
+                    <li class="tab col s6"><a class="active" href="#swipe-1">Aluno</a></li>
+                    <li class="tab col s6"><a href="#swipe-2">Livros</a></li>
+                    <li class="tab col s6"><a href="#swipe-3">Observações</a></li>
+                </ul>
+                <div id="swipe-1" class="col s12">
+                    <div id="section-aluno" class="col s12">
+                        <p></p>
+                        <form class="col s12" id="form-edit-aluno">
+                            <!-- Informações do Aluno -->
+                            <div class="row">
+                                <div class="input-field col s12 l5">
+                                    <i class="material-icons prefix">search</i>
+                                    <input id="edit-cpf" name="cpf" type="text" class="validate custom-input" required>
+                                    <label for="edit-cpf">CPF</label>
+                                </div>
+                                <div class="input-field col s12 l1">
+                                    <a class="btn-floating waves-effect waves-light" id="search-aluno" type="button">
+                                        <i class="material-icons">search</i>
+                                    </a>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">123</i>
+                                    <input id="edit-idAluno" name="idAluno" type="text" class="validate" disabled/>
+                                    <label for="edit-idAluno">ID</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">account_circle</i>
+                                    <input id="edit-nome" name="nome" type="text" class="validate" disabled/>
+                                    <label for="edit-nome">Nome</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">phone</i>
+                                    <input id="edit-celular" name="celular" type="text" class="validate" disabled />
+                                    <label for="edit-celular">Celular</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">email</i>
+                                    <input id="edit-email" name="email" type="email" class="validate" disabled />
+                                    <label for="edit-email">Email</label>
+                                </div>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">store</i>
+                                    <input id="edit-loja" name="loja" type="text" class="validate" disabled />
+                                    <label for="edit-loja">Loja</label>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="swipe-2" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row">
+                                <p></p>
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">search</i>
+                                    <input type="text" id="autocomplete-input" class="autocomplete">
+                                    <label for="autocomplete-input">Buscar livro</label>
+                                </div>
+                                <div>
+                                    <a id="edit-to-table-fab" class="btn-floating btn-meddium waves-effect waves-light teal">
+                                        <i class="material-icons">get_app</i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="striped" required>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Genêro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="edit-livros-table-body">
+                            <!-- Linhas da tabela serão inseridas aqui -->
+                        </tbody>
+                    </table>
+                    <ul id="pagination-controls" class="pagination">
+                        <!-- Controles de paginação serão inseridos aqui -->
+                    </ul>
+
+                </div>
+                <div id="swipe-3" class="col s12">
+                    <div class="row">
+                        <div class="col s12">
+                            <div class="row">
+                                <p></p>
+                                <!-- Campo Data da Solicitação -->
+                                <div class="input-field col s12 l6">
+                                    <i class="material-icons prefix">calendar_today</i>
+                                    <input type="text" id="edit-data-solicitacao" class="datepicker" required>
+                                    <label for="edit-data-solicitacao">Data da Solicitação</label>
+                                </div>
+
+                                <!-- Campo Character Counter -->
+                                <div class="input-field col s12">
+                                    <i class="material-icons prefix">mode_edit</i>
+                                    <textarea id="edit-character-counter" class="materialize-textarea" data-length="120"></textarea>
+                                    <label for="edit-character-counter">Descrição</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn waves-effect waves-light" id="btn-salvar-edit">
+                    Salvar
+                    <i class="material-icons right">save</i>
+                </button>
+                <button class="btn red modal-close" type="button" id="btn-cancelar-modal">
+                    Cancelar
+                    <i class="material-icons right">cancel</i>
+                </button>
+            </div>
+        </div>
+
+
+        <!-- Modal de Finalização do Empréstimo -->
+        <div id="modal-finalize-emprestimo" class="modal modal-custom-height">
+            <div class="modal-content">
+                <h4>Finalizar Empréstimo</h4>
+                <p>Confirmação para finalizar o empréstimo</p>
+                <!-- Adicione campos conforme necessário -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn waves-effect waves-light" id="btn-finalize">
+                    Finalizar
+                    <i class="material-icons right">check_circle</i>
+                </button>
+                <button class="btn red modal-close" type="button">
+                    Cancelar
+                    <i class="material-icons right">cancel</i>
+                </button>
+            </div>
+        </div>
+
+        
+        <!-- Modal de Confirmar Exclusão -->
+        <div id="modal-delete-emprestimo" class="modal">
+            <div class="modal-content">
+                <h5>Confirmar Exclusão</h5>
+                <p>Você tem certeza que deseja excluir este empréstimo?</p>
+                <div class="modal-footer">
+                    <a href="#!" class="modal-close btn-flat">Cancelar</a>
+                    <a href="#!" class="btn red" id="confirm-delete">Excluir</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preloader Circular do Materialize CSS -->
+        <div id="preloader" class="preloader-wrapper" style="display: none;">
+            <div class="progress">
+                <div class="indeterminate"></div>
+            </div>
+        </div>
+
+    
+</body>
+</html>
