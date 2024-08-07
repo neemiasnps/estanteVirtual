@@ -4,12 +4,18 @@ const sequelize = require('./config/database'); // Verifique o caminho
 const cors = require('cors');
 
 const app = express();
-const PORT = 3000;
+//const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT fornecida pelo Replit
+
 
 // Middlewares  
 app.use(express.json()); // Para JSON
 app.use(express.urlencoded({ extended: true })); // Para dados de formulários
-app.use(cors()); // Para CORS
+//app.use(cors()); // Para CORS
+// Configure CORS with allowed origins
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://biblioteca.nichele.com.br'], // Adicione o subdomínio aqui
+}));
 
 // Arquivos Estáticos
 app.use(express.static(path.join(__dirname, 'public')));
