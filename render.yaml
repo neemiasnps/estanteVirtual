@@ -1,0 +1,9 @@
+services:
+- type: web
+  name: biblioteca-nichele
+  env: node
+  plan: free
+  buildCommand: npm install
+  startCommand: npm start
+  repo: https://github.com/neemiasnps/estanteVirtual
+  branch: main
