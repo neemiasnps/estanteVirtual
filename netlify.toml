@@ -1,0 +1,7 @@
+[build]
+  publish = "views" # Caminho para a pasta onde os arquivos estáticos estão localizados
+  command = "npm run build" # Comando de build, se necessário
+
+[dev]
+  command = "npm start" # Comando para iniciar o servidor localmente
+  port = 3000 # Porta usada pelo servidor local

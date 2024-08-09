@@ -7,15 +7,23 @@ const app = express();
 //const PORT = 3000;
 const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT fornecida pelo Replit
 
-
 // Middlewares  
 app.use(express.json()); // Para JSON
 app.use(express.urlencoded({ extended: true })); // Para dados de formulários
 //app.use(cors()); // Para CORS
 // Configure CORS with allowed origins
-app.use(cors({
+/*app.use(cors({
   origin: ['http://localhost:3000', 'https://biblioteca.nichele.com.br'], // Adicione o subdomínio aqui
+}));*/
+
+/*app.use(cors({
+  origin: ['http://localhost:3000', 'https://seusite.herokuapp.com'], // Adicione o URL correto do seu frontend
+}));*/
+
+app.use(cors({
+  origin: 'https://bibliotecanichele.netlify.app'
 }));
+
 
 // Arquivos Estáticos
 app.use(express.static(path.join(__dirname, 'public')));
