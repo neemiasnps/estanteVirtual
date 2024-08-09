@@ -239,3 +239,29 @@ input.invalid {
     margin-top: 10px; 
     margin-right: 10px;
 } */
+
+/* Garantir que a tabela ocupe a largura total */
+table {
+  width: 100%;
+  /*table-layout: auto;*/
+}
+
+/* Ajustar a largura da coluna de e-mail e permitir rolagem horizontal */
+table td:nth-child(8),
+table th:nth-child(8) {
+  /*overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;*/
+  /*word-break: break-word; /* Quebra palavras longas */
+  /*overflow-wrap: break-word; /* Quebra palavras longas */
+  /*white-space: normal; /* Permite quebra de linha */
+}
+
+/* Opcional: ajustar a tabela para rolar horizontalmente em telas menores */
+@media (max-width: 768px) {
+  .table-wrapper {
+    overflow-x: auto;
+  }
+}
+
+
