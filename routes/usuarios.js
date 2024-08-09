@@ -44,4 +44,19 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Middleware para verificar se o usuário está logado
+function garantirAutenticado(req, res, next) {
+  if (req.session && req.session.usuario) {
+    return next(); // Usuário está logado, continuar para a página
+  } else {
+    res.redirect('/login'); // Redirecionar para a página de login
+  }
+}
+
+// Rota que requer autenticação
+router.get('/gerenciar_alunos', garantirAutenticado, (req, res) => {
+  res.render('gerenciar_alunos'); // Renderiza a página do perfil do usuário
+});
+
+
 module.exports = router;

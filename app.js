@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const sequelize = require('./config/database'); // Verifique o caminho
 const cors = require('cors');
+const garantirAutenticado = require('./routes/auth');
 
 const app = express();
 //const PORT = 3000;
@@ -10,20 +11,9 @@ const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT forne
 // Middlewares  
 app.use(express.json()); // Para JSON
 app.use(express.urlencoded({ extended: true })); // Para dados de formulários
-//app.use(cors()); // Para CORS
-// Configure CORS with allowed origins
-/*app.use(cors({
-  origin: ['http://localhost:3000', 'https://biblioteca.nichele.com.br'], // Adicione o subdomínio aqui
-}));*/
-
-/*app.use(cors({
-  origin: ['http://localhost:3000', 'https://seusite.herokuapp.com'], // Adicione o URL correto do seu frontend
-}));*/
-
 app.use(cors({
-  origin: 'https://bibliotecanichele.netlify.app'
+  origin: 'https://biblioteca-nichele.onrender.com'
 }));
-
 
 // Arquivos Estáticos
 app.use(express.static(path.join(__dirname, 'public')));
@@ -43,15 +33,16 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-app.get('/gerenciar_alunos', (req, res) => {
+// Rotas Autenticadas
+app.get('/gerenciar_alunos', garantirAutenticado, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'gerenciar_alunos.html'));
 });
 
-app.get('/gerenciar_livros', (req, res) => {
+app.get('/gerenciar_livros', garantirAutenticado, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'gerenciar_livros.html'));
 });
 
-app.get('/gerenciar_emprestimos', (req, res) => {
+app.get('/gerenciar_emprestimos', garantirAutenticado, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'gerenciar_emprestimos.html'));
 });
 
