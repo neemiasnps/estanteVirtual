@@ -64,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Mostrar opções do menu após login
                     showLoggedInMenu();
 
+                    // Mostrar mensagem de sucesso
+                    M.toast({ html: 'Login realizado com sucesso!', classes: 'green' });
+
                     // Fechar o modal
                     var modalLogin = document.getElementById('modal-login');
                     var modalInstance = M.Modal.getInstance(modalLogin);
@@ -81,8 +84,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-
 
     // Event listener para logout (desktop)
     var logoutLink = document.getElementById('logout-link');
@@ -103,7 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             localStorage.setItem('isLoggedIn', 'false');
             hideLoggedInMenu();
-            //res.redirect('/');
             window.location.href = '/';
         });
     }
@@ -154,7 +154,5 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.menu-item').forEach(item => {
             item.style.display = 'none'; // Ajustar se necessário
         });
-            }
-
-    
+    }
 });
