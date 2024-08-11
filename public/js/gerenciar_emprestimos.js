@@ -541,7 +541,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-
     // Função para carregar dados no modal de edição
     let emprestimoIdEdicao = null;
     function editarEmprestimo(event) {
@@ -550,6 +549,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('ID do empréstimo não encontrado');
             return;
         }
+
+        // Limpar o formulário
+        resetarFormulario();
 
         fetch(`/api/emprestimos/${emprestimoIdEdicao}`)
             .then(response => {
@@ -703,14 +705,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
     // Função para gerar e visualizar o PDF
     async function visualizarEImprimirPdf(event) {
         event.preventDefault();
 
         // Use `event.currentTarget` para garantir que você está pegando o atributo do elemento `<a>`
         const emprestimoId = event.currentTarget.getAttribute('data-id');
-        console.log('ID do empréstimo:', emprestimoId); // Adicione este log
+        console.log('ID do empréstimo:', emprestimoId);
 
         if (!emprestimoId) {
             console.error('ID do empréstimo não fornecido');
@@ -718,18 +719,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
+            // Verifique o URL da requisição
             const response = await fetch(`/api/pdf/pdf/${emprestimoId}`);
             if (response.ok) {
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 window.open(url, '_blank');
+                window.URL.revokeObjectURL(url); // Libere a URL quando não precisar mais
             } else {
                 console.error('Erro ao gerar o PDF:', response.statusText);
+                // Opcional: Exibir mensagem para o usuário
+                alert('Erro ao gerar o PDF. Tente novamente mais tarde.');
             }
         } catch (error) {
             console.error('Erro ao fazer a solicitação:', error);
+            // Opcional: Exibir mensagem para o usuário
+            alert('Erro ao processar a solicitação. Tente novamente mais tarde.');
         }
     }
+
 
     // Função para enviar e-mail com os livros
     async function enviarEmail(event) {
@@ -788,7 +796,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('preloader').style.display = 'none';
         }
     }
-
 
     function updatePaginationControls(totalPages) {
         const paginationControls = document.getElementById('pagination-controls');

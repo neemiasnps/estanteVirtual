@@ -5,7 +5,6 @@ const Livro = require('../models/livro');
 const Estoque = require('../models/estoque');
 const EmprestimoLivro = require('../models/emprestimo_livro');
 const Aluno = require('../models/aluno');
-const gerarPdf = require('../pdfGenerator');
 const { Op } = require('sequelize');
 
 function formatarData(data) {

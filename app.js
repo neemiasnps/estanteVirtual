@@ -3,10 +3,23 @@ const path = require('path');
 const sequelize = require('./config/database'); // Verifique o caminho
 const cors = require('cors');
 const garantirAutenticado = require('./routes/auth');
+const session = require('express-session');
+const sessionStore = new session.MemoryStore();
 
 const app = express();
-//const PORT = 3000;
 const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT fornecida pelo Replit
+
+// Configuração do middleware de sessão
+app.use(session({
+    store: sessionStore,
+    secret: 'seu_segredo', // Substitua por uma string secreta
+    resave: false,
+    saveUninitialized: true,
+    cookie: { 
+        secure: false, // Defina como `true` se você usar HTTPS
+        maxAge: 10 * 60 * 1000 // Tempo de expiração da sessão: 30 minutos
+    }
+}));
 
 // Middlewares  
 app.use(express.json()); // Para JSON

@@ -1,27 +1,35 @@
 const express = require('express');
 const ejs = require('ejs');
-const puppeteer = require('puppeteer-core');
 const path = require('path');
 const fs = require('fs');
 const enviarEmail = require('../public/js/mailer');
 const Emprestimo = require('../models/emprestimo');
 const Aluno = require('../models/aluno');
-const Livro = require('../models/livro'); // Ajuste o caminho conforme necessário
+const Livro = require('../models/livro');
 const Estoque = require('../models/estoque');
+const axios = require('axios');
+const apiKey = process.env.PDFSHIFT_API_KEY;
 
 const router = express.Router();
 
+// Função para gerar PDF usando PDFShift
 async function gerarPdf(htmlContent) {
     try {
-        const browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
-        await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-        const pdfBuffer = await page.pdf();
-        await browser.close();
-        return pdfBuffer;
+        const response = await axios.post('https://api.pdfshift.io/v3/convert/pdf',
+            { html: htmlContent },
+            {
+                headers: {
+                    Authorization: `Basic ${Buffer.from(`api:${apiKey}`).toString('base64')}`,
+                    'Content-Type': 'application/json'
+                },
+                responseType: 'arraybuffer'
+            }
+        );
+
+        return Buffer.from(response.data); // Retornar o buffer do PDF
     } catch (error) {
         console.error('Erro ao gerar o PDF:', error);
-        throw error;
+        throw error; // Lançar o erro para ser tratado na rota
     }
 }
 
@@ -33,6 +41,11 @@ router.get('/pdf/:id', async (req, res) => {
     try {
         // Obter dados do empréstimo
         const emprestimo = await obterDadosEmprestimo(emprestimoId);
+
+        // Verificar se o empréstimo foi encontrado
+        if (!emprestimo) {
+            return res.status(404).send('Empréstimo não encontrado.');
+        }
 
         // Renderizar o template EJS para HTML
         const ejsPath = path.join(__dirname, '../views', 'emprestimo.ejs');
@@ -121,6 +134,7 @@ router.post('/enviar-email/:id', async (req, res) => {
   }
 });
 
+// Função para compor o corpo do e-mail de solicitação
 function comporCorpoEmail(dadosEmprestimo) {
   const { aluno, emprestimo, livros } = dadosEmprestimo;
 
@@ -218,7 +232,6 @@ function comporCorpoEmail(dadosEmprestimo) {
   `;
 }
 
-
 // Rota para finalizar o empréstimo
 router.post('/finalizar/:id', async (req, res) => {
     const emprestimoId = req.params.id;
@@ -265,8 +278,7 @@ router.post('/finalizar/:id', async (req, res) => {
     }
 });
 
-
-
+// Função para compor o corpo do e-mail de devolução
 function comporCorpoEmailFinalizado(dadosEmprestimo) {
   const { aluno, emprestimo } = dadosEmprestimo;
 

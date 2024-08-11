@@ -37,7 +37,11 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Senha inválida' });
         }
 
+        // Configurar a sessão
+        req.session.usuario = usuario;
         res.status(200).json({ message: 'Login realizado com sucesso' });
+        //res.redirect('/');
+        
     } catch (err) {
         console.error('Erro no login:', err);
         res.status(500).json({ error: 'Erro interno do servidor' });
