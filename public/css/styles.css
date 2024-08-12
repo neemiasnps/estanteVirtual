@@ -99,7 +99,12 @@ body {
 .modal-custom-height {
     max-height: 100% !important; /* Aumenta a altura máxima do modal */
     height: 85%; /* Define a altura do modal */
-    width: 100%; /* Define a largura do modal */
+    /*width: 100%; /* Define a largura do modal */
+  
+    /*max-height: 90vh; /* Define a altura máxima do modal com base na altura da viewport */
+    /*height: 85vh; /* Define a altura do modal */
+    width: 90vw; /* Define a largura do modal com base na largura da viewport */
+    /*max-width: 600px; /* Define uma largura máxima para o modal */
 }
 
 .modal-custom-height .modal-content {
@@ -258,10 +263,42 @@ table th:nth-child(8) {
 }
 
 /* Opcional: ajustar a tabela para rolar horizontalmente em telas menores */
+/* Ajustes Adicionais para Responsividade */
 @media (max-width: 768px) {
-  .table-wrapper {
-    overflow-x: auto;
-  }
+    .modal-custom-height {
+        width: 95vw; /* Ajusta a largura do modal para dispositivos menores */
+        height: 80vh; /* Ajusta a altura do modal para dispositivos menores */
+    }
+
+    .livro-card {
+        flex-direction: column; /* Alinha o conteúdo em coluna para telas menores */
+        text-align: center; /* Centraliza o texto em dispositivos menores */
+    }
+
+    .livro-card img {
+        width: 80%; /* Ajusta a largura da imagem em dispositivos menores */
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .livro-card-details {
+        text-align: center; /* Centraliza o texto em dispositivos menores */
+    }
 }
 
+/* Ajustar a tabela para rolar horizontalmente em telas menores */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+/* Ajustes para a navbar e footer em dispositivos móveis */
+.custom-navbar, .custom-footer {
+    background-color: rgb(0,169,198); /* Cor de fundo para navbar e footer */
+    /*text-align: center; /* Centraliza o texto */
+    /*padding: 10px 0; /* Ajuste o padding conforme necessário */
+}
+
+.custom-navbar .brand-logo, .custom-footer .brand-logo {
+    font-size: 1.5rem; /* Ajusta o tamanho da fonte do logo */
+}
 

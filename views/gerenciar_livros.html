@@ -100,7 +100,7 @@
     <!-- Modal de Adicionar Livro -->
     <div id="modal-add-livro" class="modal modal-custom-height">
         <div class="modal-content">
-            <h5>Adicionar Livro</h5>
+            <h6>Adicionar Livro</h6>
             <div class="row">
                 <form class="col s12" id="form-add-livro">
                     <div class="row">
@@ -169,18 +169,19 @@
                             </div>
                         </div>
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Cadastrar
-                        <i class="material-icons right">save</i>
-                    </button>
-                    <button class="btn red modal-close" type="submit" name="action" id="btn-cancelar-modal">Cancelar
-                        <i class="material-icons right">cancel</i>
-                    </button>
+                    <div class="modal-footer">
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Cadastrar
+                            <i class="material-icons right">save</i>
+                        </button>
+                        <button class="btn red modal-close" type="submit" name="action" id="btn-cancelar-modal">Cancelar
+                            <i class="material-icons right">cancel</i>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 
-        
     <!-- Modal de Editar Livro -->
     <div id="modal-edit-livro" class="modal modal-custom-height">
         <div class="modal-content">
@@ -253,23 +254,24 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Alterar
+                                <i class="material-icons right">update</i>
+                            </button>
+                            <button class="btn red modal-close" type="submit" name="action" id="btn-cancelar-modal">Cancelar
+                                <i class="material-icons right">cancel</i>
+                            </button>
+                            </div>
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Salvar Alterações
-                        <i class="material-icons right">save</i>
-                    </button>
-                    <button class="btn red modal-close" type="submit" name="action" id="btn-cancelar-modal">Cancelar
-                        <i class="material-icons right">cancel</i>
-                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-
     <!-- Modal de Confirmar Exclusão de Livro -->
     <div id="modal-confirm-exclusao" class="modal">
         <div class="modal-content">
-            <h4>Confirmar Exclusão</h4>
+            <h5>Confirmar Exclusão</h5>
             <p>Deseja realmente excluir o livro <span id="livro-nome"></span>?</p>
         </div>
         <div class="modal-footer">
@@ -277,8 +279,7 @@
             <a href="#" class="modal-close waves-effect waves-red btn-flat">Cancelar</a>
         </div>
     </div>
-
-        
+  
     <!-- Modal de Estoque -->
     <div id="modal-estoque-livro" class="modal">
         <div class="modal-content">
@@ -315,12 +316,12 @@
         </div>
     </div>
 
-        
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="/js/gerenciar_livros.js"></script>
     <script src="/js/scripts.js"></script>
+    <script src="/js/inatividade.js"></script>
 </body>
 
 </html>

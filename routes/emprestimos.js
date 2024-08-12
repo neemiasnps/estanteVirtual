@@ -6,11 +6,16 @@ const Estoque = require('../models/estoque');
 const EmprestimoLivro = require('../models/emprestimo_livro');
 const Aluno = require('../models/aluno');
 const { Op } = require('sequelize');
+const garantirAutenticado = require('./auth');
 
-function formatarData(data) {
+router.get('/gerenciar_emprestimos', garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, '../views', 'gerenciar_emprestimos.html'));
+});
+
+/*function formatarData(data) {
     const [ano, mes, dia] = data.split('-');
     return `${dia}-${mes}-${ano}`;
-}
+}*/
 
 // Rota para salvar um novo empréstimo
 router.post('/', async (req, res) => {

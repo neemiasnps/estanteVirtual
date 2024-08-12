@@ -109,7 +109,7 @@
     <!-- Modal de Adicionar Aluno -->
     <div id="modal-add-aluno" class="modal modal-custom-height">
         <div class="modal-content">
-            <h5>Adicionar Aluno</h5>
+            <h6>Adicionar Aluno</h6>
             <div class="row">
                 <form class="col s12" id="form-add-aluno">
                     <div class="row">
@@ -154,6 +154,7 @@
                             </select>
                             <label for="loja">Loja</label>
                         </div>
+                         <p></p>
                         <!-- Switch -->
                         <div class="switch">
                           <label>
@@ -163,7 +164,8 @@
                             On
                           </label>
                         </div>
-                        <p></p>
+                    </div>
+                    <div class="modal-footer">
                         <button class="btn waves-effect waves-light" type="submit" name="action">Cadastrar
                             <i class="material-icons right">save</i>
                         </button>
@@ -177,9 +179,9 @@
     </div>
 
     <!-- Modal de Editar Aluno -->
-    <div id="modal-edit-aluno" class="modal modal-custom-height">
+<div id="modal-edit-aluno" class="modal modal-custom-height">
         <div class="modal-content">
-            <h5>Editar Aluno</h5>
+            <h6>Editar Aluno</h6>
                 <div class="row">
                     <form class="col s12" id="form-edit-aluno">
                         <div class="row">
@@ -225,6 +227,7 @@
                                             </select>
                                             <label for="edit-loja">Loja</label>
                                         </div>
+                            <p></p>
                             <!-- Switch -->
                             <div class="switch">
                               <label>
@@ -234,23 +237,25 @@
                                 On
                               </label>
                             </div>
-                                        <p></p>
-                                        <button class="btn waves-effect waves-light" type="submit" name="action">Salvar
-                                            <i class="material-icons right">save</i>
-                                        </button>
-                                        <button class="btn red modal-close" type="button" id="btn-cancelar-modal">Cancelar
-                                            <i class="material-icons right">cancel</i>
-                                        </button>
-                                    </div>
-                                </form>
+                                        
+                        </div>
 
-                            </form>
+                        <div class="modal-footer">
+                            <button class="btn waves-effect waves-light" type="submit" name="action">Alterar
+                                <i class="material-icons right">update</i>
+                            </button>
+                            <button class="btn red modal-close" type="button" id="btn-cancelar-modal">Cancelar
+                                <i class="material-icons right">cancel</i>
+                            </button>
+                            </div>
+
+                    </form>
                         </div>
                     </div>
-                </div>
+</div>
 
     <!-- Modal de Confirmar Exclusão -->
-    <div id="modal-delete-aluno" class="modal">
+<div id="modal-delete-aluno" class="modal">
                     <div class="modal-content">
                         <h5>Confirmar Exclusão</h5>
                         <p>Você tem certeza que deseja excluir este aluno?</p>
@@ -261,10 +266,9 @@
                     </div>
     </div>
 
-    
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="/js/scripts.js"></script>
-    
+    <script src="/js/inatividade.js"></script>
     </body>
 </html>

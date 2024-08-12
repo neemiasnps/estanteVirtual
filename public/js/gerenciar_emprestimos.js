@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`Finalizar empréstimo com ID: ${id}`);
 
         // Confirmar ação com o usuário
-        const confirmacao = confirm('Você tem certeza que deseja finalizar este empréstimo?');
+        const confirmacao = confirm(`Você tem certeza que deseja finalizar o empréstimo n°: ${id}?`);
         if (!confirmacao) {
             return;
         }
@@ -737,7 +737,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erro ao processar a solicitação. Tente novamente mais tarde.');
         }
     }
-
 
     // Função para enviar e-mail com os livros
     async function enviarEmail(event) {

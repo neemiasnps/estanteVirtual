@@ -48,4 +48,15 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// Rota de logout
+router.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).json({ error: 'Erro ao encerrar a sessão' });
+        }
+        res.redirect('/login'); // Redireciona para a página de login após logout
+    });
+});
+
+
 module.exports = router;

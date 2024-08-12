@@ -17,7 +17,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { 
         secure: false, // Defina como `true` se você usar HTTPS
-        maxAge: 10 * 60 * 1000 // Tempo de expiração da sessão: 30 minutos
+        maxAge: 30 * 60 * 1000 // Tempo de expiração da sessão: 30 minutos
     }
 }));
 
