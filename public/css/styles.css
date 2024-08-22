@@ -302,3 +302,66 @@ table th:nth-child(8) {
     font-size: 1.5rem; /* Ajusta o tamanho da fonte do logo */
 }
 
+.fixed-action-btn.toolbar ul {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centraliza o input */
+  width: 100%; /* Garante que ocupe toda a largura da tela */
+  padding: 0 10px;
+  background-color: teal; /* Teal */
+}
+
+.fixed-action-btn.toolbar ul .input-field {
+  flex: 1;
+  margin: 0; /* Remove margens extras */
+  position: relative;
+}
+
+.fixed-action-btn.toolbar ul input[type="search"] {
+  border: none;
+  padding: 0 10px 0 60px;
+  height: 56px; /* Altura padrão da navbar do Materialize */
+  line-height: 56px;
+  border-radius: 0; /* Remove bordas arredondadas */
+  width: 100%; /* O input ocupa toda a largura disponível */
+  /*background-color: teal; /* Fundo branco para o input */
+  box-sizing: border-box;
+  transition: background-color 0.3s ease;
+}
+
+/* Estilo do input quando está em foco (clicado) */
+.fixed-action-btn.toolbar ul input[type="search"]:focus {
+  background-color: teal; /* Teal */
+  color: white; /* Texto branco para contraste */
+  
+}
+
+/* Estilo dos ícones quando o input está em foco */
+.fixed-action-btn.toolbar ul .input-field .material-icons,
+.fixed-action-btn.toolbar ul .input-field .label-icon {
+  color: white; /* Ícones brancos para contraste */
+}
+
+/* Ícone close ajustado */
+.fixed-action-btn.toolbar ul .input-field .material-icons.close {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  z-index: 1; /* Garante que o botão fique sobre o input */
+}
+
+.fixed-action-btn.toolbar ul .input-field .material-icons {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.fixed-action-btn.toolbar ul .input-field .label-icon {
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+}

@@ -189,4 +189,30 @@ router.get('/buscar-titulo/:titulo', async (req, res) => {
     }
 });
 
+// Rota de busca de livros pagina index
+router.get('/buscar/:titulo', async (req, res) => {
+    const titulo = req.params.titulo;
+
+    try {
+        const livros = await Livro.findAll({
+            where: {
+                titulo: {
+                    [Op.like]: `%${titulo}%` // Filtro LIKE, ignorando maiúsculas e minúsculas
+                }
+            },
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','situacao'],
+            include: [Estoque], // Incluindo dados de estoque
+        });
+
+        if (livros.length > 0) {
+            res.json(livros);
+        } else {
+            res.status(404).json({ message: 'Nenhum livro encontrado com o título fornecido.' });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar livros:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
 module.exports = router;
