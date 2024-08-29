@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const livrosContainer = document.getElementById('livros-container');
 
-    const livrosPorPagina = 9;
+    const livrosPorPagina = 12;
     let livros = [];
     let paginaAtual = 1;
 
