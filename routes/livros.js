@@ -27,6 +27,23 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Listar todos os livros no auto-complete
+router.get('/auto-livros', async (req, res) => {
+    try {
+        // Buscar todos os livros, incluindo dados de estoque
+        const livros = await Livro.findAll({
+            include: [Estoque] // Inclui informações da tabela Estoque
+        });
+
+        // Retornar os livros em formato JSON
+        res.json(livros);
+
+    } catch (error) {
+        console.error('Erro ao buscar livros:', error);
+        res.status(500).json({ error: 'Erro ao buscar livros' });
+    }
+});
+
 // Criar um novo livro
 router.post('/', async (req, res) => {
     const { titulo, autor, genero, anoPublicacao, editora, sinopse, foto, gentileza, situacao } = req.body;

@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const autocompleteInstances = M.Autocomplete.init(autocompleteElems, {
         data: {},
         onAutocomplete: function(val) {
-            fetch(`/api/livros/buscar-livro/${encodeURIComponent(val)}`)
+            fetch(`/api/livros/${encodeURIComponent(val)}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Dados retornados:', data);
@@ -160,8 +160,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Função para preencher o autocomplete com dados dos livros
-    function carregarLivros() {
-        fetch('/api/livros') // Rota para obter todos os livros
+    /*function carregarLivros() {
+        fetch('/api/livros/auto-livros') // Rota para obter todos os livros
             .then(response => response.json())
             .then(data => {
                 const autocompleteData = {};
@@ -175,7 +175,37 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erro ao carregar livros para autocomplete:', error);
             });
+    }*/
+
+    // Função para preencher o autocomplete com dados dos livros
+    function carregarLivros() {
+        fetch('/api/livros/auto-livros') // Rota para obter todos os livros
+            .then(response => response.json())
+            .then(data => {
+                const autocompleteData = {};
+
+                // Verifica se a resposta contém 'livros' ou se já é um array diretamente
+                const livros = data.livros || data; // Tenta acessar 'data.livros', se não existir, usa 'data'
+
+                // Verifica se a variável 'livros' é um array
+                if (Array.isArray(livros)) {
+                    livros.forEach(livro => {
+                        autocompleteData[livro.titulo] = null; // Pode adicionar imagem ou outro dado se necessário
+                    });
+
+                    // Inicializa o autocomplete com os dados
+                    M.Autocomplete.init(autocompleteElems, {
+                        data: autocompleteData
+                    });
+                } else {
+                    console.error("Erro: formato inesperado de dados", data);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar livros para autocomplete:', error);
+            });
     }
+
 
     carregarLivros(); // Carregar livros para autocomplete quando a página carregar
 
