@@ -103,13 +103,35 @@ router.get('/:id', (req, res, next) => {
 });
 
 // Rota para verificar a existência do CPF
-router.get('/verificar-cpf/:cpf', async (req, res) => {
+/*router.get('/verificar-cpf/:cpf', async (req, res) => {
     try {
         const cpf = req.params.cpf;
         console.log(`Verificando CPF: ${cpf}`);
 
         // Encontre o aluno no banco de dados com o CPF fornecido
         const aluno = await Aluno.findOne({ cpf: cpf });
+        if (aluno) {
+            return res.json({ success: true, exists: true });
+        } else {
+            return res.json({ success: true, exists: false });
+        }
+    } catch (error) {
+        console.error('Erro ao verificar CPF:', error);
+        res.status(500).json({ success: false, message: 'Erro ao verificar CPF.' });
+    }
+});*/
+
+// Rota para verificar a existência do CPF
+router.get('/verificar-cpf/:cpf', async (req, res) => {
+    try {
+        const cpf = req.params.cpf;
+        console.log(`Verificando CPF: ${cpf}`);
+
+        // Corrigir a busca com o Sequelize usando o 'where' corretamente
+        const aluno = await Aluno.findOne({
+            where: { cpf: cpf }
+        });
+
         if (aluno) {
             return res.json({ success: true, exists: true });
         } else {
@@ -180,15 +202,14 @@ router.get('/buscar-nome/:nome', async (req, res) => {
     }
 });
 
-// Excluir um aluno
-// routes/alunos.js
+// Rota para excluir/inativar um aluno
 router.delete('/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const aluno = await Aluno.findByPk(id);
 
         if (!aluno) {
-            return res.status(404).json({ error: 'Aluno não encontrado' });
+            return res.status(404).json({ success: false, message: 'Aluno não encontrado' });
         }
 
         // Verifica se o aluno tem empréstimos
@@ -198,19 +219,18 @@ router.delete('/:id', async (req, res) => {
 
         if (emprestimos.length > 0) {
             // Se o aluno tem empréstimos, apenas desative o status
-            aluno.status = 'inativo'; // ou o valor correspondente para inativo
+            aluno.status = 'inativo'; // Definir status como inativo
             await aluno.save();
-            return res.json({ message: 'Aluno desativado com sucesso' });
+            return res.json({ success: true, message: 'Aluno desativado com sucesso' });
         } else {
             // Caso contrário, exclua o aluno
             await aluno.destroy();
-            return res.json({ message: 'Aluno excluído com sucesso' });
+            return res.json({ success: true, message: 'Aluno excluído com sucesso' });
         }
     } catch (error) {
         console.error('Erro ao excluir aluno:', error);
-        res.status(500).json({ error: 'Erro ao excluir aluno' });
+        res.status(500).json({ success: false, message: 'Erro ao excluir aluno' });
     }
 });
-
 
 module.exports = router;

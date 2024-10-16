@@ -40,7 +40,7 @@
         }
 
         // Função para verificar se o CPF já existe
-        async function verificarCPF(cpf) {
+        /*async function verificarCPF(cpf) {
             try {
                 // O CPF pode ter formatação, envie como está
                 const response = await fetch(`/api/alunos/verificar-cpf/${encodeURIComponent(cpf)}`);
@@ -56,6 +56,29 @@
             } catch (error) {
                 console.error('Erro ao verificar CPF:', error);
                 throw error; // Re-throw para que a função chamadora possa lidar com isso
+            }
+        }*/
+        
+        // Função para verificar se o CPF já existe
+        async function verificarCPF(cpf) {
+            try {
+                // Normalizar CPF removendo formatação
+                const cpfSemFormatacao = cpf.replace(/\D/g, '');
+
+                const response = await fetch(`/api/alunos/verificar-cpf/${encodeURIComponent(cpfSemFormatacao)}`);
+                if (!response.ok) {
+                    throw new Error('Erro na resposta da rede');
+                }
+
+                const data = await response.json();
+                if (data.success) {
+                    return data.exists;
+                } else {
+                    throw new Error('Erro ao verificar CPF.');
+                }
+            } catch (error) {
+                console.error('Erro ao verificar CPF:', error);
+                throw error;
             }
         }
 
@@ -96,7 +119,7 @@
             });
         }
 
-        // Função para adicionar um aluno
+        /* / Função para adicionar um aluno
         async function adicionarAluno() {
             var cpfField = document.getElementById('cpf');
             var cpf = cpfField.value;
@@ -169,7 +192,84 @@
                 M.toast({ html: 'Erro ao verificar CPF. Verifique o console para mais detalhes.', classes: 'red' });
             }
         }
+        */
+        // Função para adicionar um aluno
+        async function adicionarAluno() {
+            var cpfField = document.getElementById('cpf');
+            var cpf = cpfField.value;
+            var nomeCompleto = document.getElementById('nome_completo').value;
+            var celular = document.getElementById('celular').value;
+            var email = document.getElementById('email').value;
+            var loja = document.getElementById('loja').value;
 
+            // Obter o status do switch
+            var statusSwitch = document.getElementById('status-switch');
+            var status = statusSwitch.checked ? 'ativo' : 'inativo';
+
+            // Validar CPF
+            if (!validarCPF(cpf)) {
+                M.toast({
+                    html: 'CPF inválido. Por favor, insira um CPF válido.',
+                    classes: 'red'
+                });
+
+                // Focar no campo CPF e adicionar uma classe para destaque
+                cpfField.focus();
+                cpfField.classList.add('invalid'); // Adicione uma classe CSS para destacar o campo
+
+                return;
+            } else {
+                // Remover a classe de destaque se a validação for bem-sucedida
+                cpfField.classList.remove('invalid');
+            }
+
+            // Verificar se o CPF já existe
+            try {
+                const cpfExists = await verificarCPF(cpf);
+                if (cpfExists) {
+                    M.toast({
+                        html: 'CPF já cadastrado. Por favor, insira um CPF diferente.',
+                        classes: 'red'
+                    });
+
+                    // Focar no campo CPF e adicionar uma classe para destaque
+                    cpfField.focus();
+                    cpfField.classList.add('invalid'); // Adicione uma classe CSS para destacar o campo
+
+                    return;
+                }
+
+                // Normalizar CPF antes de enviar para o servidor
+                cpf = cpf.replace(/\D/g, '');
+
+                fetch('/api/alunos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ cpf, nomeCompleto, celular, email, loja, status })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        M.toast({ html: 'Aluno cadastrado com sucesso!', classes: 'green' });
+                        formAddAluno.reset();
+                        M.Modal.getInstance(document.getElementById('modal-add-aluno')).close(); // Fecha o modal
+                        carregarAlunos(); // Recarrega a lista de alunos após adição
+                    } else {
+                        M.toast({ html: 'Erro ao cadastrar aluno: ' + data.message, classes: 'red' });
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao cadastrar aluno:', error);
+                    M.toast({ html: 'Erro ao cadastrar aluno. Verifique o console para mais detalhes.', classes: 'red' });
+                });
+            } catch (error) {
+                console.error('Erro ao verificar CPF:', error);
+                M.toast({ html: 'Erro ao verificar CPF. Verifique o console para mais detalhes.', classes: 'red' });
+            }
+        }
+        
         // Função para editar um aluno
         function editarAluno() {
             var id = document.getElementById('edit-id-aluno').value;
@@ -364,7 +464,7 @@
         }
 
         // Função para excluir ou desativar um aluno
-        function excluirAluno(id) {
+        /* function excluirAluno(id) {
             fetch(`/api/alunos/${id}`, {
                 method: 'DELETE'
             })
@@ -399,8 +499,46 @@
                 console.error('Erro ao excluir aluno:', error);
                 M.toast({ html: 'Erro ao excluir aluno. Verifique o console para mais detalhes.', classes: 'red' });
             });
-        }
+        }  */
 
+        // Função para excluir ou desativar um aluno
+        function excluirAluno(id) {
+            fetch(`/api/alunos/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro na resposta da rede');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Verifica se a operação foi bem-sucedida através do campo 'success'
+                if (data.success) {
+                    // Mensagem baseada na resposta do servidor
+                    if (data.message.includes('desativado')) {
+                        M.toast({ html: 'Aluno desativado com sucesso!', classes: 'orange' });
+                    } else if (data.message.includes('excluído')) {
+                        M.toast({ html: 'Aluno excluído com sucesso!', classes: 'green' });
+                    } else {
+                        M.toast({ html: 'Operação realizada com sucesso!', classes: 'green' });
+                    }
+
+                    // Fecha o modal
+                    M.Modal.getInstance(document.getElementById('modal-delete-aluno')).close();
+
+                    // Recarregar a lista de alunos após a operação
+                    carregarAlunos();
+                } else {
+                    // Exibe a mensagem de erro apenas se o campo 'success' for false
+                    M.toast({ html: data.message || 'Erro ao excluir aluno', classes: 'red' });
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao excluir aluno:', error);
+                // M.toast({ html: 'Erro ao excluir aluno. Verifique o console para mais detalhes.', classes: 'red' });
+            });
+        }
 
         // Variáveis de controle de paginação
         const alunosPorPagina = 9;
