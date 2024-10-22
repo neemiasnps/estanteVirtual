@@ -43,8 +43,21 @@ document.addEventListener('DOMContentLoaded', function() {
                             <p><strong>Autor:</strong> ${livro.autor}</p>
                             <p><strong>Gênero:</strong> ${livro.genero}</p>
                         </div>
-                        <div class="card-action"><p>
+                        <div class="card-action">
+                            <div class="row" style="display: flex; align-items: center;">
+                        <div class="col s6">
                             <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
+                        </div>
+                        <div class="col s6" style="text-align: right;">
+                            ${
+                                situacaoClasse === 'disponível' 
+                                ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
+                                    <i class="material-icons">add</i>
+                                   </a>` 
+                                : ''
+                            }
+                        </div>
+                    </div>
                         </div>
                         <div class="card-reveal">
                             <span class="card-title grey-text text-darken-4">${livro.titulo}<i class="material-icons right">close</i></span>
@@ -60,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
             M.toast({html: 'Nenhum livro encontrado.', classes: 'rounded'});
         }
     }
-
 
     // Evento de digitação no campo de busca
     if (searchInput) {
@@ -103,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Erro ao carregar os livros:', error));
     }
 
+    // Função para mostrar os livros no inicio
     function mostrarLivros() {
         const livrosContainer = document.getElementById('livros-container');
         livrosContainer.innerHTML = '';
@@ -132,7 +145,21 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p><strong>Gênero:</strong> ${livro.genero}</p>
                     </div>
                     <div class="card-action"><p>
-                        <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
+                        <div class="row" style="display: flex; align-items: center;">
+                        <div class="col s6">
+                            <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
+                        </div>
+                        <div class="col s6" style="text-align: right;">
+                            ${
+                                situacaoClasse === 'disponível' 
+                                ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
+                                    <i class="material-icons">add</i>
+                                   </a>` 
+                                : ''
+                            }
+                        </div>
+                    </div>
+
                     </div>
                     <div class="card-reveal">
                         <span class="card-title grey-text text-darken-4">${livro.titulo}<i class="material-icons right">close</i></span>
