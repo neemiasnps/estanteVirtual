@@ -38,8 +38,8 @@ app.use('/api/emprestimos', require('./routes/emprestimos'));
 app.use('/api/estoques', require('./routes/estoques'));
 app.use('/api/contato', require('./routes/contato'));
 app.use('/api/alunos', require('./routes/alunos'));
+app.use('/api/ebooks', require('./routes/ebooks'));
 app.use('/api/pdf', require('./routes/pdf'));
-
 
 // Rota Principal
 app.get('/', (req, res) => {
@@ -55,12 +55,20 @@ app.get('/gerenciar_livros', garantirAutenticado, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'gerenciar_livros.html'));
 });
 
+app.get('/gerenciar_ebooks', garantirAutenticado, (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'gerenciar_ebooks.html'));
+});
+
 app.get('/gerenciar_emprestimos', garantirAutenticado, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'gerenciar_emprestimos.html'));
 });
 
 app.get('/contato', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'contato.html'));
+});
+
+app.get('/ebooks', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'ebooks.html'));
 });
 
 // Teste de Conexão com o Banco de Dados

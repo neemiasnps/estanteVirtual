@@ -28,6 +28,7 @@
                     <ul id="dropdown-menu" class="dropdown-content">
                         <li><a href="/gerenciar_alunos"><i class="material-icons">people</i>Alunos</a></li>
                         <li><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                        <li><a href="/gerenciar_ebooks"><i class="material-icons">book</i>Livros</a></li>
                         <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Requisição</a></li>
                     </ul>
                 </li>
@@ -45,6 +46,7 @@
                 <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
                 <li class="menu-item"><a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a></li>
                 <li class="menu-item"><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
+                <li class="menu-item"><a href="/gerenciar_ebooks"><i class="material-icons">book</i>Livros</a></li>
                 <li class="menu-item"><a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Requisição</a></li>
                 <!-- Divider -->
                 <li class="divider"></li>
@@ -119,18 +121,14 @@
                             <i class="material-icons prefix">category</i>
                             <select id="genero" name="genero" required>
                                 <option value="" disabled selected>Escolha o gênero</option>
-                                <option value="Aventura">Aventura</option>
-                                <option value="Biografia">Biografia</option>
-                                <option value="Comédia">Comédia</option>
+                                <option value="Didático e Textos Acadêmicos">Didático e Textos Acadêmicos</option>
                                 <option value="Drama">Drama</option>
-                                <option value="Fantasia">Fantasia</option>
+                                <option value="Ficção">Ficção</option>
+                                <option value="Literatura Infantojuvenil">Literatura Infantojuvenil</option>
+                                <option value="Não-ficção">Não-ficção</option>
                                 <option value="Ficção Científica">Ficção Científica</option>
-                                <option value="História">História</option>
-                                <option value="Mistério">Mistério</option>
-                                <option value="Poesia">Poesia</option>
-                                <option value="Romance">Romance</option>
-                                <option value="Suspense">Suspense</option>
-                                <option value="Terror">Terror</option>
+                                <option value="Poesia">História</option>
+                                <option value="Religião e Espiritualidade">Religião e Espiritualidade</option>
                             </select>
                             <label for="genero">Gênero</label>
                         </div>
@@ -149,15 +147,15 @@
                             <textarea id="sinopse" class="materialize-textarea" required></textarea>
                             <label for="sinopse">Sinopse</label>
                         </div>
-                        <div class="input-field col s12 m6 l6">
+                            <div class="input-field col s12">
                             <i class="material-icons prefix">image</i>
                             <input id="foto" type="text" class="validate" required>
                             <label for="foto">URL da Foto</label>
                         </div>
-                        <div class="input-field col s12 m6 l6">
-                            <i class="material-icons prefix">group</i>
-                            <input id="gentileza" name="gentileza" type="text" class="validate" required/>
-                            <label for="gentileza">Gentileza</label>
+                            <div class="input-field col s12">
+                            <i class="material-icons prefix">cloud_download</i>
+                            <input id="url" name="gentileza" type="text" class="validate" required/>
+                            <label for="url">URL do Arquivo</label>
                         </div>
                         <div class="input-field col s12">
                             <div class="switch">
@@ -205,18 +203,14 @@
                             <i class="material-icons prefix">category</i>
                             <select id="edit-genero" name="edit-genero" required>
                                 <option value="" disabled selected>Escolha o gênero</option>
-                                <option value="Aventura">Aventura</option>
-                                <option value="Biografia">Biografia</option>
-                                <option value="Comédia">Comédia</option>
+                                <option value="Didático e Textos Acadêmicos">Didático e Textos Acadêmicos</option>
                                 <option value="Drama">Drama</option>
-                                <option value="Fantasia">Fantasia</option>
+                                <option value="Ficção">Ficção</option>
+                                <option value="Literatura Infantojuvenil">Literatura Infantojuvenil</option>
+                                <option value="Não-ficção">Não-ficção</option>
                                 <option value="Ficção Científica">Ficção Científica</option>
-                                <option value="História">História</option>
-                                <option value="Mistério">Mistério</option>
-                                <option value="Poesia">Poesia</option>
-                                <option value="Romance">Romance</option>
-                                <option value="Suspense">Suspense</option>
-                                <option value="Terror">Terror</option>
+                                <option value="Poesia">História</option>
+                                <option value="Religião e Espiritualidade">Religião e Espiritualidade</option>
                             </select>
                             <label for="edit-genero">Gênero</label>
                         </div>
@@ -235,15 +229,15 @@
                             <textarea id="edit-sinopse" class="materialize-textarea" required></textarea>
                             <label for="edit-sinopse">Sinopse</label>
                         </div>
-                        <div class="input-field col s12 m6 l6">
+                        <div class="input-field col s12">
                             <i class="material-icons prefix">image</i>
                             <input id="edit-foto" type="text" class="validate" required>
                             <label for="edit-foto">URL da Foto</label>
                         </div>
-                        <div class="input-field col s12 m6 l6">
-                            <i class="material-icons prefix">group</i>
-                            <input id="edit-gentileza" name="edit-gentileza" type="text" class="validate" required/>
-                            <label for="edit-gentileza">Gentileza</label>
+                            <div class="input-field col s12">
+                            <i class="material-icons prefix">cloud_download</i>
+                            <input id="edit-url" name="edit-url" type="text" class="validate" required/>
+                            <label for="edit-url">URL do Arquivo</label>
                         </div>
                         <div class="input-field col s12">
                             <div class="switch">
@@ -281,46 +275,10 @@
         </div>
     </div>
   
-    <!-- Modal de Estoque -->
-    <div id="modal-estoque-livro" class="modal">
-        <div class="modal-content">
-            <h5>Gerenciar Estoque</h5>
-        <div class="row">
-            <!-- <p>Aqui você pode gerenciar o estoque do livro selecionado.</p> -->
-            <!-- Formulário de gerenciamento de estoque -->
-            <form id="form-estoque-livro">
-        <div>
-                <div class="input-field col s12">
-                    <i class="material-icons prefix">pin</i>
-                    <input id="estoque-id-livro" type="text" class="validate" disabled>
-                    <label for="estoque-id-livro">ID do Livro</label>
-                </div>
-                <div class="input-field col s12">
-                    <i class="material-icons prefix">book</i>
-                    <input id="estoque-nome-livro" type="text" class="validate" disabled>
-                    <label for="estoque-nome-livro">Nome do Livro</label>
-                </div>
-                <div class="input-field col s12">
-                    <i class="material-icons prefix">storage</i>
-                    <input id="estoque-quantidade" type="number" class="validate" required>
-                    <label for="estoque-quantidade">Quantidade em Estoque</label>
-                </div> 
-                <button class="btn waves-effect waves-light" type="submit" name="action" id="btn-salvar-estoque" disabled>Salvar
-                    <i class="material-icons right">save</i>
-                </button>
-            <button class="btn red modal-close" type="submit" name="action" id="btn-cancelar-modal">Cancelar
-                <i class="material-icons right">cancel</i>
-            </button>
-        </div>
-            </form>
-        </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
+       <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/gerenciar_livros.js"></script>
+    <script src="/js/gerenciar_ebooks.js"></script>
     <script src="/js/scripts.js"></script>
     <script src="/js/inatividade.js"></script>
 </body>
