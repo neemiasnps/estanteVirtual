@@ -71,6 +71,10 @@ app.get('/ebooks', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'ebooks.html'));
 });
 
+app.get('/como_funciona', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'como_funciona.html'));
+});
+
 // Teste de Conexão com o Banco de Dados
 sequelize.authenticate()
     .then(() => {
