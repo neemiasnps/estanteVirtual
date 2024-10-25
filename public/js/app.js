@@ -142,30 +142,37 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="card-image waves-effect waves-block waves-light">
                         <img class="activator livro-imagem" src="${livro.foto}" alt="${livro.titulo}">
                     </div>
+
                     <div class="card-content">
-                        <span class="card-title activator grey-text text-darken-4">${livro.titulo}<i class="material-icons right">more_vert</i></span>
+                        <span class="card-title activator grey-text text-darken-4">
+                            ${livro.titulo}
+                            <i class="material-icons right">more_vert</i>
+                        </span>
                         <p><strong>Autor:</strong> ${livro.autor}</p>
                         <p><strong>Gênero:</strong> ${livro.genero}</p>
                     </div>
-                    <div class="card-action"><p>
-                        <div class="row" style="display: flex; align-items: center;">
-                            <div class="col s6">
-                                <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
-                            </div>
-                            <div class="col s6" style="text-align: right;">
-                                ${
-                                    situacaoClasse === "disponível"
-                                        ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
+
+                    <div class="card-action" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="col s8" style="text-align: left;">
+                            <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
+                        </div>
+
+                        <div class="col s4" style="text-align: right;">
+                            ${
+                                situacaoClasse === "disponível"
+                                    ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
                                         <i class="material-icons">add</i>
-                                       </a>`
-                                        : ""
-                                }
-                            </div>
+                                      </a>`
+                                    : ""
+                            }
+                        </div>
                     </div>
 
-                    </div>
                     <div class="card-reveal">
-                        <span class="card-title grey-text text-darken-4">${livro.titulo}<i class="material-icons right">close</i></span>
+                        <span class="card-title grey-text text-darken-4">
+                            ${livro.titulo}
+                            <i class="material-icons right">close</i>
+                        </span>
                         <p><strong>Sinopse:</strong> ${livro.sinopse}</p>
                     </div>
                 </div>

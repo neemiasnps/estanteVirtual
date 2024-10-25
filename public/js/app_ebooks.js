@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 `;
-                
+
                 livrosContainer.appendChild(card);
             });
         } else {
@@ -258,4 +258,3 @@ function incrementarDownload(livroId) {
         console.error('Erro:', error);
     });
 }
-
