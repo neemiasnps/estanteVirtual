@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function configurarPaginacao(totalPages) {
+    /* function configurarPaginacao(totalPages) {
         const paginacaoContainer = document.getElementById('pagination-controls');
         paginacaoContainer.innerHTML = '';
 
@@ -220,6 +220,82 @@ document.addEventListener('DOMContentLoaded', function() {
                 paginaAtual++;
                 carregarLivros();
                 header.scrollIntoView({ behavior: 'smooth' }); // Rolagem suave para o cabeçalho ou topo
+            }
+        });
+        nextButton.appendChild(nextLink);
+        paginacaoContainer.appendChild(nextButton);
+    }*/
+
+    function configurarPaginacao(totalPages) {
+        const paginacaoContainer = document.getElementById("pagination-controls");
+        paginacaoContainer.innerHTML = "";
+
+        const header = document.querySelector("header") || document.body;
+        const maxVisiblePages = 10; // Exibir apenas 10 páginas inicialmente
+
+        // Botão "Anterior"
+        const prevButton = document.createElement("li");
+        prevButton.classList.add("waves-effect");
+        if (paginaAtual === 1) {
+            prevButton.classList.add("disabled");
+        }
+        const prevLink = document.createElement("a");
+        prevLink.href = "#!";
+        prevLink.textContent = "‹";
+        prevLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (paginaAtual > 1) {
+                paginaAtual--;
+                carregarLivros();
+                configurarPaginacao(totalPages);
+                header.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+        prevButton.appendChild(prevLink);
+        paginacaoContainer.appendChild(prevButton);
+
+        // Exibir até 10 páginas inicialmente
+        const startPage = Math.min(Math.max(1, paginaAtual - Math.floor(maxVisiblePages / 2)), Math.max(1, totalPages - maxVisiblePages + 1));
+        const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageItem = document.createElement("li");
+            pageItem.classList.add("waves-effect");
+            if (i === paginaAtual) {
+                pageItem.classList.add("active");
+            }
+
+            const pageLink = document.createElement("a");
+            pageLink.href = "#!";
+            pageLink.textContent = i;
+            pageLink.addEventListener("click", function (event) {
+                event.preventDefault();
+                paginaAtual = i;
+                carregarLivros();
+                configurarPaginacao(totalPages);
+                header.scrollIntoView({ behavior: "smooth" });
+            });
+
+            pageItem.appendChild(pageLink);
+            paginacaoContainer.appendChild(pageItem);
+        }
+
+        // Botão "Próximo"
+        const nextButton = document.createElement("li");
+        nextButton.classList.add("waves-effect");
+        if (paginaAtual === totalPages) {
+            nextButton.classList.add("disabled");
+        }
+        const nextLink = document.createElement("a");
+        nextLink.href = "#!";
+        nextLink.textContent = "›";
+        nextLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (paginaAtual < totalPages) {
+                paginaAtual++;
+                carregarLivros();
+                configurarPaginacao(totalPages);
+                header.scrollIntoView({ behavior: "smooth" });
             }
         });
         nextButton.appendChild(nextLink);
