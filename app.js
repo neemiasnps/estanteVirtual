@@ -39,6 +39,7 @@ app.use('/api/estoques', require('./routes/estoques'));
 app.use('/api/contato', require('./routes/contato'));
 app.use('/api/alunos', require('./routes/alunos'));
 app.use('/api/ebooks', require('./routes/ebooks'));
+app.use('/api/homes', require('./routes/homes'));
 app.use('/api/pdf', require('./routes/pdf'));
 
 // Rota Principal
@@ -73,6 +74,10 @@ app.get('/ebooks', (req, res) => {
 
 app.get('/como_funciona', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'como_funciona.html'));
+});
+
+app.get('/livros', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'livros.html'));
 });
 
 // Teste de Conexão com o Banco de Dados
