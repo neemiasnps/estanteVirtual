@@ -395,7 +395,7 @@ table th:nth-child(8) {
 }
 
 .collection .collection-item.avatar {
-    padding-left: 50px;
+    padding-left: 30px;
 }
 
 /* Ajuste para que as imagens do slider mantenham o tamanho original */
@@ -422,7 +422,9 @@ table th:nth-child(8) {
 }
 
 .slider .caption h3,
-.slider .caption h5 {
+.slider .caption h4,
+.slider .caption h5,
+.slider .caption h6 {
     color: white; /* Cor do texto */
     text-shadow: 
         -1px -1px 0 #000, /* Borda preta à esquerda e acima */

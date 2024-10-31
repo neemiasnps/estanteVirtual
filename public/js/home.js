@@ -116,8 +116,8 @@ function carregarLivrosMaisLocados() {
                 li.innerHTML = `
                     <img src="${livro.foto}" alt="${livro.titulo}">
                     <div class="caption center-align">
-                        <h3>${livro.titulo}</h3>
-                        <h5 class="light grey-text text-lighten-3">${livro.autor}</h5>
+                        <h4>${livro.titulo}</h4>
+                        <h6 class="light grey-text text-lighten-3">${livro.autor}</h6>
                         <a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
                                             <i class="material-icons">add</i>
                                            </a>
