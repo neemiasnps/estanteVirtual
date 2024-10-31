@@ -65,24 +65,64 @@
         </div>
     </nav>
 
-<div class="container">
-    
-    <!-- Carrossel dos 5 eBooks mais baixados -->
-    <h6>Últimos 5 eBooks Adicionados</h6>
-    <div id="recent-ebooks" class="collection">
-        <!-- Os itens dos eBooks serão inseridos aqui pela função -->
+    <div class="container">
+
+        <!-- Estrutura do Slider -->
+        <div class="slider">
+            <ul class="slides">
+                <!-- Os itens do slider (livros mais locados) serão adicionados dinamicamente pelo JavaScript -->
+            </ul>
+        </div>
+
     </div>
 
-    <p></p>
-        
-    <h6>eBooks mais baixados</h6>
-    <div id="colecao-ebooks" class="collection">
-        <!-- Os itens dos eBooks serão inseridos aqui pela função -->
+    <div class="container">
+
+            <!-- Coleção dos 5 eBooks adicionados recentente -->
+        <h6>Últimos eBooks adicionados</h6>
+        <div id="recent-ebooks" class="collection">
+            <!-- Os itens dos eBooks serão inseridos aqui pela função -->
+        </div>
+
     </div>
-    
-</div>
+
+    <div class="container">
+
+        <!-- Coleção dos 3 eBooks mais baixados -->
+        <h6>eBooks mais baixados</h6>
+        <div id="colecao-ebooks" class="collection">
+            <!-- Os itens dos eBooks serão inseridos aqui pela função -->
+        </div>
+
+    </div>
 
 <p></p>
+
+    <!-- Modal de Login -->
+<div id="modal-login" class="modal">
+        <div class="modal-content">
+            <h4>Login</h4>
+            <div class="row">
+                <form class="col s12" id="form-login">
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">email</i>
+                            <input id="email" type="text" class="validate" required>
+                            <label for="email">E-mail</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <i class="material-icons prefix">lock</i>
+                            <input id="password" type="password" class="validate" required>
+                            <label for="password">Senha</label>
+                        </div>
+                    </div>
+                    <button class="btn waves-effect waves-light" type="submit" name="action">Login
+                        <i class="material-icons right">login</i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
 <footer class="page-footer custom-footer">
         <div class="container">

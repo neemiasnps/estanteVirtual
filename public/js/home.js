@@ -1,7 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
-    
+
+    carregarLivrosMaisLocados();
     carregarUltimosEbooks();
     carregarEbooksMaisBaixados();
+    
 });
 
 //Carregar os ultimos 5 ebooks adicionados
@@ -28,10 +30,10 @@ function carregarUltimosEbooks() {
                 li.classList.add("collection-item", "avatar");
 
                 li.innerHTML = `
-                    <div style="display: flex; align-items: center;">
+                    <div style="display: flex; align-items: center; justify-content: flex-start;">
                         <img src="${ebook.foto}" alt="${ebook.titulo}" class="responsive-img" style="width: 60px; height: auto; margin-right: 15px;">
                         <div>
-                            <span class="title" style="font-size: 14px;">${ebook.titulo}</span>
+                            <span class="title" style="font-size: 13px;">${ebook.titulo}</span>
                             <p style="font-size: 12px;">${ebook.autor}</p>
                             <p style="font-size: 11px;">${ebook.genero}</p>
                         </div>
@@ -72,7 +74,7 @@ function carregarEbooksMaisBaixados() {
                     <div style="display: flex; align-items: center;">
                         <img src="${ebook.foto}" alt="${ebook.titulo}" class="responsive-img" style="width: 60px; height: auto; margin-right: 15px;">
                         <div>
-                            <span class="title" style="font-size: 14px;">${ebook.titulo}</span>
+                            <span class="title" style="font-size: 13px;">${ebook.titulo}</span>
                             <p style="font-size: 12px;">${ebook.autor}</p>
                             <p style="font-size: 11px;">${ebook.download} download</p>
                         </div>
@@ -85,3 +87,55 @@ function carregarEbooksMaisBaixados() {
         })
         .catch(error => console.error('Erro ao carregar os eBooks mais baixados:', error));
 }
+
+//Carregar os 5 livros mais locados
+function carregarLivrosMaisLocados() {
+    fetch('/api/homes/mais-locados') // Mudança na URL da API para buscar livros mais locados
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na rede ao buscar livros mais locados');
+            }
+            return response.json();
+        })
+        .then(livros => {
+            console.log("Dados retornados pela API:", livros);
+
+            if (!Array.isArray(livros)) {
+                throw new TypeError('A resposta não contém um array de livros');
+            }
+
+            const sliderContainer = document.querySelector(".slider .slides");
+            sliderContainer.innerHTML = ''; // Limpa o slider antes de adicionar novos itens
+
+            // Seleciona os 5 livros mais locados
+            const maisLocados = livros.slice(0, 5);
+
+            maisLocados.forEach(livro => {
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    <img src="${livro.foto}" alt="${livro.titulo}">
+                    <div class="caption center-align">
+                        <h3>${livro.titulo}</h3>
+                        <h5 class="light grey-text text-lighten-3">${livro.autor}</h5>
+                        <a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
+                                            <i class="material-icons">add</i>
+                                           </a>
+                    </div>
+                `;
+
+                sliderContainer.appendChild(li);
+            });
+
+            // Inicializa o slider após a adição dos itens
+            const sliderElement = document.querySelector('.slider');
+            M.Slider.init(sliderElement, {
+                indicators: true,
+                height: 400,
+                duration: 500,
+                interval: 6000
+            });
+        })
+        .catch(error => console.error('Erro ao carregar os livros mais locados:', error));
+}
+

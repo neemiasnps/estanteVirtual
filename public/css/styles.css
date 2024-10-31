@@ -394,4 +394,39 @@ table th:nth-child(8) {
     margin: 0;
 }
 
+.collection .collection-item.avatar {
+    padding-left: 50px;
+}
 
+/* Ajuste para que as imagens do slider mantenham o tamanho original */
+.slider .slides li {
+  display: flex;
+  justify-content: center; /* Centraliza horizontalmente */
+  align-items: center; /* Centraliza verticalmente */
+}
+
+.slider img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ajusta a imagem dentro do container sem cortar */
+  opacity: 0.3;
+}
+
+.slider .slides li img {
+    height: 100%;
+    width: 100%;
+    background-size: contain;
+    background-position: center;
+}
+
+.slider .caption h3,
+.slider .caption h5 {
+    color: white; /* Cor do texto */
+    text-shadow: 
+        -1px -1px 0 #000, /* Borda preta à esquerda e acima */
+         1px -1px 0 #000, /* Borda preta à direita e acima */
+        -1px  1px 0 #000, /* Borda preta à esquerda e abaixo */
+         1px  1px 0 #000; /* Borda preta à direita e abaixo */
+}
