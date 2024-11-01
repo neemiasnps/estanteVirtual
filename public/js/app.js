@@ -45,22 +45,27 @@ document.addEventListener("DOMContentLoaded", function () {
                             <p><strong>Autor:</strong> ${livro.autor}</p>
                             <p><strong>Gênero:</strong> ${livro.genero}</p>
                         </div>
-                        <div class="card-action">
-                            <div class="row" style="display: flex; align-items: center;">
-                                <div class="col s6">
-                                    <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
-                                </div>
-                                <div class="col s6" style="text-align: right;">
-                                    ${
-                                        situacaoClasse === "disponível"
-                                            ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
-                                            <i class="material-icons">add</i>
-                                           </a>`
-                                            : ""
-                                    }
-                                </div>
-                            </div>
+                        <div class="card-action" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="col s8" style="text-align: left;">
+                            ${
+                                situacaoClasse === "disponível"
+                                    ? `<p class="${situacaoClasse}"><strong>Solicite seu empréstimo</strong></p>`
+                                    : `<p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>`
+                            }
                         </div>
+
+                        <div class="col s4" style="text-align: right;">
+                            ${
+                                situacaoClasse === "disponível"
+                                    ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
+                                        <i class="material-icons">add</i>
+                                      </a>`
+                                    : `<a class="btn-floating btn-small grey" style="pointer-events: none; opacity: 0.5;" title="Não disponível para empréstimo">
+                                        <i class="material-icons">add</i>
+                                   </a>`
+                            }
+                        </div>
+                    </div>
                         <div class="card-reveal">
                             <span class="card-title grey-text text-darken-4">${livro.titulo}<i class="material-icons right">close</i></span>
                             <p><strong>Sinopse:</strong> ${livro.sinopse}</p>
@@ -154,7 +159,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     <div class="card-action" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="col s8" style="text-align: left;">
-                            <p class="${situacaoClasse}"><strong>Situação:</strong> ${situacaoClasse}</p>
+                            ${
+                                situacaoClasse === "disponível"
+                                    ? `<p class="${situacaoClasse}" style="margin: 0;"><strong>Solicite seu empréstimo</strong></p>`
+                                    : `<p class="${situacaoClasse}" style="margin: 0;"><strong>Situação:</strong> ${situacaoClasse}</p>`
+                            }
                         </div>
 
                         <div class="col s4" style="text-align: right;">
@@ -163,7 +172,9 @@ document.addEventListener("DOMContentLoaded", function () {
                                     ? `<a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
                                         <i class="material-icons">add</i>
                                       </a>`
-                                    : ""
+                                    : `<a class="btn-floating btn-small grey" style="pointer-events: none; opacity: 0.5;" title="Não disponível para empréstimo">
+                                        <i class="material-icons">add</i>
+                                   </a>`
                             }
                         </div>
                     </div>
