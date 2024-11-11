@@ -124,6 +124,17 @@
         </div>
     </div>
 
+    <!-- Modal de Orientação -->
+    <div id="modal-orientacao" class="modal">
+        <div class="modal-content">
+            <h4>Bem-vindo à Biblioteca Nichele</h4>
+            <p>Aqui você pode explorar nossa coleção de livros e eBooks. Para navegar, utilize o menu no topo da página. Caso precise de ajuda ou tenha dúvidas sobre o funcionamento da biblioteca, acesse a seção <a href="/como_funciona">"Como Funciona"</a> para mais detalhes.</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Entendi</a>
+        </div>
+    </div>
+
 <footer class="page-footer custom-footer">
         <div class="container">
             <div class="row">
@@ -153,7 +164,7 @@
 
         <div class="footer-copyright">
             <div class="container">
-                © 2024 Nemis Consultoria & Treinamentos
+                © 2024 <a href="https://www.instagram.com/nemisconsultoriaetreinamentos" target="_blank" class="grey-text text-lighten-4">Nemis Consultoria e Treinamentos</a>
                 <a class="grey-text text-lighten-4 right" href="#!">Grupo Nichele ®</a>
             </div>
         </div>
@@ -164,6 +175,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="/js/scripts.js"></script>
 <script src="/js/home.js"></script>
+
+<!-- Script para exibir o modal de orientação ao carregar a página -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.modal');
+        var instances = M.Modal.init(elems);
+        var orientacaoModal = document.getElementById('modal-orientacao');
+        var instance = M.Modal.getInstance(orientacaoModal);
+        instance.open(); // Abre o modal automaticamente ao carregar a página
+    });
+</script>
 
 </body>
 </html>
