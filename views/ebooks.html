@@ -70,11 +70,29 @@
     <!-- Pesquisar livro -->
     <div class="row">
         <!-- Campo de busca de livro -->
-        <div class="col s12">
+        <div class="col s12 m6 l7">
             <div class="input-field">
                 <input id="search" type="text" class="validate">
-                <label for="search">Buscar Livro</label>
-                <i class="material-icons prefix" id="search-icon">search</i>
+                <label for="search">Buscar Livro ou Autor</label>
+                <!-- <i class="material-icons prefix" id="search-icon">search</i> -->
+            </div>
+        </div>
+
+        <!-- Campo de filtrar livro à direita -->
+        <div class="col s12 m6 l5">
+            <div class="input-field">
+                <select id="status-filter">
+                    <option value="" disabled selected>Escolha o gênero</option>
+                    <option value="Didático e Textos Acadêmicos">Didático e Textos Acadêmicos</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Ficção">Ficção</option>
+                    <option value="Literatura Infantojuvenil">Literatura Infantojuvenil</option>
+                    <option value="Não-ficção">Não-ficção</option>
+                    <option value="Poesia">Poesia</option>
+                    <option value="Religião e Espiritualidade">Religião e Espiritualidade</option>
+                </select>
+                <label for="status-filter">Gênero</label>
+                <!-- <i class="material-icons icon-right">filter_list</i> -->
             </div>
         </div>
     </div>

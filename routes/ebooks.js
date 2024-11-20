@@ -193,5 +193,91 @@ router.post('/:id/incrementar-download', async (req, res) => {
     }
 });
 
+// Rota para buscar livros por genero
+router.get('/buscar-genero/:genero', async (req, res) => {
+    const genero = req.params.genero;
+    const pagina = parseInt(req.query.pagina) || 1; // Página atual, padrão é 1
+    const livrosPorPagina = 12; // Limite de livros por página
+    const offset = (pagina - 1) * livrosPorPagina; // Calcula o deslocamento (offset) para a consulta
+
+    console.log('Gênero recebido:', genero);
+    console.log('Página recebida:', pagina);
+
+    try {
+        // Contagem total de livros para calcular o total de páginas
+        const totalLivros = await Livro.count({
+            where: {
+                genero: {
+                    [Op.eq]: genero
+                }
+            }
+        });
+
+        const totalPages = Math.ceil(totalLivros / livrosPorPagina); // Calcula o total de páginas
+
+        // Consulta de livros com limitação de resultados por página
+        const livros = await Livro.findAll({
+            where: {
+                genero: {
+                    [Op.eq]: genero
+                }
+            },
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','download'],
+            limit: livrosPorPagina,
+            offset: offset,
+        });
+
+        console.log('Livros encontrados:', livros);
+
+        if (livros.length > 0) {
+            res.json({
+                livros,          // Livros da página atual
+                totalPages,      // Total de páginas
+                paginaAtual: pagina, // Página atual
+                totalLivros      // Total de livros encontrados
+            });
+        } else {
+            res.status(404).json({ message: 'Nenhum livro encontrado para o gênero selecionado.' });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar livros por gênero:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// Rota de busca de livros por título ou autor
+router.get('/buscarAll/:search', async (req, res) => {
+    const searchTerm = req.params.search;
+
+    try {
+        const livros = await Livro.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        titulo: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no título
+                        }
+                    },
+                    {
+                        autor: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no autor
+                        }
+                    }
+                ]
+            },
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto', 'download'],
+        });
+
+        if (livros.length > 0) {
+            res.json(livros);
+        } else {
+            res.status(404).json({ message: 'Nenhum livro encontrado com o título ou autor fornecido.' });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar livros:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
 
 module.exports = router;
