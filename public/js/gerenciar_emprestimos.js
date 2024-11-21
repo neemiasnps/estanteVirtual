@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <a href="#" class="btn-edit-emprestimo ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">edit</i></a>
                                     <a href="#" class="btn-delete-emprestimo ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">delete</i></a>
                                     <a href="#" class="btn-finish-emprestimo ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">check_circle</i></a>
-                                    <a href="#" class="btn-print-emprestimo" data-id="${emprestimo.id}"><i class="material-icons">print</i></a>
+                                    <a href="#" class="btn-send-whatsapp" data-id="${emprestimo.id}"><i class="material-icons">message</i></a>
                                     <a href="#" class="btn-send-email ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">email</i></a>
                                 </td>
                             </tr>
@@ -459,8 +459,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     button.addEventListener('click', finalizarEmprestimo);
                 });
 
-                document.querySelectorAll('.btn-print-emprestimo').forEach(button => {
+                /* document.querySelectorAll('.btn-print-emprestimo').forEach(button => {
                     button.addEventListener('click', visualizarEImprimirPdf);
+                });*/
+
+                document.querySelectorAll('.btn-send-whatsapp').forEach(button => {
+                    button.addEventListener('click', enviarWhatsApp);
                 });
 
                 document.querySelectorAll('.btn-send-email').forEach(button => {
@@ -1022,5 +1026,67 @@ document.addEventListener('DOMContentLoaded', function() {
     // Evento para o campo de busca
     document.getElementById('search').addEventListener('input', buscarEmprestimosDebounced);
 
+    // Função para enviar mensagem no WhatsApp com os livros
+    async function enviarWhatsApp(event) {
+        event.preventDefault(); // Impede o comportamento padrão do link ou botão
+
+        // Obtém o ID do empréstimo a partir do atributo data-id do botão
+        const emprestimoId = event.currentTarget.getAttribute('data-id');
+        console.log('ID do empréstimo:', emprestimoId);
+
+        // Confirmação antes de enviar a mensagem no WhatsApp
+        const confirmacao = confirm('Você tem certeza que deseja enviar a mensagem no WhatsApp?');
+        if (!confirmacao) {
+            // Se o usuário cancelar, encerra a função
+            return;
+        }
+
+        // Exibe o preloader (indicador de carregamento)
+        const preloader = document.getElementById('preloader');
+        if (preloader) preloader.style.display = 'block';
+
+        try {
+            // Envia uma solicitação POST para a rota de envio de mensagem no WhatsApp
+            const response = await fetch(`/api/pdf/enviar-whatsapp/${emprestimoId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Verifica se a resposta é bem-sucedida
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+            }
+
+            // Determina o tipo de resposta e processa o resultado
+            const contentType = response.headers.get('Content-Type');
+            if (contentType && contentType.includes('application/json')) {
+                const result = await response.json();
+                console.log('Resultado do envio de mensagem no WhatsApp (JSON):', result);
+
+                // Redireciona para o WhatsApp em uma nova aba
+                if (result.link) {
+                    window.open(result.link, '_blank');
+                } else {
+                    throw new Error('Link do WhatsApp não encontrado na resposta.');
+                }
+            } else {
+                const result = await response.text();
+                console.log('Resultado do envio de mensagem no WhatsApp (Texto):', result);
+                throw new Error('Resposta inesperada do servidor. Verifique o formato.');
+            }
+
+            // Exibe uma mensagem de sucesso para o usuário
+            M.toast({ html: 'Mensagem enviada no WhatsApp com sucesso!', classes: 'green' });
+        } catch (error) {
+            // Loga o erro no console e exibe uma mensagem de erro ao usuário
+            console.error('Erro ao enviar mensagem no WhatsApp:', error);
+            M.toast({ html: 'Erro ao enviar mensagem no WhatsApp. Veja o console para mais detalhes.', classes: 'red' });
+        } finally {
+            // Oculta o preloader
+            if (preloader) preloader.style.display = 'none';
+        }
+    }
     
 });

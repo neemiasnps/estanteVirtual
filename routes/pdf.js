@@ -399,4 +399,42 @@ function comporCorpoEmailFinalizado(dadosEmprestimo) {
   `;
 }
 
+// Função para gerar o link do WhatsApp
+function gerarLinkWhatsApp(telefone, mensagem) {
+  const url = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagem)}`;
+  console.log(`URL: ${url}`);
+  return url;
+}
+
+// Rota para enviar mensagem no WhatsApp
+router.post('/enviar-whatsapp/:id', async (req, res) => {
+  const emprestimoId = req.params.id;
+
+  try {
+    const dadosEmprestimo = await obterDadosEmprestimo(emprestimoId);
+
+    const mensagem = `*Empréstimo Biblioteca Nichele* 📚\n\n` +
+                     `👤 Aluno: ${dadosEmprestimo.aluno.nome}\n` +
+                     `🔢 N° do Empréstimo: ${dadosEmprestimo.emprestimo.id}\n` +
+                     `📅 Data da Solicitação: ${dadosEmprestimo.emprestimo.dataSolicitacao}\n` +
+                     `📅 Data Prevista para Devolução: ${dadosEmprestimo.emprestimo.dataPrevista}\n` +
+                     `📝 Obs.: ${dadosEmprestimo.emprestimo.descricao}\n` +
+                     `📚 Livros Emprestados:\n` +
+                     dadosEmprestimo.livros.map(livro => `• ${livro.titulo}`).join('\n') + '\n\n' +
+                     `~Mensagem gerada e enviada automaticamente~ 🤖`;
+
+    //const telefone = dadosEmprestimo.aluno.telefone;
+    let telefone = dadosEmprestimo.aluno.telefone.replace(/[^0-9]/g, '');
+    console.log(`Cel.: ${telefone}`);
+    const linkWhatsApp = gerarLinkWhatsApp(telefone, mensagem);
+
+    // Redirecionar para o link do WhatsApp
+    //res.redirect(linkWhatsApp);
+    res.json({ link: linkWhatsApp });
+  } catch (error) {
+    console.error('Erro ao enviar WhatsApp:', error);
+    res.status(500).send('Erro ao enviar WhatsApp.');
+  }
+});
+
 module.exports = router;
