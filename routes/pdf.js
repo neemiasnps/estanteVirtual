@@ -413,14 +413,14 @@ router.post('/enviar-whatsapp/:id', async (req, res) => {
   try {
     const dadosEmprestimo = await obterDadosEmprestimo(emprestimoId);
 
-    const mensagem = `*Empréstimo Biblioteca Nichele* 📚\n\n` +
-                     `👨‍🎓 Aluno: ${dadosEmprestimo.aluno.nome}\n` +
-                     `🏷 N° do Empréstimo: ${dadosEmprestimo.emprestimo.id}\n` +
-                     `🗓 Data da Solicitação: ${dadosEmprestimo.emprestimo.dataSolicitacao}\n` +
-                     `🗓 Data Prevista para Devolução: ${dadosEmprestimo.emprestimo.dataPrevista}\n` +
-                     `📋 Obs.: ${dadosEmprestimo.emprestimo.descricao}\n` +
-                     `📚 Livros Emprestados:\n` +
-                     dadosEmprestimo.livros.map(livro => `• ${livro.titulo}`).join('\n') + '\n\n' +
+    const mensagem = `*Empréstimo Biblioteca Nichele*\n\n` +
+                     `Aluno: _${dadosEmprestimo.aluno.nome}_\n` +
+                     `N° do Empréstimo: _${dadosEmprestimo.emprestimo.id}_\n` +
+                     `Data da Solicitação: _${dadosEmprestimo.emprestimo.dataSolicitacao}_\n` +
+                     `Data Prevista para Devolução: _${dadosEmprestimo.emprestimo.dataPrevista}_\n` +
+                     `Obs.: _${dadosEmprestimo.emprestimo.descricao}_\n` +
+                     `Livros Emprestados:\n` +
+                     dadosEmprestimo.livros.map(livro => `• _${livro.titulo}_`).join('\n') + '\n\n' +
                      `~Mensagem gerada e enviada automaticamente~`;
 
     //const telefone = dadosEmprestimo.aluno.telefone;
