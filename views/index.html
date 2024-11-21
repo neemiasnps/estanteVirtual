@@ -176,16 +176,24 @@
 <script src="/js/scripts.js"></script>
 <script src="/js/home.js"></script>
 
-<!-- Script para exibir o modal de orientação ao carregar a página -->
+<!-- Script para exibir o modal de orientação ao carregar a página 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inicializa os modais do Materialize CSS
         var elems = document.querySelectorAll('.modal');
-        var instances = M.Modal.init(elems);
-        var orientacaoModal = document.getElementById('modal-orientacao');
-        var instance = M.Modal.getInstance(orientacaoModal);
-        instance.open(); // Abre o modal automaticamente ao carregar a página
+        M.Modal.init(elems);
+
+        // Verifica se o modal já foi exibido
+        if (!localStorage.getItem('modalOrientacaoExibido')) {
+            var orientacaoModal = document.getElementById('modal-orientacao');
+            var instance = M.Modal.getInstance(orientacaoModal);
+            instance.open(); // Abre o modal automaticamente
+
+            // Armazena a chave no localStorage
+            localStorage.setItem('modalOrientacaoExibido', 'true');
+        }
     });
-</script>
+</script> -->
 
 </body>
 </html>

@@ -2,6 +2,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Inicializar Materialize
     M.AutoInit();
+
+    // Inicializar modais
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+
+    // Abrir modal automaticamente
+    var orientacaoModal = document.getElementById('modal-orientacao');
+    if (orientacaoModal) {
+        var instance = M.Modal.getInstance(orientacaoModal);
+        instance.open();
+    }
     
     const searchInput = document.getElementById("search");
     const livrosContainer = document.getElementById("livros-container");
