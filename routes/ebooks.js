@@ -158,7 +158,7 @@ router.get('/buscar/:titulo', async (req, res) => {
                     [Op.like]: `%${titulo}%` // Filtro LIKE, ignorando maiúsculas e minúsculas
                 }
             },
-            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','download'],
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','url','download'],
         });
 
         if (livros.length > 0) {
@@ -222,7 +222,7 @@ router.get('/buscar-genero/:genero', async (req, res) => {
                     [Op.eq]: genero
                 }
             },
-            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','download'],
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','url','download'],
             limit: livrosPorPagina,
             offset: offset,
         });
@@ -265,7 +265,7 @@ router.get('/buscarAll/:search', async (req, res) => {
                     }
                 ]
             },
-            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto', 'download'],
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto', 'url','download'],
         });
 
         if (livros.length > 0) {
