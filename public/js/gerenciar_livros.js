@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Evento para abrir o modal
     document.querySelector('.modal-trigger').addEventListener('click', function() {
         carregarGeneros(); // Carrega os gêneros quando o modal é aberto
+        //editGeneros();
     });
 
     // Evento para quando o gênero for alterado
@@ -301,6 +302,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(livro => {
+                console.log(livro.genero); // Verifique o valor do gênero
+                console.log(livro.subgenero); // Verifique o valor do subgênero
+
+                editGeneros();
+
+                // Evento para quando o gênero for alterado
+                const generoEdit = document.getElementById('edit-genero');
+                generoEdit.addEventListener('change', function () {
+                    const generoId = generoEdit.value;
+                    editSubgeneros(generoId); // Carrega os subgêneros do gênero selecionado
+                });
+                
                 $('#edit-id-livro').val(livro.id);
                 $('#edit-titulo').val(livro.titulo);
                 $('#edit-autor').val(livro.autor);
@@ -319,14 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 var instance = M.Modal.getInstance(document.getElementById('modal-edit-livro'));
                 instance.open();
 
-                editGeneros();
-
-                // Evento para quando o gênero for alterado
-                const generoSelect = document.getElementById('edit-genero');
-                generoSelect.addEventListener('change', function () {
-                    const generoId = generoSelect.value;
-                    editSubgeneros(generoId); // Carrega os subgêneros do gênero selecionado
-                });
             })
             .catch(error => {
                 console.error('Erro ao buscar detalhes do livro:', error);
