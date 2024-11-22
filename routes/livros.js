@@ -5,6 +5,7 @@ const Estoque = require('../models/estoque'); // Modelo de Estoque
 const Emprestimo = require('../models/emprestimo');
 const { Op } = require('sequelize');
 
+
 // Listar todos os livros
 router.get('/', async (req, res) => {
     try {
@@ -319,6 +320,5 @@ router.get('/buscarAll/:search', async (req, res) => {
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
-
 
 module.exports = router;

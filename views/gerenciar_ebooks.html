@@ -115,11 +115,12 @@
                             <input id="titulo" type="text" class="validate" required>
                             <label for="titulo">Título</label>
                         </div>
-                        <div class="input-field col s12 m6 l6">
+                        <div class="input-field col s12">
                             <i class="material-icons prefix">account_circle</i>
                             <input id="autor" type="text" class="validate" required>
                             <label for="autor">Autor</label>
                         </div>
+                        <!--
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix">category</i>
                             <select id="genero" name="genero" required>
@@ -135,6 +136,28 @@
                             </select>
                             <label for="genero">Gênero</label>
                         </div>
+                        -->
+                        <!-- Campo de Gênero -->
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">category</i>
+                            <select id="genero" name="genero" required>
+                                <option value="" disabled selected>Escolha o gênero</option>
+                                <!-- Gêneros carregados dinamicamente -->
+                            </select>
+                            <label for="genero">Gênero</label>
+                        </div>
+
+                        <!-- Campo de Subgênero -->
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">category</i>
+                            <select id="subgenero" name="subgenero" required>
+                                <option value="" disabled selected>Escolha o subgênero</option>
+                                <!-- Subgêneros carregados dinamicamente -->
+                            </select>
+                            <label for="subgenero">Subgênero</label>
+                        </div>
+
+                        
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix">date_range</i>
                             <input id="ano_publicacao" type="number" class="validate" required>
@@ -197,11 +220,12 @@
                             <input id="edit-titulo" type="text" class="validate" required>
                             <label for="edit-titulo">Título</label>
                         </div>
-                        <div class="input-field col s12 m6 l6">
+                        <div class="input-field col s12">
                             <i class="material-icons prefix">account_circle</i>
                             <input id="edit-autor" type="text" class="validate" required>
                             <label for="edit-autor">Autor</label>
                         </div>
+                        <!--
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix">category</i>
                             <select id="edit-genero" name="edit-genero" required>
@@ -217,6 +241,28 @@
                             </select>
                             <label for="edit-genero">Gênero</label>
                         </div>
+                        -->
+                        <!-- Campo de Gênero -->
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">category</i>
+                            <select id="edit-genero" name="edit-genero" required>
+                                <option value="" disabled selected>Escolha o gênero</option>
+                                <!-- Gêneros carregados dinamicamente -->
+                            </select>
+                            <label for="genero">Gênero</label>
+                        </div>
+
+                        <!-- Campo de Subgênero -->
+                        <div class="input-field col s12 m6 l6">
+                            <i class="material-icons prefix">category</i>
+                            <select id="edit-subgenero" name="edit-subgenero" required>
+                                <option value="" disabled selected>Escolha o subgênero</option>
+                                <!-- Subgêneros carregados dinamicamente -->
+                            </select>
+                            <label for="subgenero">Subgênero</label>
+                        </div>
+                    
+                        
                         <div class="input-field col s12 m6 l6">
                             <i class="material-icons prefix">date_range</i>
                             <input id="edit-ano_publicacao" type="number" class="validate" required>

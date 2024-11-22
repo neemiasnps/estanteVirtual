@@ -41,6 +41,7 @@ app.use('/api/alunos', require('./routes/alunos'));
 app.use('/api/ebooks', require('./routes/ebooks'));
 app.use('/api/homes', require('./routes/homes'));
 app.use('/api/pdf', require('./routes/pdf'));
+app.use('/api/generos', require('./routes/generos'));
 
 // Rota Principal
 app.get('/', (req, res) => {

@@ -18,6 +18,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const booksPerPage = 10; // Número de livros por página
     let totalPages = 0; // Total de páginas
 
+    const modal = document.getElementById('modal-add-livro');
+    const instance = M.Modal.init(modal);
+    instance.open();
+
+    // Evento para abrir o modal
+    document.querySelector('.modal-trigger').addEventListener('click', function() {
+        carregarGeneros(); // Carrega os gêneros quando o modal é aberto
+    });
+
+    // Evento para quando o gênero for alterado
+    const generoSelect = document.getElementById('genero');
+    generoSelect.addEventListener('change', function () {
+        const generoId = generoSelect.value;
+        carregarSubgeneros(generoId); // Carrega os subgêneros do gênero selecionado
+    });
+
     // Função para carregar livros e preencher a tabela com paginação
     function carregarLivros(page) {
         fetch(`/api/livros?page=${page}&limit=${booksPerPage}`)
@@ -196,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    
     //Função abrir modal de estoque
     function abrirModalEstoqueLivro(idLivro, nomeLivro) {
+        
         // Preencher dados no modal de estoque
         $('#estoque-id-livro').val(idLivro);
         $('#estoque-nome-livro').val(nomeLivro);
@@ -235,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('Erro ao buscar estoque do livro.');
             });
     }
-
 
     // Função para atualizar o estoque
     async function atualizarEstoque() {
@@ -286,6 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 $('#edit-titulo').val(livro.titulo);
                 $('#edit-autor').val(livro.autor);
                 $('#edit-genero').val(livro.genero);
+                $('#edit-subgenero').val(livro.subgenero);
                 $('#edit-ano_publicacao').val(livro.anoPublicacao);
                 $('#edit-editora').val(livro.editora);
                 $('#edit-sinopse').val(livro.sinopse);
@@ -298,6 +314,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 var instance = M.Modal.getInstance(document.getElementById('modal-edit-livro'));
                 instance.open();
+
+                editGeneros();
+
+                // Evento para quando o gênero for alterado
+                const generoSelect = document.getElementById('edit-genero');
+                generoSelect.addEventListener('change', function () {
+                    const generoId = generoSelect.value;
+                    editSubgeneros(generoId); // Carrega os subgêneros do gênero selecionado
+                });
             })
             .catch(error => {
                 console.error('Erro ao buscar detalhes do livro:', error);
@@ -319,6 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const titulo = document.getElementById('edit-titulo').value;
         const autor = document.getElementById('edit-autor').value;
         const genero = document.getElementById('edit-genero').value;
+        const subgenero = document.getElementById('edit-subgenero').value;
         const anoPublicacao = document.getElementById('edit-ano_publicacao').value;
         const editora = document.getElementById('edit-editora').value;
         const sinopse = document.getElementById('edit-sinopse').value;
@@ -331,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ titulo, autor, genero, anoPublicacao, editora, sinopse, foto, gentileza, situacao })
+            body: JSON.stringify({ titulo, autor, genero, subgenero, anoPublicacao, editora, sinopse, foto, gentileza, situacao })
         })
         .then(response => {
             if (!response.ok) {
@@ -400,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var titulo = document.getElementById('titulo').value;
         var autor = document.getElementById('autor').value;
         var genero = document.getElementById('genero').value;
+        var subgenero = document.getElementById('subgenero').value;
         var anoPublicacao = document.getElementById('ano_publicacao').value;
         var editora = document.getElementById('editora').value;
         var gentileza = document.getElementById('gentileza').value;
@@ -412,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ titulo, autor, genero, anoPublicacao, editora, gentileza, sinopse, foto, situacao })
+            body: JSON.stringify({ titulo, autor, genero, subgenero, anoPublicacao, editora, gentileza, sinopse, foto, situacao })
         })
         .then(response => {
             console.log('Resposta do servidor:', response); // Adicionado para depuração
@@ -519,5 +546,117 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('livros-table-body').innerHTML = '<tr><td colspan="6">Digite um título para buscar.</td></tr>';
         }
     });
-    
+
+    // Função para carregar os gêneros do banco de dados
+    function carregarGeneros() {
+        console.log('Chamando a API de Gêneros:', '/api/livros/generos');
+        fetch(`/api/generos/buscar-generos`)
+            .then(response => {
+                console.log('Resposta da API:', response);
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(generos => {
+                console.log('Gêneros recebidos:', generos);
+                if (!Array.isArray(generos)) {
+                    throw new TypeError('A resposta da API não é uma lista.');
+                }
+
+                const generoSelect = document.getElementById('genero');
+                generos.forEach(genero => {
+                    const option = document.createElement('option');
+                    option.value = genero.id;
+                    option.textContent = genero.nome;
+                    generoSelect.appendChild(option);
+                });
+
+                M.FormSelect.init(generoSelect); // Inicializa o Materialize Select
+            })
+            .catch(error => {
+                console.error('Erro ao carregar gêneros:', error);
+            });
+    }
+
+    // Função para carregar os subgêneros com base no gênero selecionado
+    function carregarSubgeneros(generoId) {
+        fetch(`/api/generos/subgeneros?genero_id=${generoId}`)
+            .then(response => response.json())
+            .then(subgeneros => {
+                console.log('Resposta dos subgêneros:', subgeneros); // Verifica a resposta completa do servidor
+                if (Array.isArray(subgeneros)) {
+                    const subgeneroSelect = document.getElementById('subgenero');
+                    subgeneroSelect.innerHTML = '<option value="" disabled selected>Escolha o subgênero</option>';
+
+                    subgeneros.forEach(subgenero => {
+                        const option = document.createElement('option');
+                        option.value = subgenero.id;
+                        option.textContent = subgenero.nome;
+                        subgeneroSelect.appendChild(option);
+                    });
+                    M.FormSelect.init(subgeneroSelect);
+                } else {
+                    console.error('Esperado um array, mas recebido:', subgeneros);
+                }
+            })
+            .catch(error => console.error('Erro ao carregar subgêneros:', error));
+    }
+
+    // Função para carregar os gêneros do banco de dados
+    function editGeneros() {
+        console.log('Chamando a API de Gêneros:', '/api/livros/generos');
+        fetch(`/api/generos/buscar-generos`)
+            .then(response => {
+                console.log('Resposta da API:', response);
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(generos => {
+                console.log('Gêneros recebidos:', generos);
+                if (!Array.isArray(generos)) {
+                    throw new TypeError('A resposta da API não é uma lista.');
+                }
+
+                const generoSelect = document.getElementById('edit-genero');
+                generos.forEach(genero => {
+                    const option = document.createElement('option');
+                    option.value = genero.id;
+                    option.textContent = genero.nome;
+                    generoSelect.appendChild(option);
+                });
+
+                M.FormSelect.init(generoSelect); // Inicializa o Materialize Select
+            })
+            .catch(error => {
+                console.error('Erro ao carregar gêneros:', error);
+            });
+    }
+
+    // Função para carregar os subgêneros com base no gênero selecionado
+    function editSubgeneros(generoId) {
+        fetch(`/api/generos/subgeneros?genero_id=${generoId}`)
+            .then(response => response.json())
+            .then(subgeneros => {
+                console.log('Resposta dos subgêneros:', subgeneros); // Verifica a resposta completa do servidor
+                if (Array.isArray(subgeneros)) {
+                    const subgeneroSelect = document.getElementById('edit-subgenero');
+                    subgeneroSelect.innerHTML = '<option value="" disabled selected>Escolha o subgênero</option>';
+
+                    subgeneros.forEach(subgenero => {
+                        const option = document.createElement('option');
+                        option.value = subgenero.id;
+                        option.textContent = subgenero.nome;
+                        subgeneroSelect.appendChild(option);
+                    });
+                    M.FormSelect.init(subgeneroSelect);
+                } else {
+                    console.error('Esperado um array, mas recebido:', subgeneros);
+                }
+            })
+            .catch(error => console.error('Erro ao carregar subgêneros:', error));
+    }
+
 });
