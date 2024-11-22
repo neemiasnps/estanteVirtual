@@ -18,10 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const booksPerPage = 10; // Número de livros por página
     let totalPages = 0; // Total de páginas
 
-    const modal = document.getElementById('modal-add-livro');
-    const instance = M.Modal.init(modal);
-    instance.open();
-
     // Evento para abrir o modal
     document.querySelector('.modal-trigger').addEventListener('click', function() {
         carregarGeneros(); // Carrega os gêneros quando o modal é aberto
@@ -121,6 +117,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const paginationControls = document.getElementById('pagination-controls');
         paginationControls.innerHTML = '';
 
+        const maxVisiblePages = 10; // Número máximo de páginas visíveis
+
+        // Determinar o intervalo de páginas visíveis
+        const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
         // Criar botão "Anterior"
         const prevButton = document.createElement('li');
         prevButton.className = 'waves-effect';
@@ -130,8 +132,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         paginationControls.appendChild(prevButton);
 
-        // Criar botões para cada página disponível
-        for (let i = 1; i <= totalPages; i++) {
+        // Ajustar intervalo se atingir o limite superior
+        let adjustedStartPage = startPage;
+        let adjustedEndPage = endPage;
+        if (endPage - startPage < maxVisiblePages - 1) {
+            adjustedStartPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        // Criar botões para páginas dentro do intervalo ajustado
+        for (let i = adjustedStartPage; i <= adjustedEndPage; i++) {
             const pageButton = document.createElement('li');
             pageButton.className = 'waves-effect';
             pageButton.innerHTML = `<a href="#!" onclick="loadPage(${i})">${i}</a>`;
@@ -139,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 pageButton.classList.add('active');
             }
             paginationControls.appendChild(pageButton);
-            
         }
 
         // Criar botão "Próximo"
@@ -153,9 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Atualizar event listeners após atualizar os botões
         updateEventListeners();
-
-        // Marcar a página ativa
-        markActivePage(currentPage);
     }
 
     // Função para atualizar event listeners dos botões de página
@@ -172,7 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para carregar uma página específica
     function loadPage(page) {
-
         if (page < 1 || page > totalPages) return;
         currentPage = page;
         carregarLivros(page);
@@ -181,20 +185,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função para marcar a página ativa nos botões de paginação
     function markActivePage(activePage) {
-        const pageButtons = document.querySelectorAll('#pagination-controls a');
+        const pageButtons = document.querySelectorAll('#pagination-controls li');
         pageButtons.forEach(button => {
-            const pageNumber = parseInt(button.innerText);
-            if (pageNumber === activePage) {
-                button.parentElement.classList.add('active'); // Adicionar classe 'active' ao elemento pai do botão
+            const buttonPage = parseInt(button.textContent);
+            if (buttonPage === activePage) {
+                button.classList.add('active');
             } else {
-                button.parentElement.classList.remove('active'); // Remover classe 'active' dos elementos não selecionados
+                button.classList.remove('active');
             }
         });
     }
 
     // Carregar a primeira página inicialmente
     //document.addEventListener('DOMContentLoaded', function() {
-        carregarLivros(1);
+        carregarLivros(currentPage);
     //});
 
     // Adicionar evento de clique para fechar o modal ao clicar em "Cancelar"
@@ -543,10 +547,11 @@ document.addEventListener('DOMContentLoaded', function() {
             buscarLivrosPorTitulo(query);
         } else {
             // Se o campo de busca estiver vazio, você pode optar por limpar a tabela ou não mostrar resultados
-            document.getElementById('livros-table-body').innerHTML = '<tr><td colspan="6">Digite um título para buscar.</td></tr>';
+            //document.getElementById('livros-table-body').innerHTML = '<tr><td colspan="6">Digite um título para buscar.</td></tr>';
+            carregarLivros(currentPage);
         }
     });
-
+    
     // Função para carregar os gêneros do banco de dados
     function carregarGeneros() {
         console.log('Chamando a API de Gêneros:', '/api/livros/generos');
