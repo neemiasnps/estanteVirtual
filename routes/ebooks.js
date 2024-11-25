@@ -37,12 +37,13 @@ router.get('/auto-livros', async (req, res) => {
 
 // Criar um novo livro
 router.post('/', async (req, res) => {
-    const { titulo, autor, genero, anoPublicacao, editora, sinopse, foto, url, situacao } = req.body;
+    const { titulo, autor, genero, subgenero, anoPublicacao, editora, sinopse, foto, url, situacao } = req.body;
     try {
         const novoLivro = await Livro.create({ 
             titulo, 
             autor, 
             genero, 
+            subgenero,
             anoPublicacao, 
             editora, 
             sinopse, 
@@ -60,13 +61,14 @@ router.post('/', async (req, res) => {
 // Atualizar um livro
 router.put('/:id', async (req, res) => {
     const { id } = req.params;
-    const { titulo, autor, genero, anoPublicacao, editora, sinopse, foto, url, situacao } = req.body;
+    const { titulo, autor, genero, subgenero, anoPublicacao, editora, sinopse, foto, url, situacao } = req.body;
     try {
         const livro = await Livro.findByPk(id);
         if (livro) {
             livro.titulo = titulo;
             livro.autor = autor;
             livro.genero = genero;
+            livro.subgenero = subgenero;
             livro.anoPublicacao = anoPublicacao;
             livro.editora = editora;
             livro.sinopse = sinopse;
