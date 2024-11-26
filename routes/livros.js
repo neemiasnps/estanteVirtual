@@ -305,6 +305,11 @@ router.get('/buscarAll/:search', async (req, res) => {
                         autor: {
                             [Op.like]: `%${searchTerm}%` // Filtro LIKE no autor
                         }
+                    },
+                    {
+                        subgenero: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no subgenero
+                        }
                     }
                 ]
             },

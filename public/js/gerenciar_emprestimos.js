@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <a href="#" class="btn-edit-emprestimo ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">edit</i></a>
                                     <a href="#" class="btn-delete-emprestimo ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">delete</i></a>
                                     <a href="#" class="btn-finish-emprestimo ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">check_circle</i></a>
-                                    <a href="#" class="btn-send-whatsapp" data-id="${emprestimo.id}"><i class="material-icons">message</i></a>
+                                    <a href="#" class="btn-send-whatsapp ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">message</i></a>
                                     <a href="#" class="btn-send-email ${situacaoFinalizado ? 'disabled' : ''}" data-id="${emprestimo.id}"><i class="material-icons">email</i></a>
                                 </td>
                             </tr>
