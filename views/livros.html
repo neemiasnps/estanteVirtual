@@ -16,7 +16,7 @@
 <body>
 
 <!-- Desktop Navbar -->
-<nav>
+    <nav>
         <div class="nav-wrapper custom-navbar">
             <a href="#" class="brand-logo custom-logo">Biblioteca</a>
             <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
@@ -25,6 +25,7 @@
                 <li><a href="/livros">Livros</a></li>
                 <li><a href="/ebooks">eBooks</a></li>
                 <li><a href="/contato">Contato</a></li>
+                <li><a href="/como_funciona">Como funciona</a></li>
                 <li id="menu-dropdown-container" style="display: none;">
                     <a class="dropdown-trigger" href="#" data-target="dropdown-menu">Menu</a>
                     <!-- Dropdown Structure -->
@@ -41,7 +42,12 @@
                         <i class="material-icons">logout</i>
                     </a>
                 </li>
-                <li id="login-link-container"><a href="#" id="modal-login-link">Login</a></li>
+                <!--<li id="login-link-container"><a href="#" id="modal-login-link">Login</a></li>-->
+                <li id="login-link-container">
+                    <a href="#" id="modal-login-link">
+                        <i class="material-icons">login</i>
+                    </a>
+                </li>
             </ul>
             <!-- Mobile Menu -->
             <ul class="sidenav" id="mobile-demo">
@@ -49,6 +55,7 @@
                 <li><a href="/livros"><i class="material-icons">book</i>Livros</a></li>
                 <li><a href="/ebooks"><i class="material-icons">book</i>eBooks</a></li>
                 <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
+                <li><a href="/como_funciona"><i class="material-icons">info</i>Como funciona</a></li>
                 <li class="menu-item"><a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a></li>
                 <li class="menu-item"><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
                 <li class="menu-item"><a href="/gerenciar_ebooks"><i class="material-icons">book</i>eBooks</a></li>
@@ -70,15 +77,17 @@
     <!-- Pesquisar livro -->
     <div class="row">
         <!-- Campo de busca de livro -->
-        <div class="col s12 m6 l7">
+        <!--<div class="col s12 m6 l7">-->
+        <div class="col s12">
             <div class="input-field">
-                <input id="search" type="text" class="validate" placeholder="Digite o nome do livro, autor ou subgênero">
+                <input id="search" type="text" class="validate" placeholder="Digite o nome do livro, autor ou gênero">
                 <label for="search">Buscar</label>
                 <!-- <i class="material-icons prefix" id="search-icon">search</i> -->
             </div>
         </div>
 
         <!-- Campo de filtrar livro à direita -->
+        <!--
         <div class="col s12 m6 l5">
             <div class="input-field">
                 <select id="status-filter">
@@ -92,9 +101,10 @@
                     <option value="Religião e Espiritualidade">Religião e Espiritualidade</option>
                 </select>
                 <label for="status-filter">Gênero</label>
-                <!-- <i class="material-icons icon-right">filter_list</i> -->
+                <!-- <i class="material-icons icon-right">filter_list</i> 
             </div>
         </div>
+        -->
         
     </div>
     
@@ -154,7 +164,7 @@
                 <div class="col l4 offset-l2 s12">
                     <h6 class="white-text">Links</h6>
                     <ul>
-                        <li><a class="grey-text text-lighten-3" href="/como_funciona"">Como Funciona</a></li>
+                        <li><a class="grey-text text-lighten-3" href="/como_funciona"">Como funciona</a></li>
                         <li><a class="grey-text text-lighten-3" href="https://wa.me/5541998000484?text=Tenho%20interesse%20em%20doar%20um%20livro" target="_blank">Quero doar</a></li>
                     </ul>
                 </div>

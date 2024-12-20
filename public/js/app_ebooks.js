@@ -5,26 +5,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const searchInput = document.getElementById('search');
     const livrosContainer = document.getElementById('livros-container');
-    const statusFilter = document.getElementById('status-filter');
+    //const statusFilter = document.getElementById('status-filter');
 
     const livrosPorPagina = 12;
     let livros = [];
     let paginaAtual = 1;
 
     // Função para buscar livros conforme o usuário digita
-    function buscarLivros(query) {
+    /*function buscarLivros(query) {
     fetch(`/api/ebooks/buscarAll/${encodeURIComponent(query)}`)
         .then(response => response.json())
         .then(data => {
             exibirLivros(data); // Preenche a grid com os livros encontrados
-            configurarPaginacao();
+            configurarPaginacao(data.totalPaginas);
         })
         .catch(error => console.error('Erro ao buscar os livros:', error));
          configurarPaginacao();
-    }
+    }*/
 
       // Função para mostrar livros na grid
-    function exibirLivros(livros) {
+    /*function exibirLivros(livros) {
         const livrosContainer = document.getElementById('livros-container');
         livrosContainer.innerHTML = ''; // Limpa a grid atual
 
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             livrosContainer.innerHTML = '<p>Nenhum livro encontrado.</p>';
             M.toast({html: 'Nenhum livro encontrado.', classes: 'rounded'});
         }
-    }
+    }*/
 
     // Evento de digitação no campo de busca
     if (searchInput) {
@@ -88,7 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Define um novo timer
             typingTimer = setTimeout(function() {
                 if (query.length > 0) {
-                    buscarLivros(query); // Busca livros ao digitar após o delay
+                    //buscarLivros(query); // Busca livros ao digitar após o delay
+                    carregarLivrosComFiltro(1, query);
                 } else {
                     carregarLivros(); // Carrega todos os livros se a busca estiver vazia
                 }
@@ -171,7 +172,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    /* function configurarPaginacao(totalPages) {
+    /*
+    function configurarPaginacao(totalPages) {
         const paginacaoContainer = document.getElementById('pagination-controls');
         paginacaoContainer.innerHTML = '';
 
@@ -318,6 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Listener para mudanças na seleção de gênero
+    /*
     statusFilter.addEventListener('change', function () {
         const generoSelecionado = this.value;
 
@@ -330,9 +333,10 @@ document.addEventListener('DOMContentLoaded', function() {
             carregarLivrosComFiltro(1, generoSelecionado);
         }
     });
+    */
 
     // Função para carregar os livros com base na página e filtro de gênero
-    function carregarLivrosComFiltro(pagina, genero) {
+    /*function carregarLivrosComFiltro(pagina, genero) {
         fetch(`/api/ebooks/buscar-genero/${encodeURIComponent(genero)}?pagina=${pagina}`)
             .then(response => response.json())
             .then(data => {
@@ -389,10 +393,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Erro ao buscar livros:', error);
                 livrosContainer.innerHTML = "<p>Erro ao carregar os livros. Tente novamente.</p>";
             });
-    }
+    }*/
 
     // Função para configurar a paginação com o filtro de gênero
-    function paginacaoFiltro(totalPages, paginaAtual, generoSelecionado) {
+    /*function paginacaoFiltro(totalPages, paginaAtual, generoSelecionado) {
         const paginacaoContainer = document.getElementById("pagination-controls");
         paginacaoContainer.innerHTML = "";
 
@@ -455,6 +459,137 @@ document.addEventListener('DOMContentLoaded', function() {
             event.preventDefault();
             if (paginaAtual < totalPages) {
                 carregarLivrosComFiltro(paginaAtual + 1, generoSelecionado); // Passa o gênero selecionado
+                header.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+        nextButton.appendChild(nextLink);
+        paginacaoContainer.appendChild(nextButton);
+    }*/
+
+    // Função para carregar os livros com base na digitação do usuário
+    function carregarLivrosComFiltro(pagina, query) {
+        fetch(`/api/ebooks/buscarAll2/${encodeURIComponent(query)}?pagina=${pagina}`)
+            .then(response => response.json())
+            .then(data => {
+                const livros = data.livros || [];
+                livrosContainer.innerHTML = '';
+                if (livros.length > 0) {
+                    livros.forEach(livro => {
+                        const estoque = livro.Estoque || {}; // Usando um objeto vazio se Estoque for null
+                        const situacaoClasse = estoque.estoque_disponivel >= 1 ? "disponível" : "locado";
+
+                        const card = document.createElement("div");
+                        card.classList.add("col", "s12", "m6", "l4");
+
+                        card.innerHTML = `
+                            <div class="card large" data-livro-id="${livro.id}">
+                                <div class="card-image waves-effect waves-block waves-light">
+                                    <img class="activator livro-imagem" src="${livro.foto}" alt="${livro.titulo}">
+                                </div>
+                                <div class="card-content">
+                                    <span class="card-title activator grey-text text-darken-4">
+                                        ${livro.titulo}<i class="material-icons right">more_vert</i>
+                                    </span>
+                                    <p><strong>Autor:</strong> ${livro.autor}</p>
+                                    <p><strong>Gênero:</strong> ${livro.genero}</p>
+                                </div>
+                                <div class="card-action" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="col s6" style="text-align: left;">
+                                        <p class="livro-downloads"><strong>Download:</strong> ${livro.download}</p>
+                                    </div>
+                                    <div class="col s6" style="text-align: right;">
+                                        <a href="${livro.url}" target="_blank" class="btn-floating btn-small blue" title="Baixar o livro" onclick="incrementarDownload(${livro.id})">
+                                            <i class="material-icons">file_download</i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-reveal">
+                                    <span class="card-title grey-text text-darken-4">
+                                        ${livro.titulo}<i class="material-icons right">close</i>
+                                    </span>
+                                    <p><strong>Sinopse:</strong> ${livro.sinopse}</p>
+                                </div>
+                            </div>
+                        `;
+                        livrosContainer.appendChild(card);
+                    });
+                    // Atualiza a paginação com base na resposta
+                    paginacaoFiltro(data.totalPaginas, data.paginaAtual, query);
+                } else {
+                    livrosContainer.innerHTML = "<p>Nenhum livro encontrado para a busca fornecida.</p>";
+                    configurarPaginacao();
+                }
+            })
+            .catch((error) => {
+                console.error('Erro ao buscar livros:', error);
+                livrosContainer.innerHTML = "<p>Erro ao carregar os livros. Tente novamente.</p>";
+            });
+    }
+
+    // Função para configurar a paginação com a busca de livros
+    function paginacaoFiltro(totalPages, paginaAtual, query) {
+        const paginacaoContainer = document.getElementById("pagination-controls");
+        paginacaoContainer.innerHTML = "";
+
+        const header = document.querySelector("header") || document.body;
+        const maxVisiblePages = 10; // Exibir até 10 páginas por vez
+
+        // Botão "Anterior"
+        const prevButton = document.createElement("li");
+        prevButton.classList.add("waves-effect");
+        if (paginaAtual === 1) {
+            prevButton.classList.add("disabled");
+        }
+        const prevLink = document.createElement("a");
+        prevLink.href = "#!";
+        prevLink.textContent = "‹";
+        prevLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (paginaAtual > 1) {
+                carregarLivrosComFiltro(paginaAtual - 1, query); // Passa o termo de busca
+                header.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+        prevButton.appendChild(prevLink);
+        paginacaoContainer.appendChild(prevButton);
+
+        // Exibir até 10 páginas inicialmente
+        const startPage = Math.min(Math.max(1, paginaAtual - Math.floor(maxVisiblePages / 2)), Math.max(1, totalPages - maxVisiblePages + 1));
+        const endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageItem = document.createElement("li");
+            pageItem.classList.add("waves-effect");
+            if (i === paginaAtual) {
+                pageItem.classList.add("active");
+            }
+
+            const pageLink = document.createElement("a");
+            pageLink.href = "#!";
+            pageLink.textContent = i;
+            pageLink.addEventListener("click", function (event) {
+                event.preventDefault();
+                carregarLivrosComFiltro(i, query); // Passa o termo de busca
+                header.scrollIntoView({ behavior: "smooth" });
+            });
+
+            pageItem.appendChild(pageLink);
+            paginacaoContainer.appendChild(pageItem);
+        }
+
+        // Botão "Próximo"
+        const nextButton = document.createElement("li");
+        nextButton.classList.add("waves-effect");
+        if (paginaAtual === totalPages) {
+            nextButton.classList.add("disabled");
+        }
+        const nextLink = document.createElement("a");
+        nextLink.href = "#!";
+        nextLink.textContent = "›";
+        nextLink.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (paginaAtual < totalPages) {
+                carregarLivrosComFiltro(paginaAtual + 1, query); // Passa o termo de busca
                 header.scrollIntoView({ behavior: "smooth" });
             }
         });

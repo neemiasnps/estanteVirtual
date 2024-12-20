@@ -266,6 +266,11 @@ router.get('/buscarAll/:search', async (req, res) => {
                         }
                     },
                     {
+                        genero: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no genero
+                        }
+                    },
+                    {
                         subgenero: {
                             [Op.like]: `%${searchTerm}%` // Filtro LIKE no subgenero
                         }
@@ -286,5 +291,58 @@ router.get('/buscarAll/:search', async (req, res) => {
     }
 });
 
+// Rota de busca de livros por título, autor, gênero ou subgênero com paginação
+router.get('/buscarAll2/:search', async (req, res) => {
+    const searchTerm = req.params.search;
+    const { pagina = 1 } = req.query; // Número da página, padrão é 1
+    const limitePorPagina = 12; // Limite de livros por página
+
+    try {
+        // Consulta com filtros e paginação
+        const { count, rows: livros } = await Livro.findAndCountAll({
+            where: {
+                [Op.or]: [
+                    {
+                        titulo: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no título
+                        }
+                    },
+                    {
+                        autor: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no autor
+                        }
+                    },
+                    {
+                        genero: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no gênero
+                        }
+                    },
+                    {
+                        subgenero: {
+                            [Op.like]: `%${searchTerm}%` // Filtro LIKE no subgênero
+                        }
+                    }
+                ]
+            },
+            attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto', 'url', 'download'],
+            limit: limitePorPagina,
+            offset: (pagina - 1) * limitePorPagina // Cálculo do deslocamento para a paginação
+        });
+
+        if (livros.length > 0) {
+            res.json({
+                totalLivros: count,
+                totalPaginas: Math.ceil(count / limitePorPagina),
+                paginaAtual: Number(pagina),
+                livros
+            });
+        } else {
+            res.status(404).json({ message: 'Nenhum livro encontrado com os critérios fornecidos.' });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar livros:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
 
 module.exports = router;
