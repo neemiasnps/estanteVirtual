@@ -475,9 +475,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 livrosContainer.innerHTML = '';
                 if (livros.length > 0) {
                     livros.forEach(livro => {
-                        const estoque = livro.Estoque || {}; // Usando um objeto vazio se Estoque for null
-                        const situacaoClasse = estoque.estoque_disponivel >= 1 ? "disponível" : "locado";
-
+                        
                         const card = document.createElement("div");
                         card.classList.add("col", "s12", "m6", "l4");
 

@@ -614,7 +614,7 @@ document.addEventListener("DOMContentLoaded", function () {
         prevLink.addEventListener("click", function (event) {
             event.preventDefault();
             if (paginaAtual > 1) {
-                carregarLivrosComFiltro(paginaAtual - 1, query); // Passa o termo de busca
+                carregarLivrosDigitado(paginaAtual - 1, query); // Passa o termo de busca
                 header.scrollIntoView({ behavior: "smooth" });
             }
         });
@@ -637,7 +637,7 @@ document.addEventListener("DOMContentLoaded", function () {
             pageLink.textContent = i;
             pageLink.addEventListener("click", function (event) {
                 event.preventDefault();
-                carregarLivrosComFiltro(i, query); // Passa o termo de busca
+                carregarLivrosDigitado(i, query); // Passa o termo de busca
                 header.scrollIntoView({ behavior: "smooth" });
             });
 
@@ -657,15 +657,13 @@ document.addEventListener("DOMContentLoaded", function () {
         nextLink.addEventListener("click", function (event) {
             event.preventDefault();
             if (paginaAtual < totalPages) {
-                carregarLivrosComFiltro(paginaAtual + 1, query); // Passa o termo de busca
+                carregarLivrosDigitado(paginaAtual + 1, query); // Passa o termo de busca
                 header.scrollIntoView({ behavior: "smooth" });
             }
         });
         nextButton.appendChild(nextLink);
         paginacaoContainer.appendChild(nextButton);
     }
-
-
 
     carregarLivros();
 });
