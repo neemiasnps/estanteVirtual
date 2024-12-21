@@ -120,6 +120,7 @@ body {
 
 .custom-logo {
     font-size: 2px; /* Ajuste o valor conforme necessário */
+    margin-left: 20px; /* Cria espaçamento na esquerda */
 }
 
 .custom-navbar {
@@ -252,7 +253,7 @@ table {
   /*table-layout: auto;*/
 }
 
-/* Ajustar a largura da coluna de e-mail e permitir rolagem horizontal */
+/* Ajustar a largura da coluna de e-mail e permitir rolagem horizontal*/
 table td:nth-child(8),
 table th:nth-child(8) {
   /*overflow: hidden;
@@ -299,9 +300,10 @@ table th:nth-child(8) {
     /*padding: 10px 0; /* Ajuste o padding conforme necessário */
 }
 
+/*
 .custom-navbar .brand-logo, .custom-footer .brand-logo {
-    font-size: 1.5rem; /* Ajusta o tamanho da fonte do logo */
-}
+    font-size: 1.5rem; /* Ajusta o tamanho da fonte do logo
+} */
 
 .fixed-action-btn.toolbar ul {
   display: flex;
