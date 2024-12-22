@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contato</title>
+    <title>Audiobooks</title>
     <!-- Materialize CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <!-- Material Icons -->
@@ -13,15 +12,10 @@
     <link href="/css/styles.css" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" href="./favicon-16x16.png" type="image/png">
-    <!-- Link para o jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Link para o jQuery Mask Plugin -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <!-- Link para o arquivo contato.js -->
-    <script src="/js/contato.js" defer></script>
 </head>
-
 <body>
+
+<!-- Navbar -->
     <nav>
         <div class="nav-wrapper custom-navbar">
             <a href="#" class="brand-logo custom-logo">
@@ -81,69 +75,77 @@
         </div>
     </nav>
 
-    <!-- Modal de Login -->
-    <div id="modal-login" class="modal">
-        <div class="modal-content">
-            <h4>Login</h4>
-            <div class="row">
-                <form class="col s12" id="form-login">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">email</i>
-                            <input id="email" type="text" class="validate" required>
-                            <label for="email">E-mail</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">lock</i>
-                            <input id="password" type="password" class="validate" required>
-                            <label for="password">Senha</label>
-                        </div>
-                    </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Login
-                        <i class="material-icons right">login</i>
-                    </button>
-                </form>
+<div class="container">
+
+    <!-- Pesquisa e filtros -->
+    <div class="row">
+        <div class="col s12">
+            <div class="input-field">
+                <input id="search" type="text" class="validate" placeholder="Digite o título ou autor">
+                <label for="search">Buscar</label>
             </div>
         </div>
     </div>
 
-    <div class="container">
-        <h4>Contato</h4>
-        <div class="row">
-            <form class="col s12" id="form-contato">
-                <div class="row">
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">account_circle</i>
-                        <input id="nome" name="nome" type="text" class="validate" required>
-                        <label for="nome">Nome</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">email</i>
-                        <input id="email" name="email" type="email" class="validate" required>
-                        <label for="email">E-mail</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">phone</i>
-                        <input id="celular" name="celular" type="text" class="validate" required>
-                        <label for="celular">Celular</label>
-                    </div>
-                    <div class="input-field col s12">
-                        <i class="material-icons prefix">message</i>
-                        <textarea id="mensagem" name="mensagem" class="materialize-textarea" required></textarea>
-                        <label for="mensagem">Mensagem</label>
-                    </div>
-                </div>
-                <button class="btn waves-effect waves-light" type="submit" name="action">Enviar
-                    <i class="material-icons right">send</i>
-                </button>
-            </form>
-        </div>
+    <!-- Listagem de Audiobooks -->
+    <div id="audiobooks-container" class="row">
+        <!-- Cards dos audiobooks serão inseridos aqui dinamicamente -->
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="/js/scripts.js"></script>
+    <!-- Controles de Paginação -->
+    <ul id="pagination-controls" class="pagination center-align">
+        <!-- Controles de paginação -->
+    </ul>
+</div>
+
+    <footer class="page-footer custom-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Fale Conosco</h5>
+                    <div class="contact-item" style="display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 10px;">location_on</i>
+                        <p style="margin: 0;">Rua Francisco Derosso, 3680<br>Curitiba / PR</p>
+                    </div>
+                    <div class="contact-item" style="display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 10px;">email</i>
+                        <p style="margin: 0;"><a class="grey-text text-lighten-3" href="mailto:treinamento@nichele.com.br">treinamento@nichele.com.br</a></p>
+                    </div>
+                    <div class="contact-item" style="display: flex; align-items: center;">
+                        <i class="material-icons" style="margin-right: 10px;">phone</i>
+                        <p style="margin: 0;">(41) 99800-0484</p>
+                    </div>
+                </div>
+                <div class="col l4 offset-l2 s12">
+                    <h6 class="white-text">Links</h6>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="/como_funciona"">Como funciona</a></li>
+                        <li><a class="grey-text text-lighten-3" href="https://wa.me/5541998000484?text=Tenho%20interesse%20em%20doar%20um%20livro" target="_blank">Quero doar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-copyright">
+                <div class="container">
+                    © 2024 <a href="https://www.instagram.com/nemisconsultoriaetreinamentos" target="_blank" class="grey-text text-lighten-4">Nemis Consultoria e Treinamentos</a>
+                    <a class="grey-text text-lighten-4 right" href="#!">Grupo Nichele ®</a>
+                </div>
+        </div>
+    </footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script>
+    // Lógica para carregar audiobooks dinamicamente
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializar select e outros componentes Materialize
+        M.AutoInit();
+    });
+</script>
 </body>
 
+    <!-- Seu arquivo de scripts customizados -->
+    <script src="/js/audio.js"></script>
+    <script src="/js/scripts.js"></script>
 </html>
