@@ -179,16 +179,32 @@ app.get('/api/audiobooks', async (req, res) => {
 
         // Obtém o total de resultados encontrados (numFound) e os audiobooks retornados
         const total = response.data.response.numFound;
-        const audiobooks = response.data.response.docs.map(doc => ({
-            id: doc.identifier,  // Identificador único do audiobook
-            title: doc.title,  // Título do audiobook
-            authors: doc.creator ? doc.creator.split('; ') : ['Desconhecido'],  // Autor(es)
-            genre: doc.genre ? doc.genre.split('; ') : ['Desconhecido'],  // Gênero
-            language: doc.language ? doc.language : 'Desconhecido',  // Idioma(s)
-            description: doc.description || 'Descrição não disponível',  // Sinopse
-            image: `https://archive.org/services/img/${doc.identifier}`,  // URL da capa
-            link: `https://archive.org/details/${doc.identifier}`,  // Link para a página do audiobook
-            item_size: doc.item_size ? (doc.item_size / 1048576).toFixed(2) + ' MB' : 'Tamanho não disponível',  // Tamanho do arquivo em MB
+        const audiobooks = await Promise.all(response.data.response.docs.map(async (doc) => {
+            try {
+                // Faz uma requisição para obter os metadados do audiobook
+                const metadataResponse = await axios.get(`https://archive.org/metadata/${doc.identifier}`);
+                const runtime = metadataResponse.data.metadata.runtime || 'Duração não disponível';
+
+                // Monta o objeto com as informações
+                return {
+                    id: doc.identifier,  // Identificador único do audiobook
+                    title: doc.title,  // Título do audiobook
+                    authors: doc.creator ? doc.creator.split('; ') : ['Desconhecido'],  // Autor(es)
+                    genre: doc.genre ? doc.genre.split('; ') : ['Desconhecido'],  // Gênero
+                    language: doc.language ? doc.language : 'Desconhecido',  // Idioma(s)
+                    description: doc.description || 'Descrição não disponível',  // Sinopse
+                    image: `https://archive.org/services/img/${doc.identifier}`,  // URL da capa
+                    link: `https://archive.org/details/${doc.identifier}`,  // Link para a página do audiobook
+                    item_size: doc.item_size ? (doc.item_size / 1048576).toFixed(2) + ' MB' : 'Tamanho não disponível',  // Tamanho do arquivo em MB
+                    duration: runtime,  // Duração extraída do metadado
+                };
+            } catch (error) {
+                console.error(`Erro ao acessar metadado de ${doc.identifier}:`, error.message);
+                return {
+                    ...doc,
+                    duration: 'Duração não disponível',
+                };
+            }
         }));
 
         // Retorna os livros com o número total de audiobooks encontrados para ajuste da paginação no frontend
@@ -204,7 +220,6 @@ app.get('/api/audiobooks', async (req, res) => {
         });
     }
 });
-
 
 // Função de parsing de RSS extraída para fora da rota
 const parseRSS = (xmlData) => {

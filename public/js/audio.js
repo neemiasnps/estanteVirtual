@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                         <div class="card-action" style="display: flex; justify-content: space-between; align-items: center;">
                             <div class="col s8" style="text-align: left;">
-                                 <p><strong>Tamanho:</strong> ${livro.item_size}</p>
+                                 <p><strong>Duração:</strong> ${livro.duration}</p>
                             </div>
                             <div class="col s4" style="text-align: right;">
                                 <a href="${livro.link}" target="_blank" class="btn-floating btn-small blue" title="Ir para a página do audiobook">
