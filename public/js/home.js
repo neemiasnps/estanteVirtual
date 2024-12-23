@@ -28,6 +28,7 @@ function carregarUltimosEbooks() {
             ebooks.forEach(ebook => {
                 const li = document.createElement("li");
                 li.classList.add("collection-item", "avatar");
+                li.setAttribute("data-livro-id", ebook.id);  // Adiciona o ID do livro como atributo
 
                 li.innerHTML = `
                     <div style="display: flex; align-items: center; justify-content: flex-start;">
@@ -38,7 +39,7 @@ function carregarUltimosEbooks() {
                             <p style="font-size: 11px;">${ebook.genero}</p>
                         </div>
                     </div>
-                    <a href="${ebook.url}" class="secondary-content" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
+                    <a href="${ebook.url}" target="_blank" class="secondary-content" title="Baixar o livro" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
                 `;
 
                 collectionContainer.appendChild(li);
@@ -49,7 +50,7 @@ function carregarUltimosEbooks() {
 
 //Carregar os 3 ebooks mais baixados
 function carregarEbooksMaisBaixados() {
-    fetch('/api/homes/mais-baixados') // Substitua pela URL correta da sua API
+    fetch('/api/homes/mais-baixados')  // Substitua pela URL correta da sua API
         .then(response => {
             if (!response.ok) {
                 throw new Error('Erro na rede ao buscar eBooks mais baixados');
@@ -64,11 +65,12 @@ function carregarEbooksMaisBaixados() {
             }
 
             const collectionContainer = document.getElementById("colecao-ebooks");
-            collectionContainer.innerHTML = ''; // Limpa o container antes de adicionar novos itens
+            collectionContainer.innerHTML = '';  // Limpa o container antes de adicionar novos itens
 
             ebooks.forEach(ebook => {
                 const li = document.createElement("li");
                 li.classList.add("collection-item", "avatar");
+                li.setAttribute("data-livro-id", ebook.id);  // Adiciona o ID do livro como atributo
 
                 li.innerHTML = `
                     <div style="display: flex; align-items: center;">
@@ -76,10 +78,12 @@ function carregarEbooksMaisBaixados() {
                         <div>
                             <span class="title" style="font-size: 13px;">${ebook.titulo}</span>
                             <p style="font-size: 12px;">${ebook.autor}</p>
-                            <p style="font-size: 11px;">${ebook.download} download</p>
+                            <p style="font-size: 11px;" class="livro-downloads">${ebook.download} downloads</p>  <!-- Classe para downloads -->
                         </div>
                     </div>
-                    <a href="${ebook.url}" class="secondary-content" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
+                    <a href="${ebook.url}" target="_blank" class="secondary-content" title="Baixar o livro" onclick="incrementarDownload(${ebook.id})">
+                        <i class="material-icons">file_download</i>
+                    </a>
                 `;
 
                 collectionContainer.appendChild(li);
@@ -159,12 +163,12 @@ function incrementarDownload(livroId) {
         if (livroElement) {
             const downloadElement = livroElement.querySelector('.livro-downloads');
             if (downloadElement) {
-                downloadElement.textContent = `Download: ${data.download}`;
+                downloadElement.textContent = `${data.download} downloads`;  // Atualiza o contador de downloads
             }
         }
     })
     .catch(error => {
-        console.error('Erro:', error);
+        console.error('Erro ao incrementar download:', error);
     });
 }
 
