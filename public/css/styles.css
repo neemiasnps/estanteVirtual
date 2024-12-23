@@ -286,6 +286,10 @@ table th:nth-child(8) {
     .livro-card-details {
         text-align: center; /* Centraliza o texto em dispositivos menores */
     }
+  
+    .custom-logo {
+        margin-left: 0; /* Remove a margem para dispositivos móveis */
+    }
 }
 
 /* Ajustar a tabela para rolar horizontalmente em telas menores */
