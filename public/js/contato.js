@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = new FormData(form);
             const data = {
                 nome: formData.get('nome'),
-                email: formData.get('email'),
+                email: formData.get('email-contato'),
                 celular: formData.get('celular'),
                 mensagem: formData.get('mensagem')
             };
