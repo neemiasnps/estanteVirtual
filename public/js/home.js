@@ -38,7 +38,7 @@ function carregarUltimosEbooks() {
                             <p style="font-size: 11px;">${ebook.genero}</p>
                         </div>
                     </div>
-                    <a href="${ebook.url}" class="secondary-content"><i class="material-icons">file_download</i></a>
+                    <a href="${ebook.url}" class="secondary-content" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
                 `;
 
                 collectionContainer.appendChild(li);
@@ -79,7 +79,7 @@ function carregarEbooksMaisBaixados() {
                             <p style="font-size: 11px;">${ebook.download} download</p>
                         </div>
                     </div>
-                    <a href="${ebook.url}" class="secondary-content"><i class="material-icons">file_download</i></a>
+                    <a href="${ebook.url}" class="secondary-content" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
                 `;
 
                 collectionContainer.appendChild(li);
@@ -138,4 +138,34 @@ function carregarLivrosMaisLocados() {
         })
         .catch(error => console.error('Erro ao carregar os livros mais locados:', error));
 }
+
+//Incrementar +1 download
+function incrementarDownload(livroId) {
+    fetch(`/api/ebooks/${livroId}/incrementar-download`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar o contador de downloads');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Atualiza o valor de downloads na UI
+        const livroElement = document.querySelector(`[data-livro-id="${livroId}"]`);
+        if (livroElement) {
+            const downloadElement = livroElement.querySelector('.livro-downloads');
+            if (downloadElement) {
+                downloadElement.textContent = `Download: ${data.download}`;
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+    });
+}
+
 
