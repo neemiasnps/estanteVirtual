@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const itemsPerPage = 12; // Número de audiobooks por página
         livrosContainer.innerHTML = ''; // Limpa o conteúdo anterior
 
+        // Exibe o preloader
+        document.getElementById('preloader-livrivox').style.display = 'block';
+
         try {
             // Armazena a consulta de pesquisa para manter o filtro
             currentSearchQuery = searchQuery;
@@ -73,9 +76,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Atualiza a navegação de páginas
             gerarPaginacao(data.total, itemsPerPage, page, searchQuery);
+            
+            // Oculta o preloader
+            document.getElementById('preloader-livrivox').style.display = 'none';
         } catch (error) {
             console.error('Erro ao carregar audiobooks:', error);
             livrosContainer.innerHTML = '<p>Erro ao carregar os audiobooks. Tente novamente mais tarde.</p>';
+            // Oculta o preloader
+            document.getElementById('preloader-livrivox').style.display = 'none';
         }
     }
 

@@ -110,8 +110,14 @@
                 <input id="search" type="text" class="validate" placeholder="Digite o título ou autor">
                 <label for="search">Buscar</label>
             </div>
+
+            <!-- Preloader Indeterminate -->
+            <div class="progress" id="preloader-livrivox" style="display: none;">
+                  <div class="indeterminate"></div>
+              </div>
         </div>
     </div>
+
 
     <!-- Listagem de Audiobooks -->
     <div id="audiobooks-container" class="row">
@@ -122,6 +128,7 @@
     <ul id="pagination-controls" class="pagination center-align">
         <!-- Controles de paginação -->
     </ul>
+
 </div>
 
     <footer class="page-footer custom-footer">
@@ -168,7 +175,7 @@
         // Inicializar select e outros componentes Materialize
         M.AutoInit();
     });
-</script>
+</script>    
 </body>
 
     <!-- Seu arquivo de scripts customizados -->
