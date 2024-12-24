@@ -31,7 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Se o campo de busca estiver vazio, mostra todos os livros
                     livrosContainer.innerHTML = ''; // Não exibe nada aqui, pois estamos recarregando a lista completa
                 }
+
+                // Oculta o preloader
+                document.getElementById('preloader-livrivox').style.display = 'none';
+                
                 return;
+                
             }
 
             // Gerar os cards

@@ -93,70 +93,7 @@ app.get('/audiobooks', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'audiobooks.html'));
 });
 
-/*app.get('/api/librivox', async (req, res) => {
-    try {
-        const response = await axios.get('https://librivox.org/api/feed/audiobooks/?linguagem=por&format=json');
-        if (!response.data.books) {
-            return res.status(404).json({ error: 'Nenhum livro encontrado na resposta' });
-        }
-        const books = response.data.books;
-        res.json({ books });
-    } catch (error) {
-        console.error('Erro ao acessar a API Librivox:', error);
-        res.status(500).json({ error: 'Erro ao acessar a API Librivox' });
-    }
-});*/
-
-// Rota para obter os livros da API Librivox
-/*app.get('/api/audiobooks', async (req, res) => {
-    const { page = 1, limit = 12 } = req.query;  // Definindo o valor padrão de limit para 12
-    const offset = (page - 1) * limit;
-
-    try {
-        // URL da API do Archive.org para buscar audiobooks
-        const response = await axios.get('https://archive.org/advancedsearch.php', {
-            params: {
-                q: 'collection:"librivoxaudio" AND language:"por"',  // Filtra para coleção 'librivoxaudio' e idioma português
-                fl: 'creator,description,genre,identifier,imagecount,language,title,item_size', // Inclui item_size nos campos de interesse
-                rows: limit,  // Limita o número de resultados por página
-                page,  // Página da consulta
-                output: 'json'  // Formato de saída JSON
-            }
-        });
-
-        if (!response.data || !response.data.response || !response.data.response.docs) {
-            throw new Error('Dados não encontrados na resposta da API');
-        }
-
-        // Obtém o total de resultados encontrados (numFound) e os livros retornados
-        const total = response.data.response.numFound;
-        const audiobooks = response.data.response.docs.map(doc => ({
-            id: doc.identifier,  // Identificador único do audiobook
-            title: doc.title,  // Título do audiobook
-            authors: doc.creator ? doc.creator.split('; ') : ['Desconhecido'],  // Autor(es)
-            genre: doc.genre ? doc.genre.split('; ') : ['Desconhecido'],  // Gênero
-            language: doc.language ? doc.language : 'Desconhecido',  // Idioma(s)
-            description: doc.description || 'Descrição não disponível',  // Sinopse
-            image: `https://archive.org/services/img/${doc.identifier}`,  // URL da capa
-            link: `https://archive.org/details/${doc.identifier}`,  // Link para a página do audiobook
-            // Convertendo item_size de bytes para MB
-            item_size: doc.item_size ? (doc.item_size / 1048576).toFixed(2) + ' MB' : 'Tamanho não disponível',  // Tamanho em MB
-        }));
-
-        // Retorna os livros com o número total de audiobooks encontrados para ajuste da paginação no frontend
-        res.json({
-            total,
-            books: audiobooks,  // Paginação será tratada no frontend
-        });
-    } catch (error) {
-        console.error('Erro ao acessar Archive.org:', error.message);
-        res.status(500).json({
-            error: 'Erro ao buscar audiolivros. Tente novamente mais tarde.',
-            details: error.message
-        });
-    }
-});*/
-
+//Rota para buscar audiobooks
 app.get('/api/audiobooks', async (req, res) => {
     const { page = 1, limit = 12, search = '' } = req.query;  // Recebe o parâmetro de busca
     const offset = (page - 1) * limit;
@@ -165,7 +102,7 @@ app.get('/api/audiobooks', async (req, res) => {
         // URL da API do Archive.org para buscar audiobooks com base na pesquisa
         const response = await axios.get('https://archive.org/advancedsearch.php', {
             params: {
-                q: `collection:"librivoxaudio" AND language:"por" AND (title:"${search}" OR creator:"${search}" OR genre:"${search}")`,  // Busca por título, autor ou gênero
+                q: `collection:"librivoxaudio" AND language:"por" AND (title:"${search}~" OR creator:"${search}~" OR genre:"${search}~")`,  // Busca por título, autor ou gênero
                 fl: 'creator,description,genre,identifier,imagecount,language,title,item_size', // Campos de interesse
                 rows: limit,  // Limita o número de resultados por página
                 page,  // Página da consulta
