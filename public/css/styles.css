@@ -297,7 +297,8 @@ table th:nth-child(8) {
   
     .custom-logo {
         margin-left: 0; /* Remove a margem para dispositivos móveis */
-        line-height: 64px;
+        /*line-height: 64px;
+        font-size: 4rem;*/
     }
 }
 
