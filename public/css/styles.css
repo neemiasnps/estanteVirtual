@@ -121,6 +121,13 @@ body {
 .custom-logo {
     font-size: 2px; /* Ajuste o valor conforme necessário */
     margin-left: 20px; /* Cria espaçamento na esquerda */
+    line-height: 80px;/* Mantém a proporção da largura */
+}
+
+.custom-logo img {
+    height: auto;                /* Mantém a proporção da imagem */
+    max-height: 40px;             /* Limita a altura máxima da logo */
+    width: auto;
 }
 
 .custom-navbar {
@@ -290,6 +297,7 @@ table th:nth-child(8) {
   
     .custom-logo {
         margin-left: 0; /* Remove a margem para dispositivos móveis */
+        line-height: 64px;
     }
 }
 
