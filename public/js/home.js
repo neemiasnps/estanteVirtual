@@ -204,11 +204,9 @@ function carregarLivrosMaisLocados() {
             // Adiciona o banner antes dos livros
             const bannerLi = document.createElement("li");
             bannerLi.innerHTML = `<img src="${linkBanner}" alt="Bem Vindo">
-                                <div class="caption center-align">
-                                <h4>Saiba Mais</h4>
-                                    <a href="/como-funciona" class="btn-floating btn-small green" title="Saiba mais sobre como funciona">
-                            <i class="material-icons">info_outline</i>
-                        </a></div>`;
+            <div class="caption center-align">
+                <a href="/como_funciona" class="btn waves-effect white grey-text darken-text-2" title="Saiba Mais!">Saiba Mais!</a>
+            </div>`;
             sliderContainer.appendChild(bannerLi);
 
             // Seleciona os 5 livros mais locados
@@ -218,7 +216,7 @@ function carregarLivrosMaisLocados() {
                 const li = document.createElement("li");
 
                 li.innerHTML = `
-                <img src="${livro.foto}" alt="${livro.titulo}">
+                    <img src="${livro.foto}" alt="${livro.titulo}">
                     <div class="caption center-align">
                         <h4>${livro.titulo}</h4>
                         <h6 class="light grey-text text-lighten-3">${livro.autor}</h6>

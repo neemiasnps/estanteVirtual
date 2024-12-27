@@ -423,19 +423,35 @@ table th:nth-child(8) {
 }
 
 .slider img {
-  width: auto;
-  height: auto;
+  /*width: auto;
+  height: auto;*/
   max-width: 100%;
   max-height: 100%;
   object-fit: contain; /* Ajusta a imagem dentro do container sem cortar */
   opacity: 0.3;
 }
 
+/* Primeira imagem sem transparência */
+.slider .slides li:first-child img {
+    opacity: 1 !important; /* Remove a transparência */
+    object-fit: cover; /* Ajusta a imagem ao container */
+    width: 100%; 
+    height: auto; 
+}
+
+.slider .slides li a {
+    z-index: 10; /* Garante que o link esteja acima de outros elementos */
+    pointer-events: auto; /* Permite interações com o link */
+    display: inline-block; /* Certifica que o link ocupa espaço visível */
+}
+
 .slider .slides li img {
     height: 100%;
     width: 100%;
+    object-fit: cover; /* Preenche o container de forma proporcional */
     background-size: contain;
     background-position: center;
+    pointer-events: none; /* Garante que o clique passe pelo img para o link */
 }
 
 .slider .caption h3,
