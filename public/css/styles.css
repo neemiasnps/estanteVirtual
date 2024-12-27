@@ -419,7 +419,7 @@ table th:nth-child(8) {
 .slider .slides li {
   display: flex;
   justify-content: center; /* Centraliza horizontalmente */
-  align-items: center; /* Centraliza verticalmente */
+  align-items: normal; /* Centraliza verticalmente */
 }
 
 .slider img {
@@ -427,17 +427,25 @@ table th:nth-child(8) {
   height: auto;*/
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain; /* Ajusta a imagem dentro do container sem cortar */
+  object-fit: cover; /* Ajusta a imagem dentro do container sem cortar */
   opacity: 0.3;
 }
 
 /* Primeira imagem sem transparência */
 .slider .slides li:first-child img {
-    opacity: 1 !important; /* Remove a transparência */
-    object-fit: cover; /* Ajusta a imagem ao container */
-    width: 100%; 
-    height: auto; 
+    opacity: 1 !important; /* Remove a transparência da primeira imagem */
+    object-fit: cover;     /* Faz com que a imagem preencha o container proporcionalmente */
+    width: 100%;           /* Garante que a largura do container seja totalmente ocupada */
+    height: 100%;          /* Garante que a altura do container seja totalmente ocupada */
+    position: absolute;    /* Faz a imagem se posicionar no container corretamente */
+    top: 0;                /* Alinha a imagem ao topo do container */
+    left: 0;               /* Alinha a imagem à esquerda do container */
+    z-index: -1;           /* Coloca a imagem abaixo de outros elementos, se necessário */
+    pointer-events: auto; /* Permite interações com o link */
+    display: inline-block; 
 }
+
+
 
 .slider .slides li a {
     z-index: 10; /* Garante que o link esteja acima de outros elementos */

@@ -203,10 +203,10 @@ function carregarLivrosMaisLocados() {
 
             // Adiciona o banner antes dos livros
             const bannerLi = document.createElement("li");
-            bannerLi.innerHTML = `<img src="${linkBanner}" alt="Bem Vindo">
-            <div class="caption center-align">
-                <a href="/como_funciona" class="btn waves-effect white grey-text darken-text-2" title="Saiba Mais!">Saiba Mais!</a>
-            </div>`;
+            bannerLi.innerHTML = `
+                <a href="/como_funciona" title="Clique e Saiba Mais!">
+                    <img src="${linkBanner}" alt="Banner Bem Vindo">
+                </a>`;
             sliderContainer.appendChild(bannerLi);
 
             // Seleciona os 5 livros mais locados
