@@ -93,7 +93,7 @@ function carregarEbooksMaisBaixados() {
 }
 
 //Carregar os 5 livros mais locados
-function carregarLivrosMaisLocados() {
+/*function carregarLivrosMaisLocados() {
     fetch('/api/homes/mais-locados') // Mudança na URL da API para buscar livros mais locados
         .then(response => {
             if (!response.ok) {
@@ -141,7 +141,7 @@ function carregarLivrosMaisLocados() {
             });
         })
         .catch(error => console.error('Erro ao carregar os livros mais locados:', error));
-}
+}*/
 
 //Incrementar +1 download
 function incrementarDownload(livroId) {
@@ -173,3 +173,72 @@ function incrementarDownload(livroId) {
 }
 
 
+// Função para detectar tipo de navegador
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Carregar os 5 livros mais locados
+function carregarLivrosMaisLocados() {
+    const linkBanner = isMobile() 
+        ? "https://i.postimg.cc/BnDS5mJF/banner-mobile.jpg" 
+        : "https://i.postimg.cc/gk1c6Cbd/banner-desktop.jpg";
+
+    fetch('/api/homes/mais-locados') // URL da API para buscar livros mais locados
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na rede ao buscar livros mais locados');
+            }
+            return response.json();
+        })
+        .then(livros => {
+            console.log("Dados retornados pela API:", livros);
+
+            if (!Array.isArray(livros)) {
+                throw new TypeError('A resposta não contém um array de livros');
+            }
+
+            const sliderContainer = document.querySelector(".slider .slides");
+            sliderContainer.innerHTML = ''; // Limpa o slider antes de adicionar novos itens
+
+            // Adiciona o banner antes dos livros
+            const bannerLi = document.createElement("li");
+            bannerLi.innerHTML = `<img src="${linkBanner}" alt="Bem Vindo">
+                                <div class="caption center-align">
+                                <h4>Saiba Mais</h4>
+                                    <a href="/como-funciona" class="btn-floating btn-small green" title="Saiba mais sobre como funciona">
+                            <i class="material-icons">info_outline</i>
+                        </a></div>`;
+            sliderContainer.appendChild(bannerLi);
+
+            // Seleciona os 5 livros mais locados
+            const maisLocados = livros.slice(0, 5);
+
+            maisLocados.forEach(livro => {
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                <img src="${livro.foto}" alt="${livro.titulo}">
+                    <div class="caption center-align">
+                        <h4>${livro.titulo}</h4>
+                        <h6 class="light grey-text text-lighten-3">${livro.autor}</h6>
+                        <a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
+                                            <i class="material-icons">add</i>
+                                           </a>
+                    </div>
+                `;
+
+                sliderContainer.appendChild(li);
+            });
+
+            // Inicializa o slider após a adição dos itens
+            const sliderElement = document.querySelector('.slider');
+            M.Slider.init(sliderElement, {
+                indicators: true,
+                height: 400,
+                duration: 500,
+                interval: 6000
+            });
+        })
+        .catch(error => console.error('Erro ao carregar os livros mais locados:', error));
+}
