@@ -182,7 +182,7 @@ function isMobile() {
 function carregarLivrosMaisLocados() {
     const linkBanner = isMobile() 
         ? "https://i.postimg.cc/pX6b2gr0/banner-mobile-novo.jpg" 
-        : "https://i.postimg.cc/Y0RnymGn/banner-desktop-novo.jpg";
+        : "https://i.postimg.cc/RVsB8r4C/BANNNER-BN-DESKTOP.jpg";
 
     fetch('/api/homes/mais-locados') // URL da API para buscar livros mais locados
         .then(response => {
