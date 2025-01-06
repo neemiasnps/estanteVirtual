@@ -415,6 +415,15 @@ table th:nth-child(8) {
     padding-left: 30px;
 }
 
+.slider {
+    width: 100%;        /* Garante que o slider ocupe toda a largura do container pai */
+    max-width: 100%;    /* Evita que o slider ultrapasse os limites do container */
+    height: 100%;      /* Define a altura do slider */
+    overflow: hidden;   /* Garante que qualquer conteúdo fora do slider seja cortado */
+    margin: 0 auto;     /* Centraliza o slider horizontalmente (se necessário) */
+    position: relative; /* Garante o posicionamento adequado dos elementos dentro do slider */
+}
+
 /* Ajuste para que as imagens do slider mantenham o tamanho original */
 .slider .slides li {
   display: flex;
@@ -442,10 +451,8 @@ table th:nth-child(8) {
     left: 0;               /* Alinha a imagem à esquerda do container */
     z-index: -1;           /* Coloca a imagem abaixo de outros elementos, se necessário */
     pointer-events: auto; /* Permite interações com o link */
-    display: inline-block; 
+    /*display: inline-block; */
 }
-
-
 
 .slider .slides li a {
     z-index: 10; /* Garante que o link esteja acima de outros elementos */
