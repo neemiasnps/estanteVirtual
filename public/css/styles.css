@@ -416,9 +416,9 @@ table th:nth-child(8) {
 }
 
 .slider {
-    width: 1715px;        /* Garante que o slider ocupe toda a largura do container pai */
+    width: 100%;        /* Garante que o slider ocupe toda a largura do container pai */
     max-width: 100%;    /* Evita que o slider ultrapasse os limites do container */
-    height: 442px;      /* Define a altura do slider */
+    height: 100%;      /* Define a altura do slider */
     overflow: hidden;   /* Garante que qualquer conteúdo fora do slider seja cortado */
     margin: 0 auto;     /* Centraliza o slider horizontalmente (se necessário) */
     position: relative; /* Garante o posicionamento adequado dos elementos dentro do slider */
