@@ -239,8 +239,8 @@
                     return;
                 }
 
-                // Normalizar CPF antes de enviar para o servidor
-                cpf = cpf.replace(/\D/g, '');
+                // Remover caracteres não numéricos do CPF antes de enviar para o servidor
+                //cpf = cpf.replace(/\D/g, '');
 
                 fetch('/api/alunos', {
                     method: 'POST',
