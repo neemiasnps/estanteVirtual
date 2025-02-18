@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     carregarLivrosMaisLocados();
     carregarUltimosEbooks();
     carregarEbooksMaisBaixados();
+    carregarLivrosDoados();
     
 });
 
@@ -172,7 +173,6 @@ function incrementarDownload(livroId) {
     });
 }
 
-
 // Função para detectar tipo de navegador
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -239,4 +239,49 @@ function carregarLivrosMaisLocados() {
             });
         })
         .catch(error => console.error('Erro ao carregar os livros mais locados:', error));
+}
+
+// Carregar os 5 livros doados
+function carregarLivrosDoados() {
+    fetch('/api/homes/doados')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na rede ao buscar livros');
+            }
+            return response.json();
+        })
+        .then(livros => { // Aqui estamos assumindo que a resposta é diretamente um array de livros
+            console.log("Dados retornados pela API:", livros);
+
+            if (!Array.isArray(livros)) {
+                throw new TypeError('A resposta não contém um array de livros');
+            }
+
+            const collectionContainer = document.getElementById("doados-livros");
+            collectionContainer.innerHTML = ''; // Limpa o container antes de adicionar novos itens
+
+            livros.forEach(livro => { // Corrigido de 'ebooks' para 'livros'
+                const li = document.createElement("li");
+                li.classList.add("collection-item", "avatar");
+                li.setAttribute("data-livro-id", livro.id);  // Adiciona o ID do livro como atributo
+
+                li.innerHTML = `
+                    <div style="display: flex; align-items: center; justify-content: flex-start;">
+                        <img src="${livro.foto}" alt="${livro.titulo}" class="responsive-img" style="width: 60px; height: auto; margin-right: 15px;">
+                        <div>
+                            <span class="title" style="font-size: 13px;">${livro.titulo}</span>
+                            <p style="font-size: 12px;">${livro.autor}</p>
+                            <p style="font-size: 11px;">Doação: ${livro.gentileza}</p>
+                        </div>
+                    </div>
+
+                    <a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="secondary-content" title="Enviar mensagem no WhatsApp">
+                        <i class="material-icons">message</i>
+                    </a>
+                `;
+
+                collectionContainer.appendChild(li);
+            });
+        })
+        .catch(error => console.error('Erro ao carregar os livros doados:', error));
 }

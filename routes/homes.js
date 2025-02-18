@@ -46,5 +46,19 @@ router.get('/mais-locados', async (req, res) => {
     }
 });
 
+// Rota para buscar os 5 livros doados recentemente
+router.get('/doados', async (req, res) => {
+    try {
+        const livros = await Livro.findAll({
+            limit: 5,
+            order: [['createdAt', 'DESC']]
+        });
+        res.json(livros);
+    } catch (error) {
+        console.error('Erro ao buscar os últimos livros doados:', error);
+        res.status(500).json({ error: 'Erro ao buscar os últimos livros doados' });
+    }
+});
+
 module.exports = router;
 
