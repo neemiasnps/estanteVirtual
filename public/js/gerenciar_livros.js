@@ -577,7 +577,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const generoSelect = document.getElementById('genero');
                 generos.forEach(genero => {
                     const option = document.createElement('option');
-                    option.value = genero.id;
+                    //option.value = genero.id;
+                    option.value = genero.nome;
                     option.textContent = genero.nome;
                     generoSelect.appendChild(option);
                 });
@@ -601,7 +602,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     subgeneros.forEach(subgenero => {
                         const option = document.createElement('option');
-                        option.value = subgenero.id;
+                        //option.value = subgenero.id;
+                        option.value = subgenero.nome;
                         option.textContent = subgenero.nome;
                         subgeneroSelect.appendChild(option);
                     });
@@ -633,7 +635,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const generoSelect = document.getElementById('edit-genero');
                 generos.forEach(genero => {
                     const option = document.createElement('option');
-                    option.value = genero.id;
+                    //option.value = genero.id;
+                    option.value = genero.nome;
                     option.textContent = genero.nome;
                     generoSelect.appendChild(option);
                 });
@@ -657,7 +660,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     subgeneros.forEach(subgenero => {
                         const option = document.createElement('option');
-                        option.value = subgenero.id;
+                        //option.value = subgenero.id;
+                        option.value = subgenero.nome;
                         option.textContent = subgenero.nome;
                         subgeneroSelect.appendChild(option);
                     });
