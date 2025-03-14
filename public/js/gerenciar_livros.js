@@ -434,8 +434,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function adicionarLivro() {
         var titulo = document.getElementById('titulo').value;
         var autor = document.getElementById('autor').value;
-        var genero = document.getElementById('genero').value;
-        var subgenero = document.getElementById('subgenero').value;
+        //var genero = document.getElementById('genero').value;
+        //var subgenero = document.getElementById('subgenero').value;
+        var genero = document.getElementById('genero').options[document.getElementById('genero').selectedIndex].text;
+        var subgenero = document.getElementById('subgenero').options[document.getElementById('subgenero').selectedIndex].text;
         var anoPublicacao = document.getElementById('ano_publicacao').value;
         var editora = document.getElementById('editora').value;
         var gentileza = document.getElementById('gentileza').value;
@@ -577,8 +579,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const generoSelect = document.getElementById('genero');
                 generos.forEach(genero => {
                     const option = document.createElement('option');
-                    //option.value = genero.id;
-                    option.value = genero.nome;
+                    option.value = genero.id;
+                    //option.value = genero.nome;
                     option.textContent = genero.nome;
                     generoSelect.appendChild(option);
                 });
@@ -602,8 +604,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     subgeneros.forEach(subgenero => {
                         const option = document.createElement('option');
-                        //option.value = subgenero.id;
-                        option.value = subgenero.nome;
+                        option.value = subgenero.id;
+                        //option.value = subgenero.nome;
                         option.textContent = subgenero.nome;
                         subgeneroSelect.appendChild(option);
                     });
@@ -635,8 +637,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const generoSelect = document.getElementById('edit-genero');
                 generos.forEach(genero => {
                     const option = document.createElement('option');
-                    //option.value = genero.id;
-                    option.value = genero.nome;
+                    option.value = genero.id;
+                    //option.value = genero.nome;
                     option.textContent = genero.nome;
                     generoSelect.appendChild(option);
                 });
@@ -660,8 +662,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     subgeneros.forEach(subgenero => {
                         const option = document.createElement('option');
-                        //option.value = subgenero.id;
-                        option.value = subgenero.nome;
+                        option.value = subgenero.id;
+                        //option.value = subgenero.nome;
                         option.textContent = subgenero.nome;
                         subgeneroSelect.appendChild(option);
                     });
