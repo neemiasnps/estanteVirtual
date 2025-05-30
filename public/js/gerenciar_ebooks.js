@@ -268,8 +268,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const idLivro = document.getElementById('edit-id-livro').value;
         const titulo = document.getElementById('edit-titulo').value;
         const autor = document.getElementById('edit-autor').value;
-        const genero = document.getElementById('edit-genero').value;
-        const subgenero = document.getElementById('edit-subgenero').value;
+        //const genero = document.getElementById('edit-genero').value;
+        //const subgenero = document.getElementById('edit-subgenero').value;
+        var genero = document.getElementById('edit-genero').options[document.getElementById('edit-genero').selectedIndex].text;
+        var subgenero = document.getElementById('edit-subgenero').options[document.getElementById('edit-subgenero').selectedIndex].text;
         const anoPublicacao = document.getElementById('edit-ano_publicacao').value;
         const editora = document.getElementById('edit-editora').value;
         const sinopse = document.getElementById('edit-sinopse').value;
@@ -350,8 +352,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function adicionarLivro() {
         var titulo = document.getElementById('titulo').value;
         var autor = document.getElementById('autor').value;
-        var genero = document.getElementById('genero').value;
-        var subgenero = document.getElementById('subgenero').value;
+        //var genero = document.getElementById('genero').value;
+        //var subgenero = document.getElementById('subgenero').value;
+        var genero = document.getElementById('genero').options[document.getElementById('genero').selectedIndex].text;
+        var subgenero = document.getElementById('subgenero').options[document.getElementById('subgenero').selectedIndex].text;
         var anoPublicacao = document.getElementById('ano_publicacao').value;
         var editora = document.getElementById('editora').value;
         var url = document.getElementById('url').value;
