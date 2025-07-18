@@ -98,7 +98,7 @@ router.get('/top-alunos-list1', async (req, res) => {
   }
 });
 
-router.get('/top-alunos-list2', async (req, res) => {
+router.get('/top-alunos-list', async (req, res) => {
   try {
     // 1. Buscar os IDs dos 3 alunos que mais fizeram empréstimos
     const topAlunosRaw = await Emprestimo.findAll({
@@ -160,7 +160,7 @@ router.get('/top-alunos-list2', async (req, res) => {
   }
 });
 
-router.get('/top-alunos-list', async (req, res) => {
+router.get('/top-alunos-list1', async (req, res) => {
   try {
     // 1. Buscar os IDs dos 3 alunos que mais fizeram empréstimos
     const topAlunosRaw = await Emprestimo.findAll({
