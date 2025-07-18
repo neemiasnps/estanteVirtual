@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function() {
     carregarUltimosEbooks();
     carregarEbooksMaisBaixados();
     carregarLivrosDoados();
+    carregarTopAlunos();
     
 });
 
@@ -284,4 +285,69 @@ function carregarLivrosDoados() {
             });
         })
         .catch(error => console.error('Erro ao carregar os livros doados:', error));
+}
+
+function carregarTopAlunos() {
+    fetch('/api/homes/top-alunos-list')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na rede ao buscar os alunos');
+            }
+            return response.json();
+        })
+        .then(alunos => {
+            console.log("Dados retornados pela API:", alunos);
+
+            if (!Array.isArray(alunos)) {
+                throw new TypeError('A resposta não contém um array de alunos');
+            }
+
+            // Ordena os alunos localmente por total de empréstimos (desc)
+            alunos.sort((a, b) => b.total_emprestimos - a.total_emprestimos);          
+
+            const container = document.getElementById("top-alunos-list");
+            container.innerHTML = ''; // Limpa antes de adicionar novos itens
+
+            // Cria a lista collapsible
+            const ul = document.createElement("ul");
+            ul.classList.add("collapsible");
+
+            // Ícones com cores para 1º, 2º e 3º lugares
+            const medalhas = [
+                { icon: 'emoji_events', color: '#FFD700' }, // Ouro
+                { icon: 'military_tech', color: '#C0C0C0' }, // Prata
+                { icon: 'grade', color: '#cd7f32' }          // Bronze
+            ];
+
+            alunos.forEach((aluno, index) => {
+                const { icon, color } = medalhas[index] || { icon: 'person', color: 'gray' };
+
+                const li = document.createElement("li");
+
+                li.innerHTML = `
+                    <div class="collapsible-header">
+                        <i class="material-icons" style="color: ${color};">${icon}</i>
+                        <span style="margin-left: 10px;">${aluno.nomeCompleto}</span>
+                        <span class="badge" data-badge-caption="empréstimos">${aluno.total_emprestimos}</span>
+                    </div>
+                    <div class="collapsible-body">
+                        <ul style="margin: 0; padding-left: 1.2rem;">
+                            ${aluno.livros && aluno.livros.length > 0 
+                                ? aluno.livros.map(titulo => `<li style="font-size: 13px;">📖 ${titulo}</li>`).join('')
+                                : '<li style="font-size: 13px; color: gray;">Nenhum livro registrado</li>'}
+                        </ul>
+                    </div>
+                `;
+
+                ul.appendChild(li);
+            });
+
+            container.appendChild(ul);
+
+            // Inicializa ou reinicializa o collapsible
+            const elems = document.querySelectorAll('.collapsible');
+            M.Collapsible.init(elems);
+
+        })
+        .catch(error => console.error('Erro ao carregar os top alunos com livros:', error));
 }
