@@ -39,25 +39,7 @@
             return true;
         }
 
-        // Função para verificar se o CPF já existe
-        /*async function verificarCPF(cpf) {
-            try {
-                // O CPF pode ter formatação, envie como está
-                const response = await fetch(`/api/alunos/verificar-cpf/${encodeURIComponent(cpf)}`);
-                if (!response.ok) {
-                    throw new Error('Erro na resposta da rede');
-                }
-                const data = await response.json();
-                if (data.success) {
-                    return data.exists;
-                } else {
-                    throw new Error('Erro ao verificar CPF.');
-                }
-            } catch (error) {
-                console.error('Erro ao verificar CPF:', error);
-                throw error; // Re-throw para que a função chamadora possa lidar com isso
-            }
-        }*/
+   
         
         // Função para verificar se o CPF já existe
         async function verificarCPF(cpf) {
@@ -463,44 +445,7 @@
                 .catch(error => console.error('Erro ao carregar dados do aluno para edição:', error));
         }
 
-        // Função para excluir ou desativar um aluno
-        /* function excluirAluno(id) {
-            fetch(`/api/alunos/${id}`, {
-                method: 'DELETE'
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro na resposta da rede');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Verifica se a resposta contém a mensagem de sucesso
-                if (data.message) {
-                    // Mensagem baseada na resposta do servidor
-                    if (data.message.includes('desativado')) {
-                        M.toast({ html: 'Aluno desativado com sucesso!', classes: 'orange' });
-                    } else if (data.message.includes('excluído')) {
-                        M.toast({ html: 'Aluno excluído com sucesso!', classes: 'green' });
-                    } else {
-                        M.toast({ html: 'Operação realizada com sucesso!', classes: 'green' });
-                    }
-
-                    // Fecha o modal
-                    M.Modal.getInstance(document.getElementById('modal-delete-aluno')).close();
-
-                    // Recarregar a lista de alunos após a operação
-                    carregarAlunos();
-                } else {
-                    M.toast({ html: 'Erro ao excluir aluno', classes: 'red' });
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao excluir aluno:', error);
-                M.toast({ html: 'Erro ao excluir aluno. Verifique o console para mais detalhes.', classes: 'red' });
-            });
-        }  */
-
+  
         // Função para excluir ou desativar um aluno
         function excluirAluno(id) {
             fetch(`/api/alunos/${id}`, {

@@ -67,23 +67,6 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Excluir um aluno
-/*router.delete('/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const aluno = await Aluno.findByPk(id);
-        if (aluno) {
-            await aluno.destroy();
-            res.json({ message: 'Aluno excluído com sucesso' });
-        } else {
-            res.status(404).json({ error: 'Aluno não encontrado' });
-        }
-    } catch (error) {
-        console.error('Erro ao excluir aluno:', error);
-        res.status(500).json({ error: 'Erro ao excluir aluno' });
-    }
-});*/
-
 // Rota para buscar detalhes de um aluno por ID
 router.get('/:id', (req, res, next) => {
     const alunoId = req.params.id;
@@ -101,25 +84,6 @@ router.get('/:id', (req, res, next) => {
             res.status(500).json({ error: 'Erro interno ao buscar detalhes do aluno' });
         });
 });
-
-// Rota para verificar a existência do CPF
-/*router.get('/verificar-cpf/:cpf', async (req, res) => {
-    try {
-        const cpf = req.params.cpf;
-        console.log(`Verificando CPF: ${cpf}`);
-
-        // Encontre o aluno no banco de dados com o CPF fornecido
-        const aluno = await Aluno.findOne({ cpf: cpf });
-        if (aluno) {
-            return res.json({ success: true, exists: true });
-        } else {
-            return res.json({ success: true, exists: false });
-        }
-    } catch (error) {
-        console.error('Erro ao verificar CPF:', error);
-        res.status(500).json({ success: false, message: 'Erro ao verificar CPF.' });
-    }
-});*/
 
 // Rota para verificar a existência do CPF
 router.get('/verificar-cpf/:cpf', async (req, res) => {

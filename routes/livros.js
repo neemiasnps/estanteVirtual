@@ -36,6 +36,8 @@ router.get('/auto-livros', async (req, res) => {
             include: [Estoque] // Inclui informações da tabela Estoque
         });
 
+        console.log(`[📗 AUTO-LIVROS] Total de livros retornados: ${livros.length}`);
+
         // Retornar os livros em formato JSON
         res.json(livros);
 
@@ -385,6 +387,28 @@ router.get('/buscarAll2/:search', async (req, res) => {
     } catch (error) {
         console.error('Erro ao buscar livros:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// Rota para buscar detalhes de um livro por ID
+router.get('/livro/id/:id', async (req, res) => {
+    const id = parseInt(req.params.id, 10);
+
+    try {
+        const livro = await Livro.findOne({
+            where: { id },
+            include: [Estoque]
+        });
+
+        if (livro) {
+            res.json(livro);
+        } else {
+            console.warn(`⚠️ Livro com ID ${id} não encontrado.`);
+            res.status(404).json({ error: 'Livro não encontrado' });
+        }
+    } catch (error) {
+        console.error('Erro ao buscar livro por ID:', error);
+        res.status(500).json({ error: 'Erro interno ao buscar livro por ID' });
     }
 });
 

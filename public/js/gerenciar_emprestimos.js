@@ -132,7 +132,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const autocompleteInstances = M.Autocomplete.init(autocompleteElems, {
         data: {},
         onAutocomplete: function(val) {
-            fetch(`/api/livros/${encodeURIComponent(val)}`)
+            //fetch(`/api/livros/${encodeURIComponent(val)}`)
+            fetch(`/api/livros/livro/id/${encodeURIComponent(livroId)}`) // ✅ Busca pelo ID
                 .then(response => response.json())
                 .then(data => {
                     console.log('Dados retornados:', data);
@@ -158,113 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
         }
     });
-
-    // Função para preencher o autocomplete com dados dos livros
-    /*function carregarLivros() {
-        fetch('/api/livros/auto-livros') // Rota para obter todos os livros
-            .then(response => response.json())
-            .then(data => {
-                const autocompleteData = {};
-                data.livros.forEach(livro => {
-                    autocompleteData[livro.titulo] = null; // Aqui você pode adicionar uma imagem ou outra informação se desejar
-                });
-                M.Autocomplete.init(autocompleteElems, {
-                    data: autocompleteData
-                });
-            })
-            .catch(error => {
-                console.error('Erro ao carregar livros para autocomplete:', error);
-            });
-    }*/
-
-    // Função para preencher o autocomplete com dados dos livros
-    function carregarLivros() {
-        fetch('/api/livros/auto-livros') // Rota para obter todos os livros
-            .then(response => response.json())
-            .then(data => {
-                const autocompleteData = {};
-
-                // Verifica se a resposta contém 'livros' ou se já é um array diretamente
-                const livros = data.livros || data; // Tenta acessar 'data.livros', se não existir, usa 'data'
-
-                // Verifica se a variável 'livros' é um array
-                if (Array.isArray(livros)) {
-                    livros.forEach(livro => {
-                        autocompleteData[livro.titulo] = null; // Pode adicionar imagem ou outro dado se necessário
-                    });
-
-                    // Inicializa o autocomplete com os dados
-                    M.Autocomplete.init(autocompleteElems, {
-                        data: autocompleteData
-                    });
-                } else {
-                    console.error("Erro: formato inesperado de dados", data);
-                }
-            })
-            .catch(error => {
-                console.error('Erro ao carregar livros para autocomplete:', error);
-            });
-    }
-
-
+   
     carregarLivros(); // Carregar livros para autocomplete quando a página carregar
-
-    // Adiciona evento para o botão flutuante - add
-    document.getElementById('add-to-table-fab').addEventListener('click', function() {
-        var livroSelecionado = document.getElementById('autocomplete-input').value;
-
-        if (livroSelecionado) {
-            fetch(`/api/livros/livro/${encodeURIComponent(livroSelecionado)}`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Livro não encontrado');
-                    }
-                    return response.json();
-                })
-                .then(livro => {
-                    console.log('Detalhes do livro:', livro);
-
-                    // Verificar se o objeto Estoque existe e tem estoque disponível
-                    if (livro.Estoque && livro.Estoque.estoque_disponivel <= 0) {
-                        M.toast({ html: `O livro "${livro.titulo}" está fora de estoque e não pode ser adicionado.`, classes: 'red' });
-                        document.getElementById('autocomplete-input').value = '';
-                        return; // Não adiciona o livro se o estoque for zero ou menor
-                    }
-
-                    const livrosTableBody = document.getElementById('livros-table-body');
-                    const existingRow = Array.from(livrosTableBody.querySelectorAll('tr')).find(row => row.dataset.id === livro.id.toString());
-
-                    if (existingRow) {
-                        M.toast({ html: `O livro "${livro.titulo}" já foi adicionado.`, classes: 'red' });
-                        document.getElementById('autocomplete-input').value = '';
-                        return; // Não adiciona o livro novamente
-                    }
-
-                    var newRow = document.createElement('tr');
-                    newRow.dataset.id = livro.id;
-                    newRow.innerHTML = `
-                        <td>${livro.id}</td>
-                        <td>${livro.titulo}</td>
-                        <td>${livro.autor}</td>
-                        <td>${livro.genero}</td>
-                        <td><a href="#" class="btn-delete-livro" data-id="${livro.id}" data-titulo="${livro.titulo}"><i class="material-icons">delete</i></a></td>
-                    `;
-
-                    livrosTableBody.appendChild(newRow);
-
-                    document.getElementById('autocomplete-input').value = '';
-                    M.updateTextFields();
-                    atualizarEventosDeExcluir();
-                })
-                .catch(error => {
-                    console.error('Erro ao buscar o livro:', error);
-                    M.toast({ html: 'Erro ao adicionar o livro. Verifique se o título está correto.' });
-                });
-        } else {
-            M.toast({ html: 'Selecione um livro para adicionar' });
-        }
-    });
-
 
     // Função para atualizar eventos dos botões de exclusão
     function atualizarEventosDeExcluir() {
@@ -479,11 +375,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Inicializa a página e o filtro ao carregar a página
-    //document.addEventListener('DOMContentLoaded', () => {
-        //carregarEmprestimos(currentPage, 'todos'); // Ajuste o filtro inicial para 'em_andamento'
+    
 
-        // Adiciona o evento de mudança ao filtro
+    // Adiciona o evento de mudança ao filtro
         document.getElementById('status-filter').addEventListener('change', function() {
             const selectedFiltro = this.value;
             console.log(`Filtro selecionado: ${selectedFiltro}`); // Adicione isto para depuração
@@ -1087,6 +981,105 @@ document.addEventListener('DOMContentLoaded', function() {
             // Oculta o preloader
             if (preloader) preloader.style.display = 'none';
         }
+    }
+
+    function normalizarTexto(texto) {
+        return texto.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    }
+
+    // Função para carregar dados para o autocomplete
+    function carregarLivros() {
+        fetch('/api/livros/auto-livros')
+            .then(response => response.json())
+            .then(data => {
+                const autocompleteData = {};
+                const mapaTitulosParaIds = {};
+
+                data.forEach(livro => {
+                    autocompleteData[livro.titulo] = null;
+                    const chaveNormalizada = normalizarTexto(livro.titulo);
+                    mapaTitulosParaIds[chaveNormalizada] = livro.id;
+                });
+
+                const autocompleteElems = document.querySelectorAll('.autocomplete');
+
+                M.Autocomplete.init(autocompleteElems, {
+                    data: autocompleteData,
+                    onAutocomplete: function (tituloSelecionado) {
+                        const chaveSelecionada = normalizarTexto(tituloSelecionado);
+                        const idSelecionado = mapaTitulosParaIds[chaveSelecionada];
+
+                        if (idSelecionado) {
+                            document.getElementById('livro-id-selecionado').value = idSelecionado;
+                            console.log(`📌 Livro selecionado: ${tituloSelecionado}, ID: ${idSelecionado}`);
+                        } else {
+                            console.warn(`⚠️ Título não encontrado no mapa: ${tituloSelecionado}`);
+                            document.getElementById('livro-id-selecionado').value = '';
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('❌ Erro ao carregar dados para autocomplete:', error);
+            });
+    }
+
+    // Função para adicionar livro à tabela
+    document.getElementById('add-to-table-fab').addEventListener('click', function () {
+        const livroId = document.getElementById('livro-id-selecionado').value;
+
+        if (livroId) {
+            fetch(`/api/livros/livro/id/${encodeURIComponent(livroId)}`) // ✅ Busca pelo ID
+                .then(response => {
+                    if (!response.ok) throw new Error('Livro não encontrado');
+                    return response.json();
+                })
+                .then(livro => {
+                    if (livro.Estoque && livro.Estoque.estoque_disponivel <= 0) {
+                        M.toast({ html: `O livro "${livro.titulo}" está fora de estoque.`, classes: 'red' });
+                        limparCamposLivro();
+                        return;
+                    }
+
+                    const livrosTableBody = document.getElementById('livros-table-body');
+                    const existingRow = Array.from(livrosTableBody.querySelectorAll('tr'))
+                        .find(row => row.dataset.id === livro.id.toString());
+
+                    if (existingRow) {
+                        M.toast({ html: `O livro "${livro.titulo}" já foi adicionado.`, classes: 'red' });
+                        limparCamposLivro();
+                        return;
+                    }
+
+                    const newRow = document.createElement('tr');
+                    newRow.dataset.id = livro.id;
+                    newRow.innerHTML = `
+                        <td>${livro.id}</td>
+                        <td>${livro.titulo}</td>
+                        <td>${livro.autor}</td>
+                        <td>${livro.genero}</td>
+                        <td><a href="#" class="btn-delete-livro" data-id="${livro.id}" data-titulo="${livro.titulo}">
+                            <i class="material-icons">delete</i></a></td>
+                    `;
+
+                    livrosTableBody.appendChild(newRow);
+                    limparCamposLivro();
+                    atualizarEventosDeExcluir();
+                })
+                .catch(error => {
+                    console.error('❌ Erro ao buscar o livro:', error);
+                    M.toast({ html: 'Erro ao adicionar o livro. Verifique se a seleção está correta.', classes: 'red' });
+                });
+        } else {
+            M.toast({ html: 'Selecione um livro válido para adicionar', classes: 'orange' });
+        }
+    });
+
+    // Função para limpar os campos do livro
+    function limparCamposLivro() {
+        document.getElementById('autocomplete-input').value = '';
+        document.getElementById('livro-id-selecionado').value = '';
+        M.updateTextFields();
     }
     
 });

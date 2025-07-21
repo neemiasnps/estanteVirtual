@@ -232,56 +232,6 @@ function comporCorpoEmail(dadosEmprestimo) {
   `;
 }
 
-// Rota para finalizar o empréstimo
-/*router.post('/finalizar/:id', async (req, res) => {
-    const emprestimoId = req.params.id;
-
-    try {
-        const emprestimo = await Emprestimo.findByPk(emprestimoId, {
-            include: [
-                { model: Livro, as: 'Livros' }
-            ]
-        });
-
-        if (!emprestimo) {
-            throw new Error('Empréstimo não encontrado');
-        }
-
-        emprestimo.situacao = 'finalizado';
-        emprestimo.data_devolucao = new Date().toISOString().split('T')[0]; // Data atual no formato yyyy-mm-dd
-        await emprestimo.save();
-
-        // Atualizar o estoque dos livros
-        if (emprestimo.Livros && Array.isArray(emprestimo.Livros)) {
-            for (const livro of emprestimo.Livros) {
-                const estoque = await Estoque.findOne({ where: { livro_id: livro.id } });
-                if (estoque) {
-                    estoque.estoque_disponivel += 1;
-                    estoque.estoque_locado -= 1;
-                    await estoque.save();
-                    console.log(`Estoque do Livro ID: ${livro.id} atualizado.`);
-
-                    // Incrementar +1 na coluna somaLocados na tabela Livros
-                    await Livro.increment('somaLocados', { where: { id: livro.id } });
-                    console.log(`somaLocados do Livro ID: ${livro.id} incrementado em 1.`);
-                  
-                } else {
-                    console.error(`Estoque não encontrado para o Livro ID: ${livro.id}`);
-                }
-            }
-        }
-
-        const dadosEmprestimo = await obterDadosEmprestimo(emprestimoId);
-        const assunto = `Biblioteca Nichele - Requisição n° ${dadosEmprestimo.emprestimo.id}`;
-        const corpo = comporCorpoEmailFinalizado(dadosEmprestimo);
-        await enviarEmail(dadosEmprestimo.aluno.email, assunto, corpo);
-
-        res.status(200).send('Empréstimo finalizado e e-mail enviado com sucesso!');
-    } catch (error) {
-        console.error('Erro ao finalizar o empréstimo:', error);
-        res.status(500).send('Erro ao finalizar o empréstimo.');
-    }
-});*/
 
 router.post('/finalizar/:id', async (req, res) => {
     const emprestimoId = req.params.id;
