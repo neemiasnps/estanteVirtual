@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
         const { rows: livros, count } = await Livro.findAndCountAll({
             include: [Estoque], // Incluindo dados de estoque
             limit,
-            offset
+            offset,
+            order: [['createdAt', 'DESC']] // Ordena do mais recente para o mais antigo
         });
 
         const totalPages = Math.ceil(count / limit);
@@ -371,7 +372,8 @@ router.get('/buscarAll2/:search', async (req, res) => {
             attributes: ['id', 'titulo', 'autor', 'genero', 'sinopse', 'foto','situacao'],
             include: [Estoque], // Incluindo dados de estoque
             limit: limitePorPagina,
-            offset: (pagina - 1) * limitePorPagina // Cálculo do deslocamento para a paginação
+            offset: (pagina - 1) * limitePorPagina, // Cálculo do deslocamento para a paginação
+            order: [['createdAt', 'DESC']] // Ordena do mais recente para o mais antigo
         });
 
         if (livros.length > 0) {
