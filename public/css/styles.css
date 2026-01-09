@@ -131,16 +131,16 @@ body {
 }
 
 .custom-navbar {
-  /* background-color: #1e88e5; /* Azul personalizado */
+  background-color: #17436a; /* Azul personalizado *
   /*background-color: teal;*/
   /*background-color: rgb(0,169,198)*/
-  background-color: rgb(29,68,127)
+  /*background-color: rgb(29,68,127)*/
 }
 
 .custom-footer {
-  /* background-color: #0d47a1; /* Azul escuro personalizado */
+  background-color: #17436a; /* Azul escuro personalizado */
   /* background-color: teal;*/
-    background-color:rgb(29,68,127)
+    /*background-color:rgb(29,68,127)*/
 }
 
 /* Define a largura da coluna "Título" */
@@ -309,7 +309,7 @@ table th:nth-child(8) {
 
 /* Ajustes para a navbar e footer em dispositivos móveis */
 .custom-navbar, .custom-footer {
-    background-color: rgb(29,68,127); /* Cor de fundo para navbar e footer */
+    background-color: #17436a; /* Cor de fundo para navbar e footer */
     /*text-align: center; /* Centraliza o texto */
     /*padding: 10px 0; /* Ajuste o padding conforme necessário */
 }
