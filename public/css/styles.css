@@ -121,7 +121,7 @@ body {
 .custom-logo {
     font-size: 2px; /* Ajuste o valor conforme necessário */
     margin-left: 20px; /* Cria espaçamento na esquerda */
-    line-height: 80px;/* Mantém a proporção da largura */
+    line-height: 90px;/* Mantém a proporção da largura */
 }
 
 .custom-logo img {
