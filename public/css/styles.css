@@ -126,7 +126,7 @@ body {
 
 .custom-logo img {
     height: auto;                /* Mantém a proporção da imagem */
-    max-height: 40px;             /* Limita a altura máxima da logo */
+    max-height: 45px;             /* Limita a altura máxima da logo */
     width: auto;
 }
 
