@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
 
         const { rows: livros, count } = await Livro.findAndCountAll({
             limit,
-            offset
+            offset,
+            order: [['createdAt', 'DESC']] // Ordena do mais recente para o mais antigo
         });
 
         const totalPages = Math.ceil(count / limit);
