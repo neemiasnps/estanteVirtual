@@ -480,3 +480,35 @@ table th:nth-child(8) {
         -1px  1px 0 #000, /* Borda preta à esquerda e abaixo */
          1px  1px 0 #000; /* Borda preta à direita e abaixo */
 }
+
+/* Slider em tela cheia */
+.slider-full {
+    width: 100%;
+    /*height: calc(100vh - 64px); /* desconta a navbar desktop */
+    height: 420px;
+}
+
+.slider-full .slides {
+    /* height: 100%;*/
+  height: 420px;
+}
+
+.slider-full .slides li img {
+    width: 100%;
+    /*height: 100%;*/
+    height: 420px;
+  object-fit: contain;
+  background-color: #fff; /* opcional, evita fundo escuro */
+}
+
+/* Somente a primeira imagem (banner) */
+.slider-full .slides li:first-child img {
+    background-size: cover;
+}
+
+/* Ajuste para mobile (navbar maior) */
+@media (max-width: 992px) {
+    .slider-full {
+        height: calc(100vh - 56px);
+    }
+}
