@@ -131,7 +131,7 @@ function isMobile() {
 // Carregar os 5 livros mais locados
 function carregarLivrosMaisLocados() {
     const linkBanner = isMobile() 
-        ? "https://i.postimg.cc/pX6b2gr0/banner-mobile-novo.jpg" 
+        ? "https://i.postimg.cc/bYKJW6h4/BANNER-1-MOBILE-BIBLIOTECA-NICHELE.png" 
         : "https://i.postimg.cc/3NRzrdRP/BANNER-1-BIBLIOTECA-NICHELE.png";
 
     fetch('/api/homes/mais-locados') // URL da API para buscar livros mais locados
