@@ -11,6 +11,7 @@ const axios = require('axios');
 const apiKey = process.env.PDFSHIFT_API_KEY;
 
 const router = express.Router();
+const gerarTemplateEmail = require('../utils/emailTemplate');
 
 // Função para gerar PDF usando PDFShift
 async function gerarPdf(htmlContent) {
@@ -135,7 +136,7 @@ router.post('/enviar-email/:id', async (req, res) => {
 });
 
 // Função para compor o corpo do e-mail de solicitação
-function comporCorpoEmail(dadosEmprestimo) {
+function comporCorpoEmail2(dadosEmprestimo) {
   const { aluno, emprestimo, livros } = dadosEmprestimo;
 
   function formatarData(data) {
@@ -232,6 +233,79 @@ function comporCorpoEmail(dadosEmprestimo) {
   `;
 }
 
+function comporCorpoEmail(dadosEmprestimo) {
+  const { aluno, emprestimo, livros } = dadosEmprestimo;
+
+  function formatarData(data) {
+    if (!data) return '';
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  const dataSolicitacaoFormatada = formatarData(emprestimo.dataSolicitacao);
+  const dataPrevistaFormatada = formatarData(emprestimo.dataPrevista);
+
+  const linhasLivros = livros && livros.length > 0
+    ? livros.map(livro => `
+        <tr>
+          <td style="padding:8px; border:1px solid #e0e0e0;">${livro.id}</td>
+          <td style="padding:8px; border:1px solid #e0e0e0;">${livro.titulo}</td>
+        </tr>
+      `).join('')
+    : `
+        <tr>
+          <td colspan="2" style="padding:8px; border:1px solid #e0e0e0;">
+            Nenhum livro informado.
+          </td>
+        </tr>
+      `;
+
+  const conteudo = `
+    <p>Prezado(a) <strong>${aluno.nome}</strong>,</p>
+
+    <p>Sua solicitação de empréstimo foi registrada com sucesso.</p>
+
+    <p><strong>Loja:</strong> ${aluno.loja || 'Não informada'}</p>
+    <p><strong>Telefone:</strong> ${aluno.telefone || 'Não informado'}</p>
+    <p><strong>Data da Solicitação:</strong> ${dataSolicitacaoFormatada}</p>
+    <p><strong>Data Prevista para Devolução:</strong> ${dataPrevistaFormatada}</p>
+
+    <p><strong>Descrição:</strong><br>
+    ${emprestimo.descricao || 'Não informada.'}</p>
+
+    <h4 style="margin-top:20px; color:#17436a;">Livros Emprestados</h4>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; margin-top:10px;">
+      <tr style="background-color:#f5f7fa;">
+        <th align="left" style="padding:8px; border:1px solid #e0e0e0;">ID</th>
+        <th align="left" style="padding:8px; border:1px solid #e0e0e0;">Título</th>
+      </tr>
+      ${linhasLivros}
+    </table>
+
+    <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin:25px auto;">
+      <tr>
+        <td align="center" bgcolor="#bb1518" style="border-radius:4px;">
+          <a href="mailto:treinamento@nichele.com.br"
+             style="display:inline-block; padding:12px 20px; font-size:14px; color:#ffffff; text-decoration:none;">
+             Falar com T&D
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <p style="font-size:13px;">
+      Em caso de necessidade de alteração ou dúvida, entre em contato com o setor responsável.
+    </p>
+  `;
+
+  return gerarTemplateEmail({
+    titulo: 'Confirmação de Solicitação de Empréstimo',
+    conteudo
+  });
+}
+
+module.exports = comporCorpoEmail;
 
 router.post('/finalizar/:id', async (req, res) => {
     const emprestimoId = req.params.id;
@@ -289,7 +363,7 @@ router.post('/finalizar/:id', async (req, res) => {
 });
 
 // Função para compor o corpo do e-mail de devolução
-function comporCorpoEmailFinalizado(dadosEmprestimo) {
+function comporCorpoEmailFinalizado2(dadosEmprestimo) {
   const { aluno, emprestimo } = dadosEmprestimo;
 
   function formatarData(data) {
@@ -347,6 +421,75 @@ function comporCorpoEmailFinalizado(dadosEmprestimo) {
       </body>
     </html>
   `;
+}
+
+function comporCorpoEmailFinalizado(dadosEmprestimo) {
+  const { aluno = {}, emprestimo = {}, livros = [] } = dadosEmprestimo;
+
+  function formatarData(data) {
+    if (!data) return '';
+    const [ano, mes, dia] = data.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  const dataBase =
+    emprestimo.dataDevolucao ||
+    new Date().toISOString().split('T')[0];
+
+  const dataDevolucaoFormatada = formatarData(dataBase);
+
+  const linhasLivros = livros && livros.length > 0
+    ? livros.map(livro => `
+        <tr>
+          <td style="padding:8px; border:1px solid #e0e0e0;">${livro.id}</td>
+          <td style="padding:8px; border:1px solid #e0e0e0;">${livro.titulo}</td>
+        </tr>
+      `).join('')
+    : `
+        <tr>
+          <td colspan="2" style="padding:8px; border:1px solid #e0e0e0;">
+            Nenhum livro devolvido.
+          </td>
+        </tr>
+      `;
+
+  const conteudo = `
+    <p>Prezado(a) <strong>${aluno.nome || 'Aluno(a)'}</strong>,</p>
+
+    <p>Informamos que seu empréstimo foi finalizado com sucesso.</p>
+
+    <p><strong>Data da Devolução:</strong> ${dataDevolucaoFormatada}</p>
+
+    <h4 style="margin-top:20px; color:#17436a;">Livros Devolvidos</h4>
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; margin-top:10px;">
+      <tr style="background-color:#f5f7fa;">
+        <th align="left" style="padding:8px; border:1px solid #e0e0e0;">ID</th>
+        <th align="left" style="padding:8px; border:1px solid #e0e0e0;">Título</th>
+      </tr>
+      ${linhasLivros}
+    </table>
+
+    <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin:25px auto;">
+      <tr>
+        <td align="center" bgcolor="#bb1518" style="border-radius:4px;">
+          <a href="mailto:treinamento@nichele.com.br"
+             style="display:inline-block; padding:12px 20px; font-size:14px; color:#ffffff; text-decoration:none;">
+             Falar com T&D
+          </a>
+        </td>
+      </tr>
+    </table>
+
+    <p style="font-size:13px;">
+      Agradecemos pela utilização da Biblioteca Nichele.
+    </p>
+  `;
+
+  return gerarTemplateEmail({
+    titulo: 'Empréstimo Finalizado',
+    conteudo
+  });
 }
 
 // Função para gerar o link do WhatsApp
