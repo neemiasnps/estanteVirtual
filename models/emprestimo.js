@@ -25,7 +25,11 @@ Emprestimo.init({
   },
   data_devolucao: {
     type: DataTypes.DATE
-  }
+  },
+  ultimo_lembrete: {
+    type: DataTypes.DATE,
+    allowNull: true
+  }  
 }, {
   sequelize,
   modelName: 'Emprestimo'

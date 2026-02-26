@@ -24,6 +24,14 @@ app.use(session({
     }
 }));
 
+app.get('/api/auth/status', (req, res) => {
+    if (req.session && req.session.usuario) {
+        return res.json({ autenticado: true });
+    }
+    res.json({ autenticado: false });
+});
+
+
 // Middlewares  
 app.use(express.json()); // Para JSON
 app.use(express.urlencoded({ extended: true })); // Para dados de formulários
@@ -231,6 +239,10 @@ sequelize.authenticate()
 // Sincronização do Banco de Dados e Início do Servidor
 sequelize.sync()
     .then(() => {
+
+        // Inicia rotina automática de lembrete
+        require('./jobs/lembreteEmprestimos');
+        
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
         });

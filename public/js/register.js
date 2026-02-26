@@ -25,3 +25,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
+
+
+async function verificarAutenticacao() {
+  try {
+      const response = await fetch('/api/auth/status', {
+          credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (data.autenticado) {
+          document.getElementById('menu-admin').style.display = 'block';
+          document.getElementById('icon-login').style.display = 'none';
+      } else {
+          document.getElementById('menu-admin').style.display = 'none';
+          document.getElementById('icon-login').style.display = 'block';
+      }
+  } catch (error) {
+      document.getElementById('menu-admin').style.display = 'none';
+      document.getElementById('icon-login').style.display = 'block';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', verificarAutenticacao);
