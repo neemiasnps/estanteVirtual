@@ -41,21 +41,128 @@ cron.schedule('0 8 * * 1', async () => {
       const aluno = emprestimo.Aluno;
       if (!aluno || aluno.status !== 'ativo') continue;
 
+      // Calcula dias emprestado
+      const dataEmprestimo = new Date(emprestimo.data_solicitacao);
+      const diasEmprestado = Math.floor(
+        (hoje - dataEmprestimo) / (1000 * 60 * 60 * 24)
+      );
+
+      const prazoPadrao = 40;
+      const diasEmAtraso = diasEmprestado - prazoPadrao;
+
       const listaLivros = emprestimo.Livros
         .map(livro => `• ${livro.titulo}`)
         .join('<br>');
 
+      // Define mensagem adicional conforme nível de atraso
+      let alertaAdicional = '';
+
+      if (diasEmprestado >= 90) {
+        alertaAdicional = `
+          <p style="color: red;"><strong>ATENÇÃO:</strong> O prazo está excedido há mais de 90 dias.
+          Solicitamos regularização com urgência.</p>
+        `;
+      } else if (diasEmprestado >= 60) {
+        alertaAdicional = `
+          <p style="color: #d35400;"><strong>Importante:</strong> O prazo já ultrapassou 60 dias.</p>
+        `;
+      }
+
       const assunto = `Biblioteca Nichele - Lembrete de Devolução`;
 
       const corpo = `
-        <p>Prezado(a) ${aluno.nomeCompleto},</p>
-        <p>Identificamos que o(s) livro(s) abaixo está(ão) emprestado(s) há mais de 40 dias:</p>
-        <p>${listaLivros}</p>
-        <p>Solicitamos, por gentileza, a devolução o quanto antes.</p>
-        <p><strong>Se precisar de mais tempo, informe ao setor de T&D.</strong></p>
-        <br>
-        <p>Atenciosamente,</p>
-        <p><strong>Biblioteca Nichele</strong></p>
+      <!DOCTYPE html>
+      <html>
+      <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Biblioteca Nichele</title>
+      </head>
+
+      <body style="margin:0; padding:0; background-color:#f2f4f7; font-family: Arial, Helvetica, sans-serif;">
+
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f2f4f7; padding:20px;">
+      <tr>
+      <td align="center">
+
+      <!-- Container -->
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px; background:#ffffff; border-radius:8px; overflow:hidden;">
+
+        <!-- Cabeçalho -->
+        <tr>
+          <td align="center" style="background-color:#17436a; padding:25px;">
+            <img src="https://biblioteca-nichele.onrender.com/images/logo.png"
+                 alt="Biblioteca Nichele"
+                 style="max-width:200px; width:100%; height:auto; display:block;">
+            <p style="color:#ffffff; font-size:18px; margin:15px 0 0 0;">
+              Lembrete de Devolução
+            </p>
+          </td>
+        </tr>
+
+        <!-- Conteúdo -->
+        <tr>
+          <td style="padding:25px; color:#333333; font-size:14px; line-height:1.6;">
+
+            <p>Prezado(a) <strong>${aluno.nomeCompleto}</strong>,</p>
+
+            <p>O(s) livro(s) abaixo foi(ram) retirado(s) em 
+            <strong>${dataEmprestimo.toLocaleDateString('pt-BR')}</strong>:</p>
+
+            <!-- Lista -->
+            <table width="100%" cellpadding="10" cellspacing="0" border="0" style="background:#f5f7fa; border-left:4px solid #17436a; margin:15px 0;">
+              <tr>
+                <td style="font-size:14px;">
+                  ${listaLivros}
+                </td>
+              </tr>
+            </table>
+
+            <p>Tempo de empréstimo: 
+            <strong style="color:#17436a;">${diasEmprestado} dias</strong></p>
+
+            <p>Prazo padrão: <strong>${prazoPadrao} dias</strong></p>
+
+            <p>Dias em atraso: 
+            <strong style="color:#bb1518;">${diasEmAtraso > 0 ? diasEmAtraso : 0}</strong></p>
+
+            ${alertaAdicional}
+
+            <!-- Botão -->
+            <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin:25px auto;">
+              <tr>
+                <td align="center" bgcolor="#bb1518" style="border-radius:4px;">
+                  <a href="mailto:treinamento@nichele.com.br"
+                     style="display:inline-block; padding:12px 20px; font-size:14px; color:#ffffff; text-decoration:none;">
+                     Entrar em contato com T&D
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="font-size:13px;">
+              Solicitamos a devolução ou regularização o quanto antes.
+            </p>
+
+          </td>
+        </tr>
+
+        <!-- Rodapé -->
+        <tr>
+          <td align="center" style="background-color:#17436a; padding:15px; color:#ffffff; font-size:12px;">
+            Biblioteca Nichele<br>
+            Comunicação automática do sistema
+          </td>
+        </tr>
+
+      </table>
+
+      </td>
+      </tr>
+      </table>
+
+      </body>
+      </html>
       `;
 
       await enviarEmail(aluno.email, assunto, corpo);
