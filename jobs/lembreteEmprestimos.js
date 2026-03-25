@@ -6,10 +6,13 @@ const Aluno = require('../models/aluno');
 const Livro = require('../models/livro');
 
 const enviarEmail = require('../public/js/mailer');
-const { gerarTemplateEmail } = require('../utils/emailTemplate');
+//const { gerarTemplateEmail } = require('../utils/emailTemplate');
+const gerarTemplateEmail = require('../utils/emailTemplate'); 
 
 // Executa toda segunda-feira às 08:00
 cron.schedule('0 8 * * 1', async () => {
+// a cada minuto
+//cron.schedule('* * * * *', async () => {
   console.log('Verificando empréstimos com mais de 40 dias...');
 
   try {
