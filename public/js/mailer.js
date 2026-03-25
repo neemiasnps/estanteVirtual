@@ -36,7 +36,7 @@ const nodemailer = require('nodemailer');
 // Criação do transporte de e-mail
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
+  port: Number(process.env.SMTP_PORT) || 465,
   secure: process.env.SMTP_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER,
@@ -50,7 +50,7 @@ const transporter = nodemailer.createTransport({
 // Função de envio com tratamento aprimorado
 async function enviarEmail(destinatario, assunto, corpo, tentativa = 1) {
   const mailOptions = {
-    from: process.env.SMTP_USER,
+    from: `"Biblioteca Nichele" <${process.env.SMTP_USER}>`,
     to: [destinatario, 'treinamento@nichele.com.br'],
     subject: assunto,
     html: corpo

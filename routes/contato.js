@@ -20,9 +20,8 @@ router.post('/', (req, res) => {
     console.log('Dados recebidos:', req.body);  // Adicione este log para verificar os dados recebidos
 
     const mailOptions = {
-        //from: email,
-        from: ['treinamento@nichele.com.br'],
-        to: process.env.SMTP_USER,
+        from: `"Biblioteca Nichele" <${process.env.SMTP_USER}>`,
+        to: ['treinamento@nichele.com.br'],
         subject: `Mensagem de Contato - Biblioteca Nichele | ${nome}`,
         text: `Nome: ${nome}\nE-mail: ${email}\nCelular: ${celular}\nMensagem:\n\n${mensagem}`
     };
