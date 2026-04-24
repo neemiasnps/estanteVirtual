@@ -270,9 +270,18 @@ sequelize
 // Sincronização do Banco de Dados e Início do Servidor
 sequelize
     .sync()
-    .then(() => {
+    .then(async () => {
+
+         if (process.env.CRON === 'true') {
+            console.log('Excecutando rotina de lembrete (CRON)...');
         // Inicia rotina automática de lembrete
-        require("./jobs/lembreteEmprestimos");
+
+	const executarLembretes = require("./jobs/lembreteEmprestimos");
+
+	await executarLembretes();
+
+         return;
+	}
 
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);

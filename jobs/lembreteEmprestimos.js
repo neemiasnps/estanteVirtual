@@ -1,4 +1,5 @@
-const cron = require('node-cron');
+require('dotenv').config();
+
 const { Op } = require('sequelize');
 
 const Emprestimo = require('../models/emprestimo');
@@ -6,16 +7,14 @@ const Aluno = require('../models/aluno');
 const Livro = require('../models/livro');
 
 const enviarEmail = require('../public/js/mailer');
-//const { gerarTemplateEmail } = require('../utils/emailTemplate');
-const gerarTemplateEmail = require('../utils/emailTemplate'); 
+const gerarTemplateEmail = require('../utils/emailTemplate');
 
-// Executa toda segunda-feira às 08:00
-cron.schedule('0 8 * * 1', async () => {
-// a cada minuto
-//cron.schedule('* * * * *', async () => {
-  console.log('Verificando empréstimos com mais de 40 dias...');
+async function executarLembretes() {
+  console.log('🔵 INÍCIO DO JOB DE LEMBRETES');
 
   try {
+    console.log('Verificando empréstimos com mais de 40 dias...');
+
     const hoje = new Date();
 
     const dataLimite = new Date();
@@ -34,6 +33,8 @@ cron.schedule('0 8 * * 1', async () => {
       ]
     });
 
+    console.log(`Encontrados ${emprestimos.length} empréstimos`);
+
     for (const emprestimo of emprestimos) {
 
       // Evita enviar mais de um lembrete por semana
@@ -44,12 +45,18 @@ cron.schedule('0 8 * * 1', async () => {
           (1000 * 60 * 60 * 24)
         );
 
-        if (diasDesdeUltimo < 7) continue;
+        if (diasDesdeUltimo < 7) {
+          console.log(`⏭️ Pulado (já enviado recentemente): ${emprestimo.id}`);
+          continue;
+        }
       }
 
       const aluno = emprestimo.Aluno;
 
-      if (!aluno || aluno.status !== 'ativo') continue;
+      if (!aluno || aluno.status !== 'ativo') {
+        console.log(`⏭️ Pulado (aluno inativo ou inexistente): ${emprestimo.id}`);
+        continue;
+      }
 
       const dataEmprestimo = new Date(emprestimo.data_solicitacao);
 
@@ -86,7 +93,7 @@ cron.schedule('0 8 * * 1', async () => {
       const conteudo = `
         <p>Prezado(a) <strong>${aluno.nomeCompleto}</strong>,</p>
 
-        <p>O(s) livro(s) abaixo foi(ram) retirado(s) em 
+        <p>O(s) livro(s) abaixo foi(ram) retirado(s) em
         <strong>${dataEmprestimo.toLocaleDateString('pt-BR')}</strong>:</p>
 
         <table width="100%" cellpadding="10" cellspacing="0" border="0"
@@ -141,15 +148,26 @@ cron.schedule('0 8 * * 1', async () => {
         conteudo
       });
 
+      console.log(`📧 Enviando para: ${aluno.email}`);
+
       await enviarEmail(aluno.email, assunto, corpo);
 
       emprestimo.ultimo_lembrete = new Date();
       await emprestimo.save();
 
-      console.log(`Lembrete enviado para ${aluno.nomeCompleto}`);
+      console.log(`✅ Lembrete enviado para ${aluno.nomeCompleto}`);
     }
 
+    console.log('🟢 FIM DO JOB DE LEMBRETES');
+    process.exit(0);
+
   } catch (error) {
-    console.error('Erro ao processar lembretes:', error);
+    console.error('❌ Erro ao processar lembretes:', error);
+    process.exit(1);
   }
-});
+}
+
+// 👇 EXECUTA AUTOMATICAMENTE
+if (require.main === module) {
+  executarLembretes();
+}
