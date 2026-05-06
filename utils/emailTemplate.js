@@ -25,7 +25,7 @@ function gerarTemplateEmail({ titulo, conteudo }) {
           <tr>
             <td align="center" style="background:#17436a; padding:30px 20px;">
 
-              <img src="https://biblioteca-nichele.onrender.com/images/logo.png"
+              <img src="https://bibliotecanichele.com.br/images/logo.png"
                    alt="Biblioteca Nichele"
                    width="170"
                    style="display:block; margin-bottom:15px; border:0;">
