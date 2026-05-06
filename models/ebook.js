@@ -10,10 +10,6 @@ const Ebook = sequelize.define('Ebook', {
     type: DataTypes.STRING,
     allowNull: false
   },
-  genero: {
-    type: DataTypes.STRING,
-    allowNull: false
-  },
   anoPublicacao: {
     type: DataTypes.INTEGER,
     allowNull: false
@@ -41,7 +37,15 @@ const Ebook = sequelize.define('Ebook', {
     type: DataTypes.INTEGER,
     allowNull: false,
     defaultValue: 0      
-  }
+  },
+  genero_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  subgenero_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
 });
 
 module.exports = Ebook;

@@ -38,7 +38,7 @@ function carregarUltimosEbooks() {
                         <div>
                             <span class="title" style="font-size: 13px;">${ebook.titulo}</span>
                             <p style="font-size: 12px;">${ebook.autor}</p>
-                            <p style="font-size: 11px;">${ebook.genero}</p>
+                            <p style="font-size: 11px;">${ebook.genero || '-'}</p>
                         </div>
                     </div>
                     <a href="${ebook.url}" target="_blank" class="secondary-content" title="Baixar o livro" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
@@ -130,65 +130,68 @@ function isMobile() {
 
 // Carregar os 5 livros mais locados
 function carregarLivrosMaisLocados() {
-    const linkBanner = isMobile() 
-        ? "https://i.postimg.cc/bYKJW6h4/BANNER-1-MOBILE-BIBLIOTECA-NICHELE.png" 
+    const linkBanner = isMobile()
+        ? "https://i.postimg.cc/bYKJW6h4/BANNER-1-MOBILE-BIBLIOTECA-NICHELE.png"
         : "https://i.postimg.cc/3NRzrdRP/BANNER-1-BIBLIOTECA-NICHELE.png";
 
-    fetch('/api/homes/mais-locados') // URL da API para buscar livros mais locados
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro na rede ao buscar livros mais locados');
-            }
-            return response.json();
-        })
+    fetch('/api/homes/mais-locados')
+        .then(r => r.json())
         .then(livros => {
+
             console.log("Dados retornados pela API:", livros);
 
-            if (!Array.isArray(livros)) {
-                throw new TypeError('A resposta não contém um array de livros');
+            const sliderContainer = document.querySelector(".slider .slides");
+            sliderContainer.innerHTML = '';
+
+            // Banner fixo
+            sliderContainer.innerHTML += `
+                <li>
+                    <a href="/como_funciona">
+                        <img src="${linkBanner}" alt="Banner">
+                    </a>
+                </li>
+            `;
+
+            if (!Array.isArray(livros) || livros.length === 0) {
+                return;
             }
 
-            const sliderContainer = document.querySelector(".slider .slides");
-            sliderContainer.innerHTML = ''; // Limpa o slider antes de adicionar novos itens
+            livros.slice(0, 5).forEach(livro => {
 
-            // Adiciona o banner antes dos livros
-            const bannerLi = document.createElement("li");
-            bannerLi.innerHTML = `
-                <a href="/como_funciona" title="Clique e Saiba Mais!">
-                    <img src="${linkBanner}" alt="Banner Bem Vindo">
-                </a>`;
-            sliderContainer.appendChild(bannerLi);
+                const titulo = livro.titulo || 'Sem título';
+                const autor = livro.autor || '';
 
-            // Seleciona os 5 livros mais locados
-            const maisLocados = livros.slice(0, 5);
+                sliderContainer.innerHTML += `
+                    <li>
+                        <img src="${livro.foto || '/images/default-book.png'}" alt="${titulo}">
+                        <div class="caption center-align">
+                            <h4>${titulo}</h4>
+                            <h6 class="light grey-text text-lighten-3">${autor}</h6>
 
-            maisLocados.forEach(livro => {
-                const li = document.createElement("li");
-
-                li.innerHTML = `
-                    <img src="${livro.foto}" alt="${livro.titulo}">
-                    <div class="caption center-align">
-                        <h4>${livro.titulo}</h4>
-                        <h6 class="light grey-text text-lighten-3">${livro.autor}</h6>
-                        <a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="btn-floating btn-small green" title="Enviar mensagem no WhatsApp">
-                                            <i class="material-icons">add</i>
-                                           </a>
-                    </div>
+                            <a href="https://wa.me/5541998000484?text=Tenho%20interesse%20no%20livro%20${encodeURIComponent(titulo)}"
+                               target="_blank"
+                               class="btn-floating btn-small green">
+                                <i class="material-icons">add</i>
+                            </a>
+                        </div>
+                    </li>
                 `;
-
-                sliderContainer.appendChild(li);
             });
 
-            // Inicializa o slider após a adição dos itens
-            const sliderElement = document.querySelector('.slider');
-            M.Slider.init(sliderElement, {
+            const sliderEl = document.querySelector('.slider');
+
+            // evita duplicar inicialização
+            const instance = M.Slider.getInstance(sliderEl);
+            if (instance) instance.destroy();
+
+            M.Slider.init(sliderEl, {
                 indicators: true,
                 height: 420,
                 duration: 500,
                 interval: 6000
             });
         })
-        .catch(error => console.error('Erro ao carregar os livros mais locados:', error));
+        .catch(err => console.error(err));
 }
 
 // Carregar os 5 livros doados
@@ -236,71 +239,7 @@ function carregarLivrosDoados() {
         .catch(error => console.error('Erro ao carregar os livros doados:', error));
 }
 
-function carregarTopAlunos1() {
-    fetch('/api/homes/top-alunos-list')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro na rede ao buscar os alunos');
-            }
-            return response.json();
-        })
-        .then(alunos => {
-            console.log("Dados retornados pela API:", alunos);
-
-            if (!Array.isArray(alunos)) {
-                throw new TypeError('A resposta não contém um array de alunos');
-            }
-
-            // Ordena os alunos localmente por total de empréstimos (desc)
-            alunos.sort((a, b) => b.total_emprestimos - a.total_emprestimos);          
-
-            const container = document.getElementById("top-alunos-list");
-            container.innerHTML = ''; // Limpa antes de adicionar novos itens
-
-            // Cria a lista collapsible
-            const ul = document.createElement("ul");
-            ul.classList.add("collapsible");
-
-            // Ícones com cores para 1º, 2º e 3º lugares
-            const medalhas = [
-                { icon: 'emoji_events', color: '#FFD700' }, // Ouro
-                { icon: 'military_tech', color: '#C0C0C0' }, // Prata
-                { icon: 'grade', color: '#cd7f32' }          // Bronze
-            ];
-
-            alunos.forEach((aluno, index) => {
-                const { icon, color } = medalhas[index] || { icon: 'person', color: 'gray' };
-
-                const li = document.createElement("li");
-
-                li.innerHTML = `
-                    <div class="collapsible-header">
-                        <i class="material-icons" style="color: ${color};">${icon}</i>
-                        <span style="margin-left: 10px;">${aluno.nomeCompleto}</span>
-                        <span class="badge" data-badge-caption="empréstimos">${aluno.total_emprestimos}</span>
-                    </div>
-                    <div class="collapsible-body">
-                        <ul style="margin: 0; padding-left: 1.2rem;">
-                            ${aluno.livros && aluno.livros.length > 0 
-                                ? aluno.livros.map(titulo => `<li style="font-size: 13px;">📖 ${titulo}</li>`).join('')
-                                : '<li style="font-size: 13px; color: gray;">Nenhum livro registrado</li>'}
-                        </ul>
-                    </div>
-                `;
-
-                ul.appendChild(li);
-            });
-
-            container.appendChild(ul);
-
-            // Inicializa ou reinicializa o collapsible
-            const elems = document.querySelectorAll('.collapsible');
-            M.Collapsible.init(elems);
-
-        })
-        .catch(error => console.error('Erro ao carregar os top alunos com livros:', error));
-}
-
+// Carregar os 3 alunos que mais locaram livros
 function carregarTopAlunos() {
     fetch('/api/homes/top-alunos-list')
         .then(response => {

@@ -8,44 +8,48 @@ function gerarTemplateEmail({ titulo, conteudo }) {
     <title>Biblioteca Nichele</title>
   </head>
 
-  <body style="margin:0; padding:0; background-color:#edf2f7; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+  <body style="margin:0; padding:0; background-color:#edf2f7; font-family:Arial, Helvetica, sans-serif;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#edf2f7; padding:40px 15px;">
+  <span style="display:none; max-height:0; overflow:hidden;">
+    Atualização do seu empréstimo na Biblioteca Nichele
+  </span>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#edf2f7; padding:30px 10px;">
     <tr>
       <td align="center">
 
-        <!-- Container Principal -->
         <table width="100%" cellpadding="0" cellspacing="0" border="0"
-          style="max-width:650px; background:#ffffff; border-radius:14px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.08);">
+          style="max-width:650px; background:#ffffff; border-radius:14px;">
 
-          <!-- Header Premium -->
+          <!-- Header -->
           <tr>
-            <td align="center" style="background:linear-gradient(135deg,#0f2f4d,#17436a); padding:40px 30px;">
+            <td align="center" style="background:#17436a; padding:30px 20px;">
 
               <img src="https://biblioteca-nichele.onrender.com/images/logo.png"
                    alt="Biblioteca Nichele"
-                   style="max-width:170px; width:100%; height:auto; display:block; margin-bottom:20px;">
+                   width="170"
+                   style="display:block; margin-bottom:15px; border:0;">
 
-              <h1 style="color:#ffffff; font-size:22px; font-weight:600; margin:0; letter-spacing:0.5px;">
+              <h1 style="color:#ffffff; font-size:20px; margin:0;">
                 ${titulo}
               </h1>
 
             </td>
           </tr>
 
-          <!-- Barra Institucional -->
+          <!-- Barra -->
           <tr>
-            <td style="height:5px; background:linear-gradient(to right,#bb1518,#e63946);"></td>
+            <td style="height:4px; background:#bb1518;"></td>
           </tr>
 
           <!-- Conteúdo -->
           <tr>
-            <td style="padding:40px 35px; color:#2d3748; font-size:15px; line-height:1.8;">
+            <td style="padding:30px 20px; color:#2d3748; font-size:14px; line-height:1.6;">
 
               <table width="100%" cellpadding="0" cellspacing="0" border="0"
-                style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px;">
+                style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">
                 <tr>
-                  <td style="padding:25px;">
+                  <td style="padding:20px;">
                     ${conteudo}
                   </td>
                 </tr>
@@ -56,18 +60,18 @@ function gerarTemplateEmail({ titulo, conteudo }) {
 
           <!-- Footer -->
           <tr>
-            <td align="center" style="background-color:#0f2f4d; padding:25px; color:#ffffff; font-size:12px; line-height:1.6;">
-              <strong style="font-size:13px;">Biblioteca Nichele</strong><br>
-              Sistema Interno de Gestão de Empréstimos<br>
-              © ${new Date().getFullYear()} Nichele Materiais de Construção
+            <td align="center" style="background-color:#0f2f4d; padding:20px; color:#ffffff; font-size:12px;">
+              <strong>Biblioteca Nichele</strong><br>
+              Gestão de Empréstimos<br>
+              © ${new Date().getFullYear()} Grupo Nichele
             </td>
           </tr>
 
         </table>
 
-        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:650px;">
+        <table width="100%" style="max-width:650px;">
           <tr>
-            <td align="center" style="padding:18px; font-size:11px; color:#718096;">
+            <td align="center" style="padding:15px; font-size:11px; color:#718096;">
               Esta é uma mensagem automática. Não é necessário respondê-la.
             </td>
           </tr>
@@ -81,5 +85,6 @@ function gerarTemplateEmail({ titulo, conteudo }) {
   </html>
   `;
 }
+
 
 module.exports = gerarTemplateEmail;

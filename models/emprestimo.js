@@ -1,45 +1,35 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
-const Aluno = require('./aluno');
-const Livro = require('./livro');
-const EmprestimoLivro = require('./emprestimo_livro');
 
 class Emprestimo extends Model {}
 
 Emprestimo.init({
-  data_solicitacao: {
-    type: DataTypes.DATE,
-    allowNull: false
-  },
-  quantidade_livros: {
+
+  aluno_id: {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  descricao: {
-    type: DataTypes.TEXT
-  },
-  situacao: {
-    type: DataTypes.ENUM('em andamento', 'finalizado'),
+
+  quantidade_livros: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: 'em andamento'
+    defaultValue: 0
   },
-  data_devolucao: {
-    type: DataTypes.DATE
+
+  data_solicitacao: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
   },
-  ultimo_lembrete: {
-    type: DataTypes.DATE,
+
+  observacao: {
+    type: DataTypes.TEXT,
     allowNull: true
-  }  
+  }
+
 }, {
   sequelize,
-  modelName: 'Emprestimo'
+    modelName: 'Emprestimo',
+    timestamps: true
 });
-
-// Definir relacionamentos
-Emprestimo.belongsTo(Aluno, { foreignKey: 'aluno_id' });
-Aluno.hasMany(Emprestimo, { foreignKey: 'aluno_id' });
-
-Emprestimo.belongsToMany(Livro, { through: EmprestimoLivro, foreignKey: 'emprestimo_id' });
-Livro.belongsToMany(Emprestimo, { through: EmprestimoLivro, foreignKey: 'livro_id' });
 
 module.exports = Emprestimo;

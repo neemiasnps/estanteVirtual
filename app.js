@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const path = require("path");
 const sequelize = require("./config/database"); // Verifique o caminho
@@ -14,23 +15,22 @@ const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT forne
 
 // Configuração do middleware de sessão
 app.use(
-    session({
-        store: sessionStore,
-        secret: "seu_segredo", // Substitua por uma string secreta
-        resave: false,
-        saveUninitialized: true,
-        cookie: {
-            secure: false, // Defina como `true` se você usar HTTPS
-            maxAge: 30 * 60 * 1000, // Tempo de expiração da sessão: 30 minutos
-        },
-    }),
+  session({
+    secret: 'biblioteca_nichele',
+    resave: false,
+    saveUninitialized: false,
+    rolling: true, // renova tempo a cada requisição
+    cookie: {
+      maxAge: 30 * 60 * 1000, // 30 minutos
+      httpOnly: true
+    }
+  })
 );
 
-app.get("/api/auth/status", (req, res) => {
-    if (req.session && req.session.usuario) {
-        return res.json({ autenticado: true });
-    }
-    res.json({ autenticado: false });
+app.get('/api/auth/status', (req, res) => {
+  res.json({
+    autenticado: !!req.session.usuario
+  });
 });
 
 // Middlewares
@@ -39,7 +39,7 @@ app.use(express.urlencoded({ extended: true })); // Para dados de formulários
 
 app.use(
     cors({
-        origin: "https://biblioteca-nichele.onrender.com",
+        origin: "http://bibliotecanichele.com.br/",
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true, // Permite cookies se necessário
@@ -51,16 +51,64 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 // Rotas
-app.use("/api/usuarios", require("./routes/usuarios"));
-app.use("/api/livros", require("./routes/livros"));
-app.use("/api/emprestimos", require("./routes/emprestimos"));
-app.use("/api/estoques", require("./routes/estoques"));
-app.use("/api/contato", require("./routes/contato"));
-app.use("/api/alunos", require("./routes/alunos"));
-app.use("/api/ebooks", require("./routes/ebooks"));
+//app.use("/api/usuarios", require("./routes/usuarios"));
 app.use("/api/homes", require("./routes/homes"));
-app.use("/api/pdf", require("./routes/pdf"));
-app.use("/api/generos", require("./routes/generos"));
+
+app.use("/api/auth", require("./routes/auth"));
+
+
+// ROTAS PÚBLICAS
+app.use("/api/public/livros", require("./routes/public/livros"));
+app.use("/api/public/ebooks", require("./routes/public/ebooks"));
+//app.use("/api/public/generos", require("./routes/public/generos"));
+app.use("/api/public/audiobooks", require("./routes/public/audiobooks"));
+app.use("/api/public/contato", require("./routes/public/contato"));
+
+// ROTAS ADMIN (COM AUTENTICAÇÃO)
+app.use("/api/admin/livros", garantirAutenticado, require("./routes/admin/livros"));
+app.use("/api/admin/ebooks", garantirAutenticado, require("./routes/admin/ebooks"));
+app.use("/api/admin/alunos", garantirAutenticado, require("./routes/admin/alunos"));
+app.use("/api/admin/generos", garantirAutenticado, require("./routes/admin/generos"));
+app.use("/api/admin/subgeneros", garantirAutenticado, require("./routes/admin/subgeneros"));
+app.use("/api/admin/estoques", garantirAutenticado, require("./routes/admin/estoques"));
+app.use("/api/admin/emprestimos", garantirAutenticado, require("./routes/admin/emprestimos"));
+
+
+// APIs protegidas
+//Livros
+app.get("/gerenciar_livros/novo", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "livro-form.html"));
+});
+app.get("/gerenciar_livros/editar/:id", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "livro-form.html"));
+});
+
+//Ebook
+app.get("/gerenciar_ebooks/novo", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "ebook-form.html"));
+});
+app.get("/gerenciar_ebooks/editar/:id", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "ebook-form.html"));
+});
+
+//Alunos
+app.get("/gerenciar_alunos/novo", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "aluno-form.html"));
+});
+app.get("/gerenciar_alunos/editar/:id", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "aluno-form.html"));
+});
+
+app.use("/api/generos", garantirAutenticado, require("./routes/admin/generos"));
+app.use("/api/subgeneros", garantirAutenticado, require("./routes/admin/subgeneros"));
+
+//Emprestimos
+app.get("/gerenciar_emprestimos/novo", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "requisicao-form.html"));
+});
+app.get("/gerenciar_emprestimos/editar/:id", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "requisicao-form.html"));
+});
 
 // Rota Principal
 app.get("/", (req, res) => {
@@ -104,158 +152,6 @@ app.get("/audiobooks", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "audiobooks.html"));
 });
 
-//Rota para buscar audiobooks
-app.get("/api/audiobooks", async (req, res) => {
-    const { page = 1, limit = 12, search = "" } = req.query; // Recebe o parâmetro de busca
-    const offset = (page - 1) * limit;
-
-    try {
-        // URL da API do Archive.org para buscar audiobooks com base na pesquisa
-        const response = await axios.get(
-            "https://archive.org/advancedsearch.php",
-            {
-                params: {
-                    q: `collection:"librivoxaudio" AND language:"por" AND (title:"${search}~" OR creator:"${search}~" OR genre:"${search}~")`, // Busca por título, autor ou gênero
-                    fl: "creator,description,genre,identifier,imagecount,language,title,item_size", // Campos de interesse
-                    rows: limit, // Limita o número de resultados por página
-                    page, // Página da consulta
-                    output: "json", // Formato de saída JSON
-                },
-            },
-        );
-
-        if (
-            !response.data ||
-            !response.data.response ||
-            !response.data.response.docs
-        ) {
-            throw new Error("Dados não encontrados na resposta da API");
-        }
-
-        // Obtém o total de resultados encontrados (numFound) e os audiobooks retornados
-        const total = response.data.response.numFound;
-        const audiobooks = await Promise.all(
-            response.data.response.docs.map(async (doc) => {
-                try {
-                    // Faz uma requisição para obter os metadados do audiobook
-                    const metadataResponse = await axios.get(
-                        `https://archive.org/metadata/${doc.identifier}`,
-                    );
-                    const runtime =
-                        metadataResponse.data.metadata.runtime ||
-                        "Duração não disponível";
-
-                    // Monta o objeto com as informações
-                    return {
-                        id: doc.identifier, // Identificador único do audiobook
-                        title: doc.title, // Título do audiobook
-                        authors: doc.creator
-                            ? doc.creator.split("; ")
-                            : ["Desconhecido"], // Autor(es)
-                        genre: doc.genre
-                            ? doc.genre.split("; ")
-                            : ["Desconhecido"], // Gênero
-                        language: doc.language ? doc.language : "Desconhecido", // Idioma(s)
-                        description:
-                            doc.description || "Descrição não disponível", // Sinopse
-                        image: `https://archive.org/services/img/${doc.identifier}`, // URL da capa
-                        link: `https://archive.org/details/${doc.identifier}`, // Link para a página do audiobook
-                        item_size: doc.item_size
-                            ? (doc.item_size / 1048576).toFixed(2) + " MB"
-                            : "Tamanho não disponível", // Tamanho do arquivo em MB
-                        duration: runtime, // Duração extraída do metadado
-                    };
-                } catch (error) {
-                    console.error(
-                        `Erro ao acessar metadado de ${doc.identifier}:`,
-                        error.message,
-                    );
-                    return {
-                        ...doc,
-                        duration: "Duração não disponível",
-                    };
-                }
-            }),
-        );
-
-        // Retorna os livros com o número total de audiobooks encontrados para ajuste da paginação no frontend
-        res.json({
-            total,
-            books: audiobooks, // Audiobooks filtrados
-        });
-    } catch (error) {
-        console.error("Erro ao acessar Archive.org:", error.message);
-        res.status(500).json({
-            error: "Erro ao buscar audiolivros. Tente novamente mais tarde.",
-            details: error.message,
-        });
-    }
-});
-
-// Função de parsing de RSS extraída para fora da rota
-const parseRSS = (xmlData) => {
-    return new Promise((resolve, reject) => {
-        xml2js.parseString(xmlData, (err, result) => {
-            if (err) {
-                reject("Erro ao fazer parsing do XML");
-            }
-            const imageUrl =
-                result?.rss?.channel?.[0]?.["itunes:image"]?.[0]?.["$"]?.href ||
-                "https://via.placeholder.com/300x450?text=Imagem+indisponível";
-            resolve(imageUrl);
-        });
-    });
-};
-
-app.get("/get-rss-image", async (req, res) => {
-    const rssUrl = req.query.url;
-
-    if (!rssUrl) {
-        return res.status(400).json({ error: "URL do RSS não fornecida" });
-    }
-
-    try {
-        const response = await axios.get(rssUrl);
-        const imageUrl = await parseRSS(response.data);
-        res.json({ imageUrl });
-    } catch (error) {
-        console.error("Erro ao processar o XML:", error);
-        res.status(500).json({ error: "Erro ao buscar o feed RSS" });
-    }
-});
-
-//
-const parseRSSForGenre = (xmlData) => {
-    return new Promise((resolve, reject) => {
-        xml2js.parseString(xmlData, (err, result) => {
-            if (err) {
-                reject("Erro ao fazer parsing do XML");
-            }
-            const genre =
-                result?.rss?.channel?.[0]?.["itunes:category"]?.[0]?.["$"]
-                    ?.text || "Não especificado";
-            resolve(genre);
-        });
-    });
-};
-
-// Endpoint para obter gênero
-app.get("/get-rss-genre", async (req, res) => {
-    const rssUrl = req.query.url;
-
-    if (!rssUrl) {
-        return res.status(400).json({ error: "URL do RSS não fornecida" });
-    }
-
-    try {
-        const response = await axios.get(rssUrl);
-        const genre = await parseRSSForGenre(response.data);
-        res.json({ genre });
-    } catch (error) {
-        console.error("Erro ao processar o XML:", error);
-        res.status(500).json({ error: "Erro ao buscar o feed RSS" });
-    }
-});
 
 // Teste de Conexão com o Banco de Dados
 sequelize

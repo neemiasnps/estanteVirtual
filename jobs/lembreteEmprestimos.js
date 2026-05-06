@@ -1,173 +1,163 @@
-require('dotenv').config();
-
+const cron = require('node-cron');
 const { Op } = require('sequelize');
 
+const EmprestimoLivro = require('../models/emprestimo_livro');
 const Emprestimo = require('../models/emprestimo');
-const Aluno = require('../models/aluno');
 const Livro = require('../models/livro');
 
-const enviarEmail = require('../public/js/mailer');
-const gerarTemplateEmail = require('../utils/emailTemplate');
+const {
+  enviarEmailLembreteEmprestimo,
+  enviarEmailEmprestimoAtrasado
+} = require('../services/emailService');
 
-async function executarLembretes() {
-  console.log('🔵 INÍCIO DO JOB DE LEMBRETES');
+// ================================
+// FUNÇÃO AUXILIAR (INÍCIO/FIM DO DIA)
+// ================================
+function getInicioEFimDoDia(data) {
+  const inicio = new Date(data);
+  inicio.setHours(0, 0, 0, 0);
+
+  const fim = new Date(data);
+  fim.setHours(23, 59, 59, 999);
+
+  return { inicio, fim };
+}
+
+// ================================
+// CRON - TODOS OS DIAS ÀS 08:00
+// ================================
+cron.schedule('0 8 * * *', async () => {
+
+  console.log('[CRON] Início do processamento de e-mails');
+
+  const hoje = new Date();
+  const { inicio: hojeInicio, fim: hojeFim } = getInicioEFimDoDia(hoje);
+
+  const cincoDias = new Date();
+  cincoDias.setDate(hoje.getDate() + 5);
+  const { inicio: cincoInicio, fim: cincoFim } = getInicioEFimDoDia(cincoDias);
+
+  const diaSemana = hoje.getDay(); // 1 = segunda-feira
 
   try {
-    console.log('Verificando empréstimos com mais de 40 dias...');
 
-    const hoje = new Date();
-
-    const dataLimite = new Date();
-    dataLimite.setDate(hoje.getDate() - 40);
-
-    const emprestimos = await Emprestimo.findAll({
-      where: {
-        situacao: 'em andamento',
-        data_solicitacao: {
-          [Op.lte]: dataLimite
+    // ================================
+    // CONDIÇÕES
+    // ================================
+    const condicoes = [
+      // 📅 Hoje
+      {
+        data_devolucao_prevista: {
+          [Op.between]: [hojeInicio, hojeFim]
         }
       },
+      // ⏳ 5 dias antes
+      {
+        data_devolucao_prevista: {
+          [Op.between]: [cincoInicio, cincoFim]
+        }
+      }
+    ];
+
+    // 🚨 Atrasados (somente segunda-feira)
+    if (diaSemana === 1) {
+      condicoes.push({
+        data_devolucao_prevista: {
+          [Op.lt]: hojeInicio
+        }
+      });
+    }
+
+    // ================================
+    // BUSCA NO BANCO
+    // ================================
+    const itens = await EmprestimoLivro.findAll({
+      where: {
+        status: 'pendente',
+        [Op.or]: condicoes
+      },
       include: [
-        { model: Aluno },
-        { model: Livro }
+        {
+          model: Emprestimo,
+          include: ['aluno']
+        },
+        {
+          model: Livro
+        }
       ]
     });
 
-    console.log(`Encontrados ${emprestimos.length} empréstimos`);
+    console.log(`[CRON] ${itens.length} itens encontrados`);
 
-    for (const emprestimo of emprestimos) {
+    let enviados = 0;
+    let ignorados = 0;
 
-      // Evita enviar mais de um lembrete por semana
-      if (emprestimo.ultimo_lembrete) {
+    // ================================
+    // PROCESSAMENTO
+    // ================================
+    for (const item of itens) {
 
-        const diasDesdeUltimo = Math.floor(
-          (hoje - new Date(emprestimo.ultimo_lembrete)) /
-          (1000 * 60 * 60 * 24)
-        );
+      const ultimo = item.ultimo_lembrete
+        ? new Date(item.ultimo_lembrete)
+        : null;
 
-        if (diasDesdeUltimo < 7) {
-          console.log(`⏭️ Pulado (já enviado recentemente): ${emprestimo.id}`);
-          continue;
-        }
-      }
+      const hojeStr = hojeInicio.toDateString();
 
-      const aluno = emprestimo.Aluno;
-
-      if (!aluno || aluno.status !== 'ativo') {
-        console.log(`⏭️ Pulado (aluno inativo ou inexistente): ${emprestimo.id}`);
+      // 🔒 Evita duplicidade no mesmo dia
+      if (ultimo && ultimo.toDateString() === hojeStr) {
+        ignorados++;
         continue;
       }
 
-      const dataEmprestimo = new Date(emprestimo.data_solicitacao);
-
-      const diasEmprestado = Math.floor(
-        (hoje - dataEmprestimo) / (1000 * 60 * 60 * 24)
-      );
-
-      const prazoPadrao = 40;
-      const diasEmAtraso = diasEmprestado - prazoPadrao;
-
-      const listaLivros = emprestimo.Livros
-        .map(livro => `• ${livro.titulo}`)
-        .join('<br>');
-
-      let alertaAdicional = '';
-
-      if (diasEmprestado >= 90) {
-        alertaAdicional = `
-          <p style="color:#bb1518;">
-            <strong>ATENÇÃO:</strong> O prazo está excedido há mais de 90 dias.
-            Solicitamos regularização com urgência.
-          </p>
-        `;
-      } else if (diasEmprestado >= 60) {
-        alertaAdicional = `
-          <p style="color:#d35400;">
-            <strong>Importante:</strong> O prazo já ultrapassou 60 dias.
-          </p>
-        `;
+      // 🔒 Validação de e-mail
+      if (!item.Emprestimo?.aluno?.email) {
+        console.warn(`[CRON] Item ${item.id} sem e-mail válido`);
+        continue;
       }
 
-      const assunto = 'Biblioteca Nichele - Lembrete de Devolução';
+      const dataPrevista = new Date(item.data_devolucao_prevista);
 
-      const conteudo = `
-        <p>Prezado(a) <strong>${aluno.nomeCompleto}</strong>,</p>
+      const isHoje = dataPrevista >= hojeInicio && dataPrevista <= hojeFim;
+      const isCincoDias = dataPrevista >= cincoInicio && dataPrevista <= cincoFim;
+      const isAtrasado = dataPrevista < hojeInicio;
 
-        <p>O(s) livro(s) abaixo foi(ram) retirado(s) em
-        <strong>${dataEmprestimo.toLocaleDateString('pt-BR')}</strong>:</p>
+      try {
 
-        <table width="100%" cellpadding="10" cellspacing="0" border="0"
-        style="background:#f5f7fa; border-left:4px solid #17436a; margin:15px 0;">
-          <tr>
-            <td style="font-size:14px;">
-              ${listaLivros}
-            </td>
-          </tr>
-        </table>
+        if (isAtrasado) {
 
-        <p>Tempo de empréstimo:
-        <strong style="color:#17436a;">${diasEmprestado} dias</strong></p>
+          // 🚨 ATRASO (segunda-feira)
+          await enviarEmailEmprestimoAtrasado(item);
 
-        <p>Prazo padrão: <strong>${prazoPadrao} dias</strong></p>
+        } else if (isHoje || isCincoDias) {
 
-        <p>Dias em atraso:
-        <strong style="color:#bb1518;">
-          ${diasEmAtraso > 0 ? diasEmAtraso : 0}
-        </strong></p>
+          // 📅 LEMBRETE
+          await enviarEmailLembreteEmprestimo(item);
 
-        ${alertaAdicional}
+        }
 
-        <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin:35px auto;">
-          <tr>
-            <td align="center">
-              <a href="mailto:treinamento@nichele.com.br"
-              style="
-                display:inline-block;
-                padding:14px 28px;
-                font-size:14px;
-                font-weight:600;
-                color:#ffffff;
-                text-decoration:none;
-                border-radius:8px;
-                background:linear-gradient(135deg,#bb1518,#e63946);
-                box-shadow:0 6px 15px rgba(187,21,24,0.3);
-              ">
-              Entrar em contato com T&D
-              </a>
-            </td>
-          </tr>
-        </table>
+        // Atualiza controle
+        item.ultimo_lembrete = new Date();
+        await item.save();
 
-        <p style="font-size:13px;">
-        Solicitamos a devolução ou regularização o quanto antes.
-        </p>
-      `;
+        enviados++;
 
-      const corpo = gerarTemplateEmail({
-        titulo: 'Lembrete de Devolução',
-        conteudo
-      });
+      } catch (erroEnvio) {
+        console.error(`[CRON] Erro ao enviar e-mail (ID: ${item.id})`, erroEnvio);
+      }
 
-      console.log(`📧 Enviando para: ${aluno.email}`);
-
-      await enviarEmail(aluno.email, assunto, corpo);
-
-      emprestimo.ultimo_lembrete = new Date();
-      await emprestimo.save();
-
-      console.log(`✅ Lembrete enviado para ${aluno.nomeCompleto}`);
     }
 
-    console.log('🟢 FIM DO JOB DE LEMBRETES');
-    process.exit(0);
+    // ================================
+    // LOG FINAL
+    // ================================
+    console.log('[CRON] Finalizado');
+    console.log(`[CRON] Enviados: ${enviados}`);
+    console.log(`[CRON] Ignorados: ${ignorados}`);
 
   } catch (error) {
-    console.error('❌ Erro ao processar lembretes:', error);
-    process.exit(1);
+    console.error('[CRON] Erro geral:', error);
   }
-}
 
-// 👇 EXECUTA AUTOMATICAMENTE
-if (require.main === module) {
-  executarLembretes();
-}
+}, {
+  timezone: 'America/Sao_Paulo'
+});

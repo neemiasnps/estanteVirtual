@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Cadastro de Alunos</title>
+
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-wrapper custom-navbar">
+            <a href="/" class="brand-logo custom-logo">
+                <img src="/images/logo.png" alt="Logo">
+            </a>
+        </div>
+    </nav>
+
+    <!-- CONTAINER -->
+    <div class="container">
+        <h5 id="page-title">Cadastrar Aluno</h5>
+
+        <form id="form-aluno">
+
+            <input type="hidden" id="aluno-id">
+
+            <div class="row">
+
+                <!-- Nome -->
+                <div class="input-field col s12">
+                    <input id="nomeCompleto" type="text" required>
+                    <label for="nomeCompleto">Nome Completo</label>
+                </div>
+
+                <!-- CPF -->
+                <div class="input-field col s12 m6">
+                    <input id="cpf" type="text" required>
+                    <label for="cpf">CPF</label>
+                </div>
+
+                <!-- Celular -->
+                <div class="input-field col s12 m6">
+                    <input id="celular" type="text">
+                    <label for="celular">Celular</label>
+                </div>
+
+                <!-- Email -->
+                <div class="input-field col s12">
+                    <input id="email" type="email">
+                    <label for="email">Email</label>
+                </div>
+
+                <!-- LOJA (SELECT) -->
+                <div class="input-field col s12">
+                    <select id="loja" required>
+                        <option value="" disabled selected>Selecione a loja</option>
+                        <option value="Araucária">Araucária</option>
+                        <option value="Campo Largo">Campo Largo</option>
+                        <option value="Fazenda Rio Grande">Fazenda Rio Grande</option>
+                        <option value="Mateus Leme">Mateus Leme</option>
+                        <option value="Pinhais">Pinhais</option>
+                        <option value="Pinheirinho">Pinheirinho</option>
+                        <option value="Santa Felicidade">Santa Felicidade</option>
+                        <option value="São José dos Pinhais">São José dos Pinhais</option>
+                        <option value="Tá Na Mão">Tá Na Mão</option>
+                        <option value="Tintas Brigadeiro Franco">Tintas Brigadeiro Franco</option>
+                        <option value="Tintas Campo Comprido">Tintas Campo Comprido</option>
+                        <option value="Tintas Castro">Tintas Castro</option>
+                        <option value="Tintas Portão">Tintas Portão</option>
+                        <option value="Vero. Nichele">Vero. Nichele</option>
+                        <option value="Xaxim">Xaxim</option>
+                    </select>
+                    <label>Loja</label>
+                </div>
+
+                <!-- Status -->
+                <div class="col s12">
+                    <div class="switch">
+                        <label>
+                            Inativo
+                            <input type="checkbox" id="status" checked>
+                            <span class="lever"></span>
+                            Ativo
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Botões -->
+            <div class="row">
+                <div class="col s12 right-align">
+                    <a href="/gerenciar_alunos" class="btn grey">Cancelar</a>
+                    <button type="submit" class="btn blue">Salvar</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/aluno-form.js"></script>
+    <script src="/js/auth.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            M.FormSelect.init(document.querySelectorAll('select'));
+        });
+    </script>
+
+</body>
+
+</html>

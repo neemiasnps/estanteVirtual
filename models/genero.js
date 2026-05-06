@@ -9,7 +9,7 @@ const Genero = sequelize.define('Genero', {
   },
 }, {
   tableName: 'Generos',
-  timestamps: true,
+  timestamps: false,
 });
 
 module.exports = Genero;

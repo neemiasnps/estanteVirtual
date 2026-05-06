@@ -1,15 +1,37 @@
-// routes/auth.js
 const express = require('express');
 const router = express.Router();
+const Usuario = require('../models/usuario');
+const bcrypt = require('bcryptjs');
 
-function garantirAutenticado(req, res, next) {
-  console.log('Sessão:', req.session);
-  if (req.session && req.session.usuario) {
-    return next(); // Usuário está logado, continuar para a página
-  } else {
-    res.redirect('/'); // Redirecionar para a página de login
+// LOGIN
+router.post('/login', async (req, res) => {
+  const { email, senha } = req.body;
+
+  const usuario = await Usuario.findOne({ where: { email } });
+
+  if (!usuario) {
+    return res.status(400).json({ error: 'Usuário não encontrado' });
   }
-}
 
-// Exporte a função para uso em outros arquivos
-module.exports = garantirAutenticado;
+  const ok = await bcrypt.compare(senha, usuario.senha);
+
+  if (!ok) {
+    return res.status(400).json({ error: 'Senha inválida' });
+  }
+
+  req.session.usuario = {
+    id: usuario.id,
+    nome: usuario.nome
+  };
+
+  res.json({ success: true });
+});
+
+// LOGOUT
+router.post('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ success: true });
+  });
+});
+
+module.exports = router;

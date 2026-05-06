@@ -219,12 +219,19 @@ input.invalid {
 /* Aumenta o tamanho do dropdown */
 .dropdown-content {
   /*width: 150px !important; /* Ajuste o valor conforme necessário */
+   top: 64px !important; /* altura padrão do nav do Materialize */
+  min-width: 180px;   /* largura controlada */
+  width: auto !important;
+  border-radius: 6px;
 }
 
 /* Aumenta o tamanho dos ícones e do texto dentro dos itens do dropdown */
-.dropdown-content li a {
-    font-size: 14px; /* Ajuste o tamanho da fonte conforme necessário */
-    padding: 10px 15px; /* Ajuste o padding conforme necessário */
+.dropdown-content li > a {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 /* Ajusta o tamanho dos ícones no dropdown */
@@ -511,4 +518,125 @@ table th:nth-child(8) {
     .slider-full {
         height: calc(100vh - 56px);
     }
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+/* Evita quebra de texto */
+td:nth-child(5) {
+    white-space: nowrap;
+}
+
+/* Centraliza ações */
+td:nth-child(6) {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Espaçamento entre ícones */
+td:nth-child(6) a {
+    margin: 0 4px;
+}
+
+/* Opcional: melhorar aparência da situação */
+.status-disponivel {
+    color: green;
+    font-weight: 500;
+}
+
+.status-indisponivel {
+    color: red;
+    font-weight: 500;
+}
+
+.linha-resumo td {
+  vertical-align: middle;
+}
+
+.itens-container {
+  background: #fafafa;
+}
+
+.itens-container td {
+  padding: 0 !important;
+}
+
+.item-row {
+  display: grid;
+  grid-template-columns: 
+    60px   /* ID */
+    2fr    /* Livro */
+    120px  /* Retirada */
+    80px   /* Dias */
+    120px  /* Devolução */
+    120px  /* Status */
+    180px; /* Ações */
+
+  align-items: center;
+  gap: 10px;
+}
+
+.item-col {
+  font-size: 13px;
+}
+
+.item-col.titulo {
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.actions i {
+  cursor: pointer;
+  padding: 4px;
+}
+
+.icon-btn {
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.badge {
+  font-size: 11px !important;
+  font-weight: 500;
+  line-height: normal;
+}
+
+/* Linhas principais - zebra */
+.linha-principal:nth-child(odd) {
+  background-color: #bdbdbd ;
+}
+
+.linha-principal:nth-child(even) {
+  background-color: #b2dfdb ;
+}
+
+.linha-principal:hover {
+  background-color: #009688 !important; 
+  cursor: pointer;
+}
+
+tr[class^="itens-"] {
+  background-color: #f50057;
+}
+
+tr[class^="itens-"] td {
+  border-top: none;
+  background-color: #e0e0e0;
+}
+
+.linha-ativa {
+  background-color: #90caf9 !important; /* leve verde */
+}
+
+#pagination-controls a {
+    cursor: pointer;
 }

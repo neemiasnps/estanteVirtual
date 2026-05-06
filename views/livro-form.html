@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Cadastro de Livro</title>
+
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- Estilos customizados -->
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- NAVBAR (mantido padrão do sistema) -->
+    <nav>
+        <div class="nav-wrapper custom-navbar">
+            <a href="/" class="brand-logo custom-logo">
+                <img src="/images/logo.png" alt="Logo">
+            </a>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO -->
+    <div class="container">
+
+        <!-- TÍTULO DINÂMICO -->
+        <div class="row">
+            <div class="col s12">
+                <h5 id="form-title">Cadastrar Livro</h5>
+                <p id="form-subtitle">Preencha os dados abaixo</p>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO -->
+        <div class="row">
+            <form class="col s12" id="form-livro">
+
+                <!-- ID (usado só na edição) -->
+                <input type="hidden" id="livro-id">
+
+                <div class="row">
+
+                    <!-- TÍTULO -->
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">book</i>
+                        <input id="titulo" type="text" required>
+                        <label for="titulo">Título</label>
+                    </div>
+
+                    <!-- AUTOR -->
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input id="autor" type="text" required>
+                        <label for="autor">Autor</label>
+                    </div>
+
+                    <!-- GÊNERO -->
+                    <div class="input-field col s12 m6">
+                        <i class="material-icons prefix">category</i>
+                        <select id="genero" required>
+                            <option value="" disabled selected>Escolha o gênero</option>
+                        </select>
+                        <label>Gênero</label>
+                    </div>
+
+                    <!-- SUBGÊNERO -->
+                    <div class="input-field col s12 m6">
+                        <i class="material-icons prefix">category</i>
+                        <select id="subgenero" required>
+                            <option value="" disabled selected>Escolha o subgênero</option>
+                        </select>
+                        <label>Subgênero</label>
+                    </div>
+
+                    <!-- ANO -->
+                    <div class="input-field col s12 m6">
+                        <i class="material-icons prefix">date_range</i>
+                        <input id="ano_publicacao" type="number" required>
+                        <label for="ano_publicacao">Ano de Publicação</label>
+                    </div>
+
+                    <!-- EDITORA -->
+                    <div class="input-field col s12 m6">
+                        <i class="material-icons prefix">business</i>
+                        <input id="editora" type="text" required>
+                        <label for="editora">Editora</label>
+                    </div>
+
+                    <!-- FOTO -->
+                    <div class="input-field col s12 m6">
+                        <i class="material-icons prefix">image</i>
+                        <input id="foto" type="text" required>
+                        <label for="foto">URL da Foto</label>
+                    </div>
+
+                    <!-- GENTILEZA -->
+                    <div class="input-field col s12 m6">
+                        <i class="material-icons prefix">group</i>
+                        <input id="gentileza" type="text" required>
+                        <label for="gentileza">Gentileza</label>
+                    </div>
+
+                    <!-- SINOPSE -->
+                    <div class="input-field col s12">
+                        <i class="material-icons prefix">description</i>
+                        <textarea id="sinopse" class="materialize-textarea" required></textarea>
+                        <label for="sinopse">Sinopse</label>
+                    </div>
+
+                    <!-- SITUAÇÃO -->
+                    <div class="input-field col s12">
+                        <div class="switch">
+                            <label>
+                                Indisponível
+                                <input id="situacao" type="checkbox" checked>
+                                <span class="lever"></span>
+                                Disponível
+                            </label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- BOTÕES -->
+                <div class="row">
+                    <div class="col s12 right-align">
+
+                        <button class="btn waves-effect waves-light blue" type="submit">
+                            Salvar
+                            <i class="material-icons right">save</i>
+                        </button>
+
+                        <a href="/gerenciar_livros" class="btn grey">
+                            Cancelar
+                            <i class="material-icons right">arrow_back</i>
+                        </a>
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- JS DA PÁGINA -->
+    <script src="/js/livro_form.js"></script>
+    <script src="/js/auth.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            M.FormSelect.init(document.querySelectorAll('select'));
+        });
+    </script>
+
+</body>
+
+</html>

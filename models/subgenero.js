@@ -9,7 +9,7 @@ const Subgenero = sequelize.define('Subgenero', {
   },
 }, {
   tableName: 'Subgeneros',
-  timestamps: true,
+  timestamps: false,
 });
 
 // Relacionamento: Um gênero possui muitos subgêneros

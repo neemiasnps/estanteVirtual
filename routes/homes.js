@@ -1,27 +1,45 @@
 const express = require('express');
 const router = express.Router();
-const Ebook = require('../models/ebook');
-const Livro = require('../models/livro');
-const Aluno = require('../models/aluno');
-const Emprestimo = require('../models/emprestimo');
-const EmprestimoLivro = require('../models/emprestimo_livro');
 const { Op } = require('sequelize');
+
+const { Ebook, Livro, Aluno, Emprestimo, EmprestimoLivro, Genero } = require('../models');
 
 const { Sequelize } = require('sequelize');
 
 // Rota para buscar os 5 eBooks mais recentes
 router.get('/', async (req, res) => {
     try {
+
         const ebooks = await Ebook.findAll({
             limit: 5,
-            order: [['createdAt', 'DESC']]
+            order: [['createdAt', 'DESC']],
+            include: [
+                {
+                    model: Genero,
+                    attributes: ['nome'],
+                    required: false
+                }
+            ]
         });
-        res.json(ebooks);
+
+        // 🔥 Padroniza resposta (recomendado)
+        const resultado = ebooks.map(e => ({
+            id: e.id,
+            titulo: e.titulo,
+            autor: e.autor,
+            foto: e.foto,
+            url: e.url,
+            genero: e.Genero?.nome || ''
+        }));
+
+        res.json(resultado);
+
     } catch (error) {
         console.error('Erro ao buscar eBooks:', error);
         res.status(500).json({ error: 'Erro ao buscar eBooks' });
     }
 });
+
 
 // Rota para buscar os 3 eBooks mais baixados
 router.get('/mais-baixados', async (req, res) => {
@@ -37,19 +55,46 @@ router.get('/mais-baixados', async (req, res) => {
     }
 });
 
+
 // Rota para buscar os 5 livros mais locados
 router.get('/mais-locados', async (req, res) => {
     try {
+
+        console.log('🔎 Buscando livros mais locados...');
+
         const livros = await Livro.findAll({
+            where: {
+                somaLocados: {
+                    [require('sequelize').Op.gt]: 0
+                }
+            },
             limit: 5,
-            order: [['somaLocados', 'DESC']] // Ordena por somaLocados em ordem decrescente
+            order: [
+                ['somaLocados', 'DESC']
+            ]
         });
-        res.json(livros);
+
+        console.log('📊 Total encontrados:', livros.length);
+
+        // log resumido (evita poluir terminal)
+        console.log('📚 Top livros:', livros.map(l => ({
+            id: l.id,
+            titulo: l.titulo,
+            somaLocados: l.somaLocados
+        })));
+
+        if (!livros.length) {
+            console.log('⚠️ Nenhum livro com somaLocados > 0 encontrado');
+        }
+
+        return res.json(livros);
+
     } catch (error) {
-        console.error('Erro ao buscar livros mais locados:', error);
-        res.status(500).json({ error: 'Erro ao buscar livros mais locados' });
+        console.error('❌ Erro ao buscar livros mais locados:', error);
+        return res.status(500).json({ error: 'Erro ao buscar livros mais locados' });
     }
 });
+
 
 // Rota para buscar os 5 livros doados recentemente
 router.get('/doados', async (req, res) => {
@@ -65,42 +110,11 @@ router.get('/doados', async (req, res) => {
     }
 });
 
-// Rota para buscar os 3 alunos que mais emprestaram livros
-router.get('/top-alunos-list1', async (req, res) => {
-  try {
-    const topAlunos = await Emprestimo.findAll({
-      attributes: [
-        'aluno_id',
-        [Sequelize.fn('COUNT', Sequelize.col('aluno_id')), 'total_emprestimos']
-      ],
-      include: [
-        {
-          model: Aluno,
-          attributes: ['nomeCompleto']
-        }
-      ],
-      group: ['aluno_id', 'Aluno.id', 'Aluno.nomeCompleto'],
-      order: [[Sequelize.literal('total_emprestimos'), 'DESC']],
-      limit: 3
-    });
 
-    // Ajustar resposta para enviar um array simples com nome e total
-    const resposta = topAlunos.map(item => ({
-      aluno_id: item.aluno_id,
-      nomeCompleto: item.Aluno.nomeCompleto,
-      total_emprestimos: item.get('total_emprestimos')
-    }));
-
-    res.json(resposta);
-  } catch (error) {
-    console.error('Erro ao buscar top alunos:', error);
-    res.status(500).json({ error: 'Erro ao buscar top alunos' });
-  }
-});
-
+// Rota para buscar os 3 alunos que mais locaram livros
 router.get('/top-alunos-list', async (req, res) => {
   try {
-    // 1. Buscar os IDs dos 3 alunos que mais fizeram empréstimos
+
     const topAlunosRaw = await Emprestimo.findAll({
       attributes: [
         'aluno_id',
@@ -117,37 +131,39 @@ router.get('/top-alunos-list', async (req, res) => {
       return res.json([]);
     }
 
-    // 2. Buscar os dados dos alunos e seus empréstimos com os livros
     const alunos = await Aluno.findAll({
       where: { id: { [Op.in]: alunoIds } },
       attributes: ['id', 'nomeCompleto'],
       include: [
         {
           model: Emprestimo,
+          as: 'emprestimos', // ✅ OBRIGATÓRIO
           attributes: ['id'],
           include: [
             {
               model: Livro,
               attributes: ['titulo'],
-              through: { attributes: [] } // oculta dados da tabela de junção
+              through: { attributes: [] }
             }
           ]
         }
       ]
     });
 
-    // 3. Montar a resposta consolidando os livros por aluno
     const resultado = alunos.map(aluno => {
-      // Juntar todos os livros de todos os empréstimos do aluno
+
       const livrosSet = new Set();
-      aluno.Emprestimos.forEach(emprestimo => {
-        emprestimo.Livros.forEach(livro => livrosSet.add(livro.titulo, livro.autor));
+
+      aluno.emprestimos.forEach(emp => {
+        emp.Livros.forEach(livro => {
+          livrosSet.add(livro.titulo);
+        });
       });
 
       return {
         id: aluno.id,
         nomeCompleto: aluno.nomeCompleto,
-        total_emprestimos: aluno.Emprestimos.length,
+        total_emprestimos: aluno.emprestimos.length,
         livros: Array.from(livrosSet)
       };
     });
@@ -160,76 +176,6 @@ router.get('/top-alunos-list', async (req, res) => {
   }
 });
 
-router.get('/top-alunos-list1', async (req, res) => {
-  try {
-    // 1. Buscar os IDs dos 3 alunos que mais fizeram empréstimos
-    const topAlunosRaw = await Emprestimo.findAll({
-      attributes: [
-        'aluno_id',
-        [Sequelize.fn('COUNT', Sequelize.col('aluno_id')), 'total_emprestimos']
-      ],
-      group: ['aluno_id'],
-      order: [[Sequelize.literal('total_emprestimos'), 'DESC']],
-      limit: 3
-    });
-
-    const alunoIds = topAlunosRaw.map(item => item.aluno_id);
-
-    if (alunoIds.length === 0) {
-      return res.json([]);
-    }
-
-    // 2. Buscar os dados dos alunos e seus empréstimos com os livros
-    const alunos = await Aluno.findAll({
-      where: { id: { [Op.in]: alunoIds } },
-      attributes: ['id', 'nomeCompleto'],
-      include: [
-        {
-          model: Emprestimo,
-          attributes: ['id'],
-          include: [
-            {
-              model: Livro,
-              attributes: ['titulo', 'autor', 'foto'],
-              through: { attributes: [] } // oculta dados da tabela de junção
-            }
-          ]
-        }
-      ]
-    });
-
-    // 3. Montar a resposta consolidando os livros por aluno
-    const resultado = alunos.map(aluno => {
-      const livrosMap = new Map();
-
-      aluno.Emprestimos.forEach(emprestimo => {
-        emprestimo.Livros.forEach(livro => {
-          const chave = `${livro.titulo}__${livro.autor}`;
-          if (!livrosMap.has(chave)) {
-            livrosMap.set(chave, {
-              titulo: livro.titulo,
-              autor: livro.autor,
-              foto: livro.foto
-            });
-          }
-        });
-      });
-
-      return {
-        id: aluno.id,
-        nomeCompleto: aluno.nomeCompleto,
-        total_emprestimos: aluno.Emprestimos.length,
-        livros: Array.from(livrosMap.values())
-      };
-    });
-
-    res.json(resultado);
-
-  } catch (error) {
-    console.error('Erro ao buscar os alunos com livros:', error);
-    res.status(500).json({ error: 'Erro ao buscar os alunos com livros' });
-  }
-});
 
 module.exports = router;
 

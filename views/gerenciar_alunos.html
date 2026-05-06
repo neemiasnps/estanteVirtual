@@ -22,72 +22,126 @@
 <body>
     <nav>
         <div class="nav-wrapper custom-navbar">
-            <a href="#" class="brand-logo custom-logo">
-                <img src="/images/logo.png" alt="Logo"></a>
-            <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+
+            <!-- Logo -->
+            <a href="/" class="brand-logo custom-logo">
+                <img src="/images/logo.png" alt="Logo">
+            </a>
+
+            <!-- Mobile menu icon -->
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger">
+                <i class="material-icons">menu</i>
+            </a>
+
+            <!-- MENU DESKTOP -->
             <ul class="right hide-on-med-and-down">
+
+                <!-- LINKS PRINCIPAIS -->
                 <li><a href="/">Home</a></li>
                 <li><a href="/livros">Livros</a></li>
                 <li><a href="/ebooks">eBooks</a></li>
+                <li><a href="/audiobooks">Audiobooks</a></li>
                 <li><a href="/contato">Contato</a></li>
-                <li id="menu-dropdown-container" style="display: none;">
-                    <a class="dropdown-trigger" href="#" data-target="dropdown-menu">Menu</a>
-                    <!-- Dropdown Structure -->
+                <li><a href="/como_funciona">Como funciona</a></li>
+
+                <!-- MENU ADMIN (somente logado) -->
+                <li id="admin-menu" style="display:none;">
+                    <a class="dropdown-trigger" href="#" data-target="dropdown-menu">
+                        Menu
+                    </a>
+
                     <ul id="dropdown-menu" class="dropdown-content">
                         <li><a href="/gerenciar_alunos"><i class="material-icons">people</i>Alunos</a></li>
                         <li><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
                         <li><a href="/gerenciar_ebooks"><i class="material-icons">book</i>eBooks</a></li>
-                        <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Requisição</a></li>
+                        <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Empréstimos</a></li>
                     </ul>
                 </li>
-                <!-- Logout icon -->
-                <li id="logout-link-container" style="display: none;">
+
+                <!-- LOGOUT (somente logado) -->
+                <li id="logout-link-container" style="display:none;">
                     <a href="#" id="logout-link">
                         <i class="material-icons">logout</i>
                     </a>
                 </li>
-                <li id="login-link-container"><a href="#" id="modal-login-link">Login</a></li>
+
+                <!-- LOGIN (somente deslogado) -->
+                <li id="login-link-container">
+                    <a href="#" id="modal-login-link">
+                        <i class="material-icons">login</i>
+                    </a>
+                </li>
+
             </ul>
-            <!-- Mobile Menu -->
+
+            <!-- MENU MOBILE -->
             <ul class="sidenav" id="mobile-demo">
+
                 <li><a href="/"><i class="material-icons">home</i>Home</a></li>
                 <li><a href="/livros"><i class="material-icons">book</i>Livros</a></li>
                 <li><a href="/ebooks"><i class="material-icons">book</i>eBooks</a></li>
+                <li><a href="/audiobooks"><i class="material-icons">audiotrack</i>Audiobooks</a></li>
                 <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
-                <li class="menu-item"><a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a></li>
-                <li class="menu-item"><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
-                <li class="menu-item"><a href="/gerenciar_ebooks"><i class="material-icons">book</i>eBooks</a></li>
-                <li class="menu-item"><a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Requisição</a></li>
-                <!-- Divider -->
+                <li><a href="/como_funciona"><i class="material-icons">info</i>Como funciona</a></li>
+
+                <!-- ADMIN MOBILE (somente logado) -->
+                <li id="admin-menu-mobile" style="display:none;">
+                    <a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a>
+                </li>
+
+                <li id="admin-menu-mobile-2" style="display:none;">
+                    <a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a>
+                </li>
+
+                <li id="admin-menu-mobile-3" style="display:none;">
+                    <a href="/gerenciar_ebooks"><i class="material-icons">book</i>eBooks</a>
+                </li>
+
+                <li id="admin-menu-mobile-4" style="display:none;">
+                    <a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Empréstimos</a>
+                </li>
+
                 <li class="divider"></li>
-                <li id="logout-link-mobile" style="display: none;">
-                    <a href="#" id="logout-link">
+
+                <!-- LOGOUT MOBILE -->
+                <li id="logout-link-mobile" style="display:none;">
+                    <a href="#" id="logout-link-mobile-action">
                         <i class="material-icons">logout</i> Sair
                     </a>
                 </li>
-                <li id="login-link-container-mobile"><a href="#" id="modal-login-link-mobile"><i class="material-icons">login</i>Login</a></li>
+
+                <!-- LOGIN MOBILE -->
+                <li id="login-link-container-mobile">
+                    <a href="#" id="modal-login-link-mobile">
+                        <i class="material-icons">login</i> Login
+                    </a>
+                </li>
+
             </ul>
+
         </div>
     </nav>
 
     <div class="container">
+
         <div class="row">
-            <!-- Botão de adicionar aluno à esquerda -->
+            <!-- BOTÃO NOVO L -->
             <div class="col s6 left-align">
-                <a class="btn-floating btn-large waves-effect waves-light blue modal-trigger" href="#modal-add-aluno">
+                <a href="/gerenciar_alunos/novo" class="btn-floating btn-large blue">
                     <i class="material-icons">add</i>
                 </a>
             </div>
 
-            <!-- Campo de busca de aluno à direita -->
+            <!-- Campo de busca de livro à direita -->
             <div class="col s6 right-align">
                 <div class="input-field">
                     <input id="search" type="text" class="validate">
-                    <label for="search">Buscar Aluno</label>
+                    <label for="search">Buscar Colaborador</label>
                     <i class="material-icons prefix" id="search-icon">search</i>
                 </div>
             </div>
         </div>
+
 
         <div class="row">
             <div class="table-wrapper">
@@ -97,8 +151,6 @@
                         <th>ID</th>
                         <th>Nome Completo</th>
                         <th>CPF</th>
-                        <th>Celular</th>
-                        <th class="email-column">E-mail</th>
                         <th>Loja</th>
                         <th>Ações</th>
                     </tr>
@@ -112,156 +164,6 @@
             <ul class="pagination" id="pagination-controls"></ul>
         </div>
     </div>
-
-    <!-- Modal de Adicionar Aluno -->
-    <div id="modal-add-aluno" class="modal modal-custom-height">
-        <div class="modal-content">
-            <h6>Adicionar Aluno</h6>
-            <div class="row">
-                <form class="col s12" id="form-add-aluno">
-                    <div class="row">
-                        <div class="input-field col s12 l4">
-                            <i class="material-icons prefix">fingerprint</i>
-                            <input id="cpf" name="cpf" type="text" class="validate custom-input" required>
-                            <label for="cpf">CPF</label>
-                        </div>
-                        <div class="input-field col s12 l8">
-                            <i class="material-icons prefix">account_circle</i>
-                            <input id="nome_completo" type="text" class="validate" required>
-                            <label for="nome_completo">Nome Completo</label>
-                        </div>
-                        <div class="input-field col s12 l4">
-                            <i class="material-icons prefix">phone</i>
-                            <input id="celular" type="text" class="validate" required>
-                            <label for="celular">Celular</label>
-                        </div>
-                        <div class="input-field col s12 l8">
-                            <i class="material-icons prefix">email</i>
-                            <input id="email" type="email" class="validate" required>
-                            <label for="email">E-mail</label>
-                        </div>
-                        <div class="input-field col s12 larger-col">
-                            <i class="material-icons prefix">store</i>
-                            <select id="loja" name="loja">
-                                <option value="" disabled selected>Escolha a loja</option>
-                                <option value="Araucária">Araucária</option>
-                                <option value="Campo Largo">Campo Largo</option>
-                                <option value="Fazenda Rio Grande">Fazenda Rio Grande</option>
-                                <option value="Mateus Leme">Mateus Leme</option>
-                                <option value="Pinhais">Pinhais</option>
-                                <option value="Pinheirinho">Pinheirinho</option>
-                                <option value="Santa Felicidade">Santa Felicidade</option>
-                                <option value="São José dos Pinhais">São José dos Pinhais</option>
-                                <option value="Tá Na Mão">Tá Na Mão</option>
-                                <option value="Tintas Brigadeiro Franco">Tintas Brigadeiro Franco</option>
-                                <option value="Tintas Campo Comprido">Tintas Campo Comprido</option>
-                                <option value="Tintas Castro">Tintas Castro</option>
-                                <option value="Tintas Portão">Tintas Portão</option>
-                                <option value="Vero. Nichele">Vero. Nichele</option>
-                                <option value="Xaxim">Xaxim</option>
-                            </select>
-                            <label for="loja">Loja</label>
-                        </div>
-                         <p></p>
-                        <!-- Switch -->
-                        <div class="switch">
-                          <label>
-                            Off
-                            <input checked type="checkbox" id="status-switch">
-                            <span class="lever"></span>
-                            On
-                          </label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn waves-effect waves-light" type="submit" name="action">Cadastrar
-                            <i class="material-icons right">save</i>
-                        </button>
-                        <button class="btn red modal-close" type="button" id="btn-cancelar-modal">Cancelar
-                            <i class="material-icons right">cancel</i>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Editar Aluno -->
-<div id="modal-edit-aluno" class="modal modal-custom-height">
-        <div class="modal-content">
-            <h6>Editar Aluno</h6>
-                <div class="row">
-                    <form class="col s12" id="form-edit-aluno">
-                        <div class="row">
-                            <input type="hidden" id="edit-id-aluno"> <!-- Campo oculto para armazenar o ID do aluno -->
-                                <div class="input-field col s12 l4">
-                                    <i class="material-icons prefix">fingerprint</i>
-                                        <input id="edit-cpf" name="cpf" type="text" class="validate custom-input" disabled>
-                                            <label for="edit-cpf">CPF</label>
-                                        </div>
-                                        <div class="input-field col s12 l8">
-                                            <i class="material-icons prefix">account_circle</i>
-                                            <input id="edit-nome-completo" type="text" class="validate" required>
-                                            <label for="edit-nome-completo">Nome Completo</label>
-                                        </div>
-                                        <div class="input-field col s12 l4">
-                                            <i class="material-icons prefix">phone</i>
-                                            <input id="edit-celular" type="text" class="validate" required>
-                                            <label for="edit-celular">Celular</label>
-                                        </div>
-                                        <div class="input-field col s12 l8">
-                                            <i class="material-icons prefix">email</i>
-                                            <input id="edit-email" type="email" class="validate" required>
-                                            <label for="edit-email">E-mail</label>
-                                        </div>
-                                        <div class="input-field col s12 larger-col">
-                                            <i class="material-icons prefix">store</i>
-                                            <select id="edit-loja" name="loja">
-                                                <option value="" disabled>Escolha a loja</option>
-                                                <option value="Araucária">Araucária</option>
-                                                <option value="Campo Largo">Campo Largo</option>
-                                                <option value="Fazenda Rio Grande">Fazenda Rio Grande</option>
-                                                <option value="Mateus Leme">Mateus Leme</option>
-                                                <option value="Pinhais">Pinhais</option>
-                                                <option value="Pinheirinho">Pinheirinho</option>
-                                                <option value="Santa Felicidade">Santa Felicidade</option>
-                                                <option value="São José dos Pinhais">São José dos Pinhais</option>
-                                                <option value="Tá Na Mão">Tá Na Mão</option>
-                                                <option value="Tintas Brigadeiro Franco">Tintas Brigadeiro Franco</option>
-                                                <option value="Tintas Campo Comprido">Tintas Campo Comprido</option>
-                                                <option value="Tintas Castro">Tintas Castro</option>
-                                                <option value="Tintas Portão">Tintas Portão</option>
-                                                <option value="Vero. Nichele">Vero. Nichele</option>
-                                                <option value="Xaxim">Xaxim</option>
-                                            </select>
-                                            <label for="edit-loja">Loja</label>
-                                        </div>
-                            <p></p>
-                            <!-- Switch -->
-                            <div class="switch">
-                              <label>
-                                Off
-                                <input type="checkbox" id="edit-switch">
-                                <span class="lever"></span>
-                                On
-                              </label>
-                            </div>
-                                        
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn waves-effect waves-light" type="submit" name="action">Alterar
-                                <i class="material-icons right">update</i>
-                            </button>
-                            <button class="btn red modal-close" type="button" id="btn-cancelar-modal">Cancelar
-                                <i class="material-icons right">cancel</i>
-                            </button>
-                            </div>
-
-                    </form>
-                        </div>
-                    </div>
-</div>
 
     <!-- Modal de Confirmar Exclusão -->
 <div id="modal-delete-aluno" class="modal">
@@ -277,7 +179,7 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="/js/scripts.js"></script>
+    <script src="/js/auth.js"></script>
     <script src="/js/inatividade.js"></script>
     </body>
 </html>

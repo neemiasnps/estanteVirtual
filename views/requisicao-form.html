@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Requisição</title>
+
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="/css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+
+<nav>
+    <div class="nav-wrapper custom-navbar">
+        <a href="/" class="brand-logo custom-logo">
+            <img src="/images/logo.png">
+        </a>
+    </div>
+</nav>
+
+<div class="container">
+    <h5>Requisição de Empréstimo</h5>
+
+    <form id="form-requisicao">
+
+        <ul class="collapsible expandable">
+
+            <!-- ========================= -->
+            <!-- DADOS DO ALUNO -->
+            <!-- ========================= -->
+            <li class="active">
+                <div class="collapsible-header">
+                    <i class="material-icons">person</i>
+                    Dados do Aluno
+                </div>
+
+                <div class="collapsible-body">
+
+                    <div class="row">
+
+                        <div class="input-field col s12 m4">
+                            <input id="cpf" type="text">
+                            <label for="cpf">CPF</label>
+                        </div>
+
+                        <div class="col s12 m2">
+                            <a id="btn-buscar-aluno" class="btn blue" style="margin-top:20px;">
+                                Buscar
+                            </a>
+                        </div>
+
+                        <div class="input-field col s12 m6">
+                            <input id="nome" type="text" disabled>
+                            <label for="nome">Nome</label>
+                        </div>
+
+                        <div class="input-field col s12 m4">
+                            <input id="celular" type="text" disabled>
+                            <label>Celular</label>
+                        </div>
+
+                        <div class="input-field col s12 m4">
+                            <input id="email" type="email" disabled>
+                            <label>Email</label>
+                        </div>
+
+                        <div class="input-field col s12 m4">
+                            <input id="loja" type="text" disabled>
+                            <label>Loja</label>
+                        </div>
+
+                        <input type="hidden" id="aluno-id">
+
+                    </div>
+
+                </div>
+            </li>
+
+            <!-- ========================= -->
+            <!-- LIVROS -->
+            <!-- ========================= -->
+            <li>
+                <div class="collapsible-header">
+                    <i class="material-icons">menu_book</i>
+                    Livros Emprestados
+                </div>
+
+                <div class="collapsible-body">
+
+                    <div class="row">
+
+                        <div class="input-field col s12 m6">
+                            <input id="autocomplete-livro" type="text" class="autocomplete">
+                            <label>Buscar Livro</label>
+                            <input type="hidden" id="livro-id-selecionado">
+                        </div>
+
+                        <div class="input-field col s12 m2">
+                            <input id="data-retirada" type="date">
+                            <label>Retirada</label>
+                        </div>
+
+                        <div class="input-field col s12 m1">
+                            <input id="prazo-dias" type="number" value="40">
+                            <label>Dias</label>
+                        </div>
+
+                        <div class="input-field col s12 m3">
+                            <input id="data-prevista" type="text" readonly>
+                            <label>Devolução</label>
+                        </div>
+
+                        <div class="input-field col s12 m9">
+                            <input id="obs-livro" type="text">
+                            <label>Observação</label>
+                        </div>
+
+                        <div class="col s12 m3">
+                            <a id="btn-add-livro" class="btn green" style="margin-top:20px;">
+                                <i class="material-icons left">add</i>Adicionar
+                            </a>
+                        </div>
+
+                        <div class="col s12">
+                            <table class="striped highlight">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Livro</th>
+                                        <th>Autor</th>
+                                        <th>Retirada</th>
+                                        <th>Dias</th>
+                                        <th>Devolução</th>
+                                        <th>Observação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabela-livros"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </li>
+
+            <!-- ========================= -->
+            <!-- DADOS GERAIS -->
+            <!-- ========================= -->
+            <li>
+                <div class="collapsible-header">
+                    <i class="material-icons">description</i>
+                    Dados Gerais
+                </div>
+
+                <div class="collapsible-body">
+
+                    <div class="row">
+
+                        <div class="input-field col s12 m4">
+                            <input id="data-solicitacao" type="date">
+                            <label>Data da Solicitação</label>
+                        </div>
+
+                        <div class="input-field col s12">
+                            <textarea id="observacao" class="materialize-textarea"></textarea>
+                            <label>Observação geral</label>
+                        </div>
+
+                    </div>
+
+                </div>
+            </li>
+        </ul>
+
+        <!-- ========================= -->
+        <!-- BOTÕES (AÇÃO FINAL) -->
+        <!-- ========================= -->
+
+        <div class="row" style="margin-top: 20px;">
+
+            <div class="col s12" style="display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
+
+                <button type="button" id="btn-salvar-requisicao" class="btn green" disabled>
+                    <i class="material-icons left">save</i>
+                    Salvar Requisição
+                </button>
+
+                <button type="button" id="btn-cancelar-requisicao" class="btn red">
+                    <i class="material-icons left">close</i>
+                    Cancelar
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    M.AutoInit();
+
+    // Calcular data prevista automaticamente
+    function calcularDataPrevista() {
+        const retirada = document.getElementById('data-retirada').value;
+        const dias = parseInt(document.getElementById('prazo-dias').value);
+
+        if (!retirada || !dias) return;
+
+        const data = new Date(retirada);
+        data.setDate(data.getDate() + dias);
+
+        const formatada = data.toISOString().split('T')[0];
+        document.getElementById('data-prevista').value = formatada;
+        M.updateTextFields();
+    }
+
+    document.getElementById('data-retirada').addEventListener('change', calcularDataPrevista);
+    document.getElementById('prazo-dias').addEventListener('input', calcularDataPrevista);
+
+    // Máscaras
+    if ($.fn.mask) {
+        $('#cpf').mask('000.000.000-00');
+        $('#celular').mask('(00) 00000-0000');
+    }
+
+});
+</script>
+
+<script src="/js/requisicao-form.js"></script>
+<script src="/js/auth.js"></script>
+
+</body>
+</html>
