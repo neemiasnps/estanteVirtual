@@ -159,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================
        BUSCA DE ALUNO
     ========================= */
-
     document.getElementById('btn-buscar-aluno').addEventListener('click', async () => {
 
         const cpfInput = document.getElementById('cpf').value;
@@ -235,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function () {
     /* =========================
        AUTOCOMPLETE
     ========================= */
-
     function carregarLivros() {
 
         fetch('/api/admin/livros/auto-livros')
@@ -456,6 +454,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // limpa tudo após salvar
             limparRequisicaoCompleta();
+
+            // volta para listagem após pequeno delay (melhor UX)
+            setTimeout(() => {
+                window.location.href = '/gerenciar_emprestimos';
+            }, 800);
 
         } catch (error) {
             console.error(error);

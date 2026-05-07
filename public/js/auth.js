@@ -84,24 +84,25 @@ function showMenu() {
   const logout = document.getElementById('logout-link-container');
   const login = document.getElementById('login-link-container');
 
+  // MOBILE
+  const adminMobile1 = document.getElementById('admin-menu-mobile');
+  const adminMobile2 = document.getElementById('admin-menu-mobile-2');
+  const adminMobile3 = document.getElementById('admin-menu-mobile-3');
+  const adminMobile4 = document.getElementById('admin-menu-mobile-4');
+  const logoutMobile = document.getElementById('logout-link-mobile');
+  const loginMobile = document.getElementById('login-link-container-mobile');
+
   if (adminMenu) adminMenu.style.display = 'block';
   if (logout) logout.style.display = 'block';
   if (login) login.style.display = 'none';
 
-  // MOBILE
-  const mobileItems = [
-    'admin-menu-mobile',
-    'admin-menu-mobile-2',
-    'admin-menu-mobile-3',
-    'admin-menu-mobile-4',
-    'admin-menu-mobile-5'
-  ];
+  if (adminMobile1) adminMobile1.style.display = 'block';
+  if (adminMobile2) adminMobile2.style.display = 'block';
+  if (adminMobile3) adminMobile3.style.display = 'block';
+  if (adminMobile4) adminMobile4.style.display = 'block';
 
-  mobileItems.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'block';
-  });
-
+  if (logoutMobile) logoutMobile.style.display = 'block';
+  if (loginMobile) loginMobile.style.display = 'none';
 }
 
 function hideMenu() {
@@ -111,22 +112,23 @@ function hideMenu() {
   const logout = document.getElementById('logout-link-container');
   const login = document.getElementById('login-link-container');
 
+  // MOBILE
+  const adminMobile1 = document.getElementById('admin-menu-mobile');
+  const adminMobile2 = document.getElementById('admin-menu-mobile-2');
+  const adminMobile3 = document.getElementById('admin-menu-mobile-3');
+  const adminMobile4 = document.getElementById('admin-menu-mobile-4');
+  const logoutMobile = document.getElementById('logout-link-mobile');
+  const loginMobile = document.getElementById('login-link-container-mobile');
+
   if (adminMenu) adminMenu.style.display = 'none';
   if (logout) logout.style.display = 'none';
   if (login) login.style.display = 'block';
 
-  // MOBILE
-  const mobileItems = [
-    'admin-menu-mobile',
-    'admin-menu-mobile-2',
-    'admin-menu-mobile-3',
-    'admin-menu-mobile-4',
-    'admin-menu-mobile-5'
-  ];
+  if (adminMobile1) adminMobile1.style.display = 'none';
+  if (adminMobile2) adminMobile2.style.display = 'none';
+  if (adminMobile3) adminMobile3.style.display = 'none';
+  if (adminMobile4) adminMobile4.style.display = 'none';
 
-  mobileItems.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-
+  if (logoutMobile) logoutMobile.style.display = 'none';
+  if (loginMobile) loginMobile.style.display = 'block';
 }
