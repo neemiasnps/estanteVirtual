@@ -78,6 +78,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 // CONTROLE DO MENU ADMIN
 // ======================
 function showMenu() {
+
+  // DESKTOP
   const adminMenu = document.getElementById('admin-menu');
   const logout = document.getElementById('logout-link-container');
   const login = document.getElementById('login-link-container');
@@ -85,9 +87,26 @@ function showMenu() {
   if (adminMenu) adminMenu.style.display = 'block';
   if (logout) logout.style.display = 'block';
   if (login) login.style.display = 'none';
+
+  // MOBILE
+  const mobileItems = [
+    'admin-menu-mobile',
+    'admin-menu-mobile-2',
+    'admin-menu-mobile-3',
+    'admin-menu-mobile-4',
+    'admin-menu-mobile-5'
+  ];
+
+  mobileItems.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'block';
+  });
+
 }
 
 function hideMenu() {
+
+  // DESKTOP
   const adminMenu = document.getElementById('admin-menu');
   const logout = document.getElementById('logout-link-container');
   const login = document.getElementById('login-link-container');
@@ -95,4 +114,19 @@ function hideMenu() {
   if (adminMenu) adminMenu.style.display = 'none';
   if (logout) logout.style.display = 'none';
   if (login) login.style.display = 'block';
+
+  // MOBILE
+  const mobileItems = [
+    'admin-menu-mobile',
+    'admin-menu-mobile-2',
+    'admin-menu-mobile-3',
+    'admin-menu-mobile-4',
+    'admin-menu-mobile-5'
+  ];
+
+  mobileItems.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
 }
