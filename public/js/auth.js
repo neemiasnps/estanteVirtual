@@ -68,7 +68,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           credentials: 'include'
         });
 
-        location.reload();
+        //location.reload();
+        window.location.href = '/';
       });
     });
 
@@ -89,6 +90,7 @@ function showMenu() {
   const adminMobile2 = document.getElementById('admin-menu-mobile-2');
   const adminMobile3 = document.getElementById('admin-menu-mobile-3');
   const adminMobile4 = document.getElementById('admin-menu-mobile-4');
+  const adminMobile5 = document.getElementById('admin-menu-mobile-5');
   const logoutMobile = document.getElementById('logout-link-mobile');
   const loginMobile = document.getElementById('login-link-container-mobile');
 
@@ -100,6 +102,7 @@ function showMenu() {
   if (adminMobile2) adminMobile2.style.display = 'block';
   if (adminMobile3) adminMobile3.style.display = 'block';
   if (adminMobile4) adminMobile4.style.display = 'block';
+  if (adminMobile5) adminMobile5.style.display = 'block';
 
   if (logoutMobile) logoutMobile.style.display = 'block';
   if (loginMobile) loginMobile.style.display = 'none';
@@ -117,6 +120,7 @@ function hideMenu() {
   const adminMobile2 = document.getElementById('admin-menu-mobile-2');
   const adminMobile3 = document.getElementById('admin-menu-mobile-3');
   const adminMobile4 = document.getElementById('admin-menu-mobile-4');
+  const adminMobile5 = document.getElementById('admin-menu-mobile-5');
   const logoutMobile = document.getElementById('logout-link-mobile');
   const loginMobile = document.getElementById('login-link-container-mobile');
 
@@ -128,6 +132,7 @@ function hideMenu() {
   if (adminMobile2) adminMobile2.style.display = 'none';
   if (adminMobile3) adminMobile3.style.display = 'none';
   if (adminMobile4) adminMobile4.style.display = 'none';
+  if (adminMobile5) adminMobile5.style.display = 'none';
 
   if (logoutMobile) logoutMobile.style.display = 'none';
   if (loginMobile) loginMobile.style.display = 'block';
