@@ -1,4 +1,5 @@
 const obterDadosEmprestimo = require('../utils/obterDadosEmprestimo');
+const { obterDadosEmprestimoPorItem } = require('../utils/obterDadosEmprestimo');
 
 function formatarData(data) {
   if (!data) return '-';
@@ -63,6 +64,34 @@ async function gerarMensagemWhatsEmprestimo(emprestimoId) {
   };
 }
 
+
+async function gerarMensagemWhatsAvaliacao(itemId) {
+
+  const dados = await obterDadosEmprestimoPorItem(itemId);
+
+  const { aluno, livro } = dados;
+
+  let mensagem = `📚 *Biblioteca Nichele*\n\n`;
+
+  mensagem += `Olá *${aluno.nome}*, tudo bem?\n\n`;
+
+  mensagem += `O livro *${livro.titulo}* foi devolvido com sucesso. 🎉\n\n`;
+
+  mensagem += `Agora você pode avaliá-lo e ajudar outros colaboradores.\n\n`;
+
+  mensagem += `⭐ Avaliar livro:\n`;
+  mensagem += `https://bibliotecanichele.com.br/livro/${livro.id}\n\n`;
+
+  mensagem += `🙏 Sua opinião é muito importante para nós!`;
+
+  return {
+    telefone: aluno.telefone,
+    mensagem
+  };
+}
+
+
 module.exports = {
-  gerarMensagemWhatsEmprestimo
+  gerarMensagemWhatsEmprestimo,
+  gerarMensagemWhatsAvaliacao
 };

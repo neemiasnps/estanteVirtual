@@ -174,6 +174,13 @@ function renderTabela(totalPages = 1) {
           ? `<i class="material-icons grey-text icon-btn" onclick="abrirModalIndenizar(${item.id})">attach_money</i>`
           : `<i class="material-icons grey-text icon-btn disabled">attach_money</i>`;
 
+          const btnAvaliacao = (item.status === 'devolvido')
+          ? `<i class="material-icons yellow-text icon-btn"
+               onclick="enviarAvaliacaoWhats(${item.id})"
+               title="Enviar link de avaliação do livro">star</i>`
+          : `<i class="material-icons grey-text icon-btn disabled"
+               title="Disponível após devolução">star</i>`;
+
           const trItem = document.createElement('tr');
 
           trItem.classList.add(`itens-${emp.id}`);
@@ -217,6 +224,7 @@ function renderTabela(totalPages = 1) {
   ${btnCancelar}
   ${btnExtraviado}
   ${btnIndenizar}
+  ${btnAvaliacao}
 </div>
 
               </div>
@@ -648,6 +656,29 @@ function enviarWhats(id) {
     })
     .catch(() => {
       M.toast({ html: 'Erro ao gerar WhatsApp' });
+    });
+}
+
+// WHATSAPP AVALIAÇÃO
+function enviarAvaliacaoWhats(id) {
+
+  fetch(`/api/admin/emprestimos/whatsapp-avaliacao-livro/${id}`)
+    .then(res => res.json())
+    .then(data => {
+
+      if (!data.telefone) {
+        M.toast({ html: 'Aluno sem telefone cadastrado' });
+        return;
+      }
+
+      const telefone = data.telefone.replace(/\D/g, '');
+
+      const url = `https://wa.me/55${telefone}?text=${encodeURIComponent(data.mensagem)}`;
+
+      window.open(url, '_blank');
+    })
+    .catch(() => {
+      M.toast({ html: 'Erro ao gerar mensagem de avaliação' });
     });
 }
 

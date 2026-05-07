@@ -211,5 +211,10 @@ app.use((req, res, next) => {
 // Tratamento de Erros Internos do Servidor (500)
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ error: "Ocorreu um erro interno no servidor" });
+
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+    return res.status(500).json({
+        error: "Ocorreu um erro interno no servidor"
+    });
 });

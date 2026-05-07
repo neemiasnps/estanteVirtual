@@ -73,4 +73,59 @@ async function obterDadosEmprestimo(emprestimoId) {
   }
 }
 
-module.exports = obterDadosEmprestimo;
+async function obterDadosEmprestimoPorItem(itemId) {
+  try {
+
+    const item = await EmprestimoLivro.findByPk(itemId, {
+      include: [
+        {
+          model: Emprestimo,
+          include: [
+            {
+              model: Aluno,
+              as: 'aluno',
+              attributes: ['id', 'nomeCompleto', 'email', 'celular', 'loja']
+            }
+          ]
+        },
+        {
+          model: Livro,
+          attributes: ['id', 'titulo']
+        }
+      ]
+    });
+
+    if (!item) {
+      throw new Error('Item não encontrado');
+    }
+
+    return {
+      aluno: {
+        nome: item.Emprestimo?.aluno?.nomeCompleto || 'Não informado',
+        email: item.Emprestimo?.aluno?.email || '',
+        telefone: item.Emprestimo?.aluno?.celular || '',
+        loja: item.Emprestimo?.aluno?.loja || 'Não informado'
+      },
+      emprestimo: {
+        id: item.Emprestimo?.id,
+        dataSolicitacao: formatarData(item.Emprestimo?.data_solicitacao)
+      },
+      livro: {
+        id: item.livro_id,
+        titulo: item.Livro?.titulo || 'Não informado',
+        status: item.status,
+        data_retirada: formatarData(item.data_retirada),
+        data_devolucao_real: formatarData(item.data_devolucao_real)
+      }
+    };
+
+  } catch (error) {
+    console.error('Erro ao obter dados do item:', error);
+    throw error;
+  }
+}
+
+module.exports = {
+  obterDadosEmprestimo,
+  obterDadosEmprestimoPorItem
+};

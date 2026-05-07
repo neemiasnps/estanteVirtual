@@ -9,7 +9,7 @@ const router = express.Router();
 const { Emprestimo, EmprestimoLivro, Aluno, Livro, Estoque } = require('../../models');
 
 const { enviarEmailEmprestimoFinalizado, enviarEmailEmprestimoCriado } = require('../../services/emailService');
-const { gerarMensagemWhatsEmprestimo } = require('../../services/whatsService');
+const { gerarMensagemWhatsEmprestimo, gerarMensagemWhatsAvaliacao } = require('../../services/whatsService');
 
 const garantirAutenticado = require('../auth');
 
@@ -290,6 +290,25 @@ router.get('/whatsapp/:id', async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Erro ao gerar mensagem' });
+  }
+});
+
+
+/* =========================
+   GERAR WHATSAPP AVALIAÇÃO
+   ========================= */
+router.get('/whatsapp-avaliacao-livro/:id', async (req, res) => {
+  try {
+
+    const itemId = req.params.id;
+
+    const mensagem = await gerarMensagemWhatsAvaliacao(itemId);
+
+    return res.json(mensagem);
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro ao gerar mensagem de avaliação' });
   }
 });
 
