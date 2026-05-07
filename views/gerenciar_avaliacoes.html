@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Gerenciar Avaliações
+    </title>
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+        rel="stylesheet"
+    >
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+        rel="stylesheet"
+    >
+
+    <link href="/css/styles.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="/js/gerenciar_avaliacoes.js" defer></script>
+
+    <script src="/js/auth.js"></script>
+
+</head>
+
+<body>
+
+<!-- ================= NAV ================= -->
+<nav>
+
+    <div class="nav-wrapper custom-navbar">
+
+        <a href="/" class="brand-logo custom-logo">
+            <img src="/images/logo.png" alt="Logo">
+        </a>
+
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger">
+            <i class="material-icons">menu</i>
+        </a>
+
+        <!-- MENU DESKTOP -->
+        <ul class="right hide-on-med-and-down">
+
+            <li><a href="/">Home</a></li>
+
+            <li><a href="/livros">Livros</a></li>
+
+            <li><a href="/ebooks">eBooks</a></li>
+
+            <li><a href="/audiobooks">Audiobooks</a></li>
+
+            <li><a href="/contato">Contato</a></li>
+
+            <li><a href="/como_funciona">Como funciona</a></li>
+
+            <!-- ADMIN -->
+            <li id="admin-menu" style="display:none;">
+
+                <a
+                    class="dropdown-trigger"
+                    href="#"
+                    data-target="dropdown-menu"
+                >
+                    Menu
+                </a>
+
+                <ul id="dropdown-menu" class="dropdown-content">
+
+                    <li>
+                        <a href="/gerenciar_alunos">
+                            <i class="material-icons">people</i>
+                            Alunos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gerenciar_livros">
+                            <i class="material-icons">book</i>
+                            Livros
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gerenciar_ebooks">
+                            <i class="material-icons">book</i>
+                            eBooks
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gerenciar_emprestimos">
+                            <i class="material-icons">swap_horiz</i>
+                            Empréstimos
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/gerenciar_avaliacoes">
+                            <i class="material-icons">rate_review</i>
+                            Avaliações
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+
+            <!-- LOGOUT -->
+            <li id="logout-link-container" style="display:none;">
+                <a href="#" id="logout-link">
+                    <i class="material-icons">logout</i>
+                </a>
+            </li>
+
+            <!-- LOGIN -->
+            <li id="login-link-container">
+                <a href="#" id="modal-login-link">
+                    <i class="material-icons">login</i>
+                </a>
+            </li>
+
+        </ul>
+
+        <!-- MOBILE -->
+        <ul class="sidenav" id="mobile-demo">
+
+            <li>
+                <a href="/">
+                    <i class="material-icons">home</i>
+                    Home
+                </a>
+            </li>
+
+            <li>
+                <a href="/livros">
+                    <i class="material-icons">book</i>
+                    Livros
+                </a>
+            </li>
+
+            <li>
+                <a href="/ebooks">
+                    <i class="material-icons">book</i>
+                    eBooks
+                </a>
+            </li>
+
+            <li>
+                <a href="/audiobooks">
+                    <i class="material-icons">audiotrack</i>
+                    Audiobooks
+                </a>
+            </li>
+
+            <li>
+                <a href="/contato">
+                    <i class="material-icons">contact_mail</i>
+                    Contato
+                </a>
+            </li>
+
+            <li>
+                <a href="/como_funciona">
+                    <i class="material-icons">info</i>
+                    Como funciona
+                </a>
+            </li>
+
+            <li id="admin-menu-mobile" style="display:none;">
+                <a href="/gerenciar_alunos">
+                    <i class="material-icons">school</i>
+                    Alunos
+                </a>
+            </li>
+
+            <li id="admin-menu-mobile-2" style="display:none;">
+                <a href="/gerenciar_livros">
+                    <i class="material-icons">book</i>
+                    Livros
+                </a>
+            </li>
+
+            <li id="admin-menu-mobile-3" style="display:none;">
+                <a href="/gerenciar_ebooks">
+                    <i class="material-icons">book</i>
+                    eBooks
+                </a>
+            </li>
+
+            <li id="admin-menu-mobile-4" style="display:none;">
+                <a href="/gerenciar_emprestimos">
+                    <i class="material-icons">receipt</i>
+                    Empréstimos
+                </a>
+            </li>
+
+            <li id="admin-menu-mobile-5" style="display:none;">
+                <a href="/gerenciar_avaliacoes">
+                    <i class="material-icons">rate_review</i>
+                    Avaliações
+                </a>
+            </li>
+
+            <li class="divider"></li>
+
+            <li id="logout-link-mobile" style="display:none;">
+                <a href="#" id="logout-link-mobile-action">
+                    <i class="material-icons">logout</i>
+                    Sair
+                </a>
+            </li>
+
+            <li id="login-link-container-mobile">
+                <a href="#" id="modal-login-link-mobile">
+                    <i class="material-icons">login</i>
+                    Login
+                </a>
+            </li>
+
+        </ul>
+
+    </div>
+
+</nav>
+
+<!-- ================= CONTAINER ================= -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col s12">
+
+            <h5>
+                Gerenciar Avaliações
+            </h5>
+
+        </div>
+
+    </div>
+
+    <!-- FILTROS -->
+    <div class="row" style="display: flex; align-items: center;">
+
+        <!-- BUSCA -->
+        <div class="input-field col s6" style="margin-bottom: 0;">
+
+            <input id="filtro-livro" type="text">
+            <label for="filtro-livro">Buscar por livro</label>
+
+        </div>
+
+        <!-- STATUS -->
+        <div class="input-field col s6" style="margin-bottom: 0;">
+
+            <select id="filtro-status">
+
+                <option value="" selected>Todos</option>
+                <option value="pendente">Pendente</option>
+                <option value="aprovado">Aprovado</option>
+                <option value="reprovado">Reprovado</option>
+
+            </select>
+
+            <label>Status</label>
+
+        </div>
+
+    </div>
+
+    <!-- TABELA -->
+    <div class="row">
+
+        <div class="col s12">
+
+            <table class="striped highlight">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Livro</th>
+
+                        <th>Aluno</th>
+
+                        <th>Estrelas</th>
+
+                        <th>Status</th>
+
+                        <th>Ações</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="avaliacoes-table-body"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

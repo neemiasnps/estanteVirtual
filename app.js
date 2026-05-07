@@ -13,6 +13,10 @@ const xml2js = require("xml2js");
 const app = express();
 const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT fornecida pelo Replit
 
+app.set('view engine', 'ejs');
+
+app.set('views', path.join(__dirname, 'views'));
+
 // Configuração do middleware de sessão
 app.use(
   session({
@@ -64,6 +68,13 @@ app.use("/api/public/ebooks", require("./routes/public/ebooks"));
 app.use("/api/public/audiobooks", require("./routes/public/audiobooks"));
 app.use("/api/public/contato", require("./routes/public/contato"));
 
+app.use("/api/public/avaliacoes", require("./routes/public/avaliacoes"));
+app.use("/api/public/validar-avaliacao", require("./routes/public/validar_avaliacao"));
+app.use("/api/public/salvar-avaliacao", require("./routes/public/salvar_avaliacao"));
+
+app.use("/livro", require("./routes/public/livro"));
+
+
 // ROTAS ADMIN (COM AUTENTICAÇÃO)
 app.use("/api/admin/livros", garantirAutenticado, require("./routes/admin/livros"));
 app.use("/api/admin/ebooks", garantirAutenticado, require("./routes/admin/ebooks"));
@@ -72,6 +83,7 @@ app.use("/api/admin/generos", garantirAutenticado, require("./routes/admin/gener
 app.use("/api/admin/subgeneros", garantirAutenticado, require("./routes/admin/subgeneros"));
 app.use("/api/admin/estoques", garantirAutenticado, require("./routes/admin/estoques"));
 app.use("/api/admin/emprestimos", garantirAutenticado, require("./routes/admin/emprestimos"));
+app.use("/api/admin/avaliacoes", garantirAutenticado, require("./routes/admin/avaliacoes"));
 
 
 // APIs protegidas
@@ -130,6 +142,10 @@ app.get("/gerenciar_ebooks", garantirAutenticado, (req, res) => {
 
 app.get("/gerenciar_emprestimos", garantirAutenticado, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_emprestimos.html"));
+});
+
+app.get("/gerenciar_avaliacoes", garantirAutenticado, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "gerenciar_avaliacoes.html"));
 });
 
 app.get("/contato", (req, res) => {

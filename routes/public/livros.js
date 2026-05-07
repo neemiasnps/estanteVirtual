@@ -4,6 +4,9 @@ const { Op } = require('sequelize');
 
 const { Livro, Estoque, Genero, Subgenero } = require('../../models');
 
+/* =========================
+   LISTAGEM PÚBLICA
+   ======================== */
 router.get('/', async (req, res) => {
 
     try {
@@ -73,5 +76,50 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+/* =========================
+   DETALHES DO LIVRO
+   ======================= */
+router.get('/:id', async (req, res) => {
+
+    try {
+
+        const livro = await Livro.findByPk(req.params.id, {
+            include: [
+                {
+                    model: Estoque
+                },
+                {
+                    model: Genero,
+                    attributes: ['nome']
+                },
+                {
+                    model: Subgenero,
+                    attributes: ['nome']
+                }
+            ]
+        });
+
+        if (!livro) {
+            return res.status(404).json({
+                error: 'Livro não encontrado'
+            });
+        }
+
+        res.json(livro);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: error.message
+        });
+
+    }
+
+});
+
 
 module.exports = router;

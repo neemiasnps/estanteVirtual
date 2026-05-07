@@ -4,6 +4,7 @@ const emprestimoFinalizadoTemplate = require('../templates/emails/emprestimoFina
 const comporEmailEmprestimoCriado = require('../templates/emails/emprestimoCriado');
 const emprestimoLembreteTemplate = require('../templates/emails/emprestimoLembrete');
 const emprestimoAtrasadoTemplate = require('../templates/emails/emprestimoAtrasado');
+const avaliacaoPendenteTemplate = require('../templates/emails/avaliacaoPendente');
 
 const obterDadosEmprestimo = require('../utils/obterDadosEmprestimo');
 
@@ -70,9 +71,25 @@ async function enviarEmailEmprestimoAtrasado(item) {
   });
 }
 
+// ================================
+// NOVA AVALIAÇÃO PENDENTE
+// ================================
+async function enviarEmailNovaAvaliacao(avaliacao) {
+
+  const html = avaliacaoPendenteTemplate(avaliacao);
+
+  await sendMail({
+    to: 'treinamento@nichele.com.br',
+    subject: `Biblioteca Nichele - Nova avaliação pendente`,
+    html
+  });
+
+}
+
 module.exports = {
   enviarEmailEmprestimoFinalizado,
   enviarEmailEmprestimoCriado,
   enviarEmailLembreteEmprestimo,
-  enviarEmailEmprestimoAtrasado
+  enviarEmailEmprestimoAtrasado,
+  enviarEmailNovaAvaliacao
 };

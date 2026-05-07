@@ -14,15 +14,15 @@
 </head>
 
 <body>
+    <!-- ================= NAV ================= -->
     <nav>
+
         <div class="nav-wrapper custom-navbar">
 
-            <!-- Logo -->
             <a href="/" class="brand-logo custom-logo">
                 <img src="/images/logo.png" alt="Logo">
             </a>
 
-            <!-- Mobile menu icon -->
             <a href="#" data-target="mobile-demo" class="sidenav-trigger">
                 <i class="material-icons">menu</i>
             </a>
@@ -30,36 +30,78 @@
             <!-- MENU DESKTOP -->
             <ul class="right hide-on-med-and-down">
 
-                <!-- LINKS PRINCIPAIS -->
                 <li><a href="/">Home</a></li>
+
                 <li><a href="/livros">Livros</a></li>
+
                 <li><a href="/ebooks">eBooks</a></li>
+
                 <li><a href="/audiobooks">Audiobooks</a></li>
+
                 <li><a href="/contato">Contato</a></li>
+
                 <li><a href="/como_funciona">Como funciona</a></li>
 
-                <!-- MENU ADMIN (somente logado) -->
+                <!-- ADMIN -->
                 <li id="admin-menu" style="display:none;">
-                    <a class="dropdown-trigger" href="#" data-target="dropdown-menu">
+
+                    <a
+                        class="dropdown-trigger"
+                        href="#"
+                        data-target="dropdown-menu"
+                    >
                         Menu
                     </a>
 
                     <ul id="dropdown-menu" class="dropdown-content">
-                        <li><a href="/gerenciar_alunos"><i class="material-icons">people</i>Alunos</a></li>
-                        <li><a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a></li>
-                        <li><a href="/gerenciar_ebooks"><i class="material-icons">book</i>eBooks</a></li>
-                        <li><a href="/gerenciar_emprestimos"><i class="material-icons">swap_horiz</i>Empréstimos</a></li>
+
+                        <li>
+                            <a href="/gerenciar_alunos">
+                                <i class="material-icons">people</i>
+                                Alunos
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/gerenciar_livros">
+                                <i class="material-icons">book</i>
+                                Livros
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/gerenciar_ebooks">
+                                <i class="material-icons">book</i>
+                                eBooks
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/gerenciar_emprestimos">
+                                <i class="material-icons">swap_horiz</i>
+                                Empréstimos
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="/gerenciar_avaliacoes">
+                                <i class="material-icons">rate_review</i>
+                                Avaliações
+                            </a>
+                        </li>
+
                     </ul>
+
                 </li>
 
-                <!-- LOGOUT (somente logado) -->
+                <!-- LOGOUT -->
                 <li id="logout-link-container" style="display:none;">
                     <a href="#" id="logout-link">
                         <i class="material-icons">logout</i>
                     </a>
                 </li>
 
-                <!-- LOGIN (somente deslogado) -->
+                <!-- LOGIN -->
                 <li id="login-link-container">
                     <a href="#" id="modal-login-link">
                         <i class="material-icons">login</i>
@@ -68,52 +110,106 @@
 
             </ul>
 
-            <!-- MENU MOBILE -->
+            <!-- MOBILE -->
             <ul class="sidenav" id="mobile-demo">
 
-                <li><a href="/"><i class="material-icons">home</i>Home</a></li>
-                <li><a href="/livros"><i class="material-icons">book</i>Livros</a></li>
-                <li><a href="/ebooks"><i class="material-icons">book</i>eBooks</a></li>
-                <li><a href="/audiobooks"><i class="material-icons">audiotrack</i>Audiobooks</a></li>
-                <li><a href="/contato"><i class="material-icons">contact_mail</i>Contato</a></li>
-                <li><a href="/como_funciona"><i class="material-icons">info</i>Como funciona</a></li>
+                <li>
+                    <a href="/">
+                        <i class="material-icons">home</i>
+                        Home
+                    </a>
+                </li>
 
-                <!-- ADMIN MOBILE (somente logado) -->
+                <li>
+                    <a href="/livros">
+                        <i class="material-icons">book</i>
+                        Livros
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/ebooks">
+                        <i class="material-icons">book</i>
+                        eBooks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/audiobooks">
+                        <i class="material-icons">audiotrack</i>
+                        Audiobooks
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/contato">
+                        <i class="material-icons">contact_mail</i>
+                        Contato
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/como_funciona">
+                        <i class="material-icons">info</i>
+                        Como funciona
+                    </a>
+                </li>
+
                 <li id="admin-menu-mobile" style="display:none;">
-                    <a href="/gerenciar_alunos"><i class="material-icons">school</i>Alunos</a>
+                    <a href="/gerenciar_alunos">
+                        <i class="material-icons">school</i>
+                        Alunos
+                    </a>
                 </li>
 
                 <li id="admin-menu-mobile-2" style="display:none;">
-                    <a href="/gerenciar_livros"><i class="material-icons">book</i>Livros</a>
+                    <a href="/gerenciar_livros">
+                        <i class="material-icons">book</i>
+                        Livros
+                    </a>
                 </li>
 
                 <li id="admin-menu-mobile-3" style="display:none;">
-                    <a href="/gerenciar_ebooks"><i class="material-icons">book</i>eBooks</a>
+                    <a href="/gerenciar_ebooks">
+                        <i class="material-icons">book</i>
+                        eBooks
+                    </a>
                 </li>
 
                 <li id="admin-menu-mobile-4" style="display:none;">
-                    <a href="/gerenciar_emprestimos"><i class="material-icons">receipt</i>Empréstimos</a>
+                    <a href="/gerenciar_emprestimos">
+                        <i class="material-icons">receipt</i>
+                        Empréstimos
+                    </a>
+                </li>
+
+                <li id="admin-menu-mobile-5" style="display:none;">
+                    <a href="/gerenciar_avaliacoes">
+                        <i class="material-icons">rate_review</i>
+                        Avaliações
+                    </a>
                 </li>
 
                 <li class="divider"></li>
 
-                <!-- LOGOUT MOBILE -->
                 <li id="logout-link-mobile" style="display:none;">
                     <a href="#" id="logout-link-mobile-action">
-                        <i class="material-icons">logout</i> Sair
+                        <i class="material-icons">logout</i>
+                        Sair
                     </a>
                 </li>
 
-                <!-- LOGIN MOBILE -->
                 <li id="login-link-container-mobile">
                     <a href="#" id="modal-login-link-mobile">
-                        <i class="material-icons">login</i> Login
+                        <i class="material-icons">login</i>
+                        Login
                     </a>
                 </li>
 
             </ul>
 
         </div>
+
     </nav>
 
     <div class="container">

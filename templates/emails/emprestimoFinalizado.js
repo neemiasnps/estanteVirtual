@@ -14,10 +14,35 @@ function emprestimoFinalizadoTemplate(dados) {
   );
 
   const listaLivros = livros.map(l => `
+
     <tr>
       <td style="padding:6px; border:1px solid #ddd;">${l.id}</td>
-      <td style="padding:6px; border:1px solid #ddd;">${l.titulo}</td>
+
+      <td style="padding:6px; border:1px solid #ddd;">
+        ${l.titulo}
+      </td>
+
+      <td style="padding:6px; border:1px solid #ddd; text-align:center; width:120px;">
+
+        <a 
+          href="bibliotecanichele.com.br/livro/${l.id}"
+          style="
+            background:#f9a825;
+            color:#000;
+            padding:6px 10px;
+            text-decoration:none;
+            border-radius:4px;
+            display:inline-block;
+            font-size:12px;
+          "
+        >
+          Avaliar livro
+        </a>
+
+      </td>
+
     </tr>
+
   `).join('');
 
   const conteudo = `
@@ -33,12 +58,18 @@ function emprestimoFinalizadoTemplate(dados) {
       <tr>
         <th style="border:1px solid #ddd;">ID</th>
         <th style="border:1px solid #ddd;">Título</th>
+        <th style="border:1px solid #ddd; width:120px; text-align:center;">Ação</th>
       </tr>
+
       ${listaLivros}
     </table>
 
     <p style="margin-top:20px;">
-      Agradecemos pela utilização da Biblioteca Nichele.
+      Agora você pode avaliar os livros e ajudar outros colaboradores.
+    </p>
+
+    <p>
+      Obrigado por utilizar a Biblioteca Nichele.
     </p>
   `;
 

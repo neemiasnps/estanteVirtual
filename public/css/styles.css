@@ -9,6 +9,7 @@ body {
 
 .card {
   margin: 10px 0;
+  overflow: visible !important;
 }
 
 .card-title {
@@ -17,13 +18,36 @@ body {
   color: #fff;
 }
 
+.card .card-image {
+    position: relative;
+   
+}
+
 .card .card-image img {
   width: 100%;
-  height: auto;
+  height: 320px;
+  object-fit: cover;
+  display: block;
 }
 
 .card-content p {
   margin: 5px 0;
+}
+
+.card .card-content {
+    padding-top: 30px !important;
+}
+
+.card .card-image .halfway-fab {
+    bottom: -20px;
+    right: 20px;
+}
+
+.card .card-image .halfway-fab {
+    position: absolute;
+    right: 20px;
+    bottom: -20px;
+    z-index: 10;
 }
 
 .livro-card {
@@ -640,3 +664,4 @@ tr[class^="itens-"] td {
 #pagination-controls a {
     cursor: pointer;
 }
+
