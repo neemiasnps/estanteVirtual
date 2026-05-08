@@ -10,16 +10,62 @@ const { Livro, Estoque, Emprestimo } = require('../../models');
    LISTAGEM PAGINADA
 ========================= */
 router.get('/', async (req, res) => {
+
     try {
+
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 9;
         const offset = (page - 1) * limit;
 
+        const search = (req.query.search || '').trim();
+
+        // =========================
+        // WHERE DINÂMICO
+        // =========================
+        const where = {};
+
+        // =========================
+        // FILTRO
+        // =========================
+        if (search) {
+
+            where[Op.or] = [
+
+                {
+                    titulo: {
+                        [Op.like]: `%${search}%`
+                    }
+                },
+
+                {
+                    autor: {
+                        [Op.like]: `%${search}%`
+                    }
+                },
+
+                {
+                    editora: {
+                        [Op.like]: `%${search}%`
+                    }
+                }
+
+            ];
+        }
+
         const { rows, count } = await Livro.findAndCountAll({
-            where: { situacao: 'Disponível' },
-            include: [{ model: Estoque, required: false }],
+
+            where,
+
+            include: [
+                {
+                    model: Estoque,
+                    required: false
+                }
+            ],
+
             limit,
             offset,
+
             order: [['createdAt', 'DESC']]
         });
 
@@ -29,9 +75,14 @@ router.get('/', async (req, res) => {
         });
 
     } catch (error) {
+
         console.error('Erro ao listar livros:', error);
-        res.status(500).json({ error: 'Erro ao buscar livros' });
+
+        res.status(500).json({
+            error: 'Erro ao buscar livros'
+        });
     }
+
 });
 
 

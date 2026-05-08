@@ -1,5 +1,4 @@
-const obterDadosEmprestimo = require('../utils/obterDadosEmprestimo');
-const { obterDadosEmprestimoPorItem } = require('../utils/obterDadosEmprestimo');
+const { obterDadosEmprestimo, obterDadosEmprestimoPorItem } = require('../utils/obterDadosEmprestimo');
 
 function formatarData(data) {
   if (!data) return '-';

@@ -6,7 +6,7 @@ const emprestimoLembreteTemplate = require('../templates/emails/emprestimoLembre
 const emprestimoAtrasadoTemplate = require('../templates/emails/emprestimoAtrasado');
 const avaliacaoPendenteTemplate = require('../templates/emails/avaliacaoPendente');
 
-const obterDadosEmprestimo = require('../utils/obterDadosEmprestimo');
+const { obterDadosEmprestimo } = require('../utils/obterDadosEmprestimo');
 
 // ================================
 // FINALIZADO
