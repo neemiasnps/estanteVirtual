@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     M.FormSelect.init(document.querySelectorAll('select'));
+    M.Modal.init(document.querySelectorAll('.modal'));
 
     carregarAvaliacoes();
 
@@ -42,9 +43,7 @@ async function carregarAvaliacoes() {
 
 }
 
-/* =========================
-   RENDER TABELA
-========================= */
+
 /* =========================
    RENDER TABELA
 ========================= */
@@ -86,7 +85,33 @@ function renderTabela(lista) {
 
             <td>${item.Aluno?.nomeCompleto || '-'}</td>
 
-            <td>${item.estrelas}</td>
+            <td>
+                ${'⭐'.repeat(item.estrelas)}
+                (${item.estrelas})
+            </td>
+
+            <td class="center">
+
+                ${item.comentario
+                    ? `
+                        <a href="#!"
+                           onclick="abrirComentario(${item.id})"
+                           title="Ver comentário">
+
+                            <i class="material-icons blue-text">
+                                chat
+                            </i>
+
+                        </a>
+                    `
+                    : `
+                        <i class="material-icons grey-text">
+                            remove
+                        </i>
+                    `
+                }
+
+            </td>
 
             <td>
                 <span class="${status}">
@@ -99,6 +124,17 @@ function renderTabela(lista) {
                 ${
                     status === 'pendente'
                         ? `
+
+                            <a href="#!"
+                                onclick="abrirComentario(${item.id})"
+                                title="Ver comentário">
+
+                                <i class="material-icons blue-text">
+                                    chat
+                                </i>
+
+                            </a>
+                            
                             <a href="#" onclick="aprovar(${item.id})" title="Aprovar">
                                 <i class="material-icons green-text">check</i>
                             </a>
@@ -188,5 +224,48 @@ async function alterarStatus(id, aprovado) {
         });
 
     }
+
+}
+
+
+/* =========================
+   ABRIR COMENTÁRIO
+   ======================= */
+function abrirComentario(id) {
+
+    const avaliacao = avaliacoes.find(a => a.id === id);
+
+    if (!avaliacao) return;
+
+    document.getElementById('conteudo-comentario').innerHTML = `
+
+        <p>
+            <strong>Livro:</strong>
+            ${avaliacao.Livro?.titulo || '-'}
+        </p>
+
+        <p>
+            <strong>Aluno:</strong>
+            ${avaliacao.Aluno?.nomeCompleto || '-'}
+        </p>
+
+        <p>
+            <strong>Nota:</strong>
+            ${avaliacao.estrelas} estrelas
+        </p>
+
+        <hr>
+
+        <p>
+            ${avaliacao.comentario || 'Nenhum comentário informado'}
+        </p>
+
+    `;
+
+    const modal = M.Modal.getInstance(
+        document.getElementById('modal-comentario')
+    );
+
+    modal.open();
 
 }
