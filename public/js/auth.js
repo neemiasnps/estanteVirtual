@@ -1,66 +1,196 @@
-document.addEventListener('DOMContentLoaded', async () => {
+let sessionTimer = null;
 
-  // INIT MATERIALIZE (seguro e completo)
+// INIT
+document.addEventListener('DOMContentLoaded', async () => {
+  iniciarUI();
+  await verificarSessao();
+  bindEventos();
+});
+
+// --------------------
+// UI
+// --------------------
+function iniciarUI() {
   M.Modal.init(document.querySelectorAll('.modal'));
   M.Sidenav.init(document.querySelectorAll('.sidenav'));
   M.Dropdown.init(document.querySelectorAll('.dropdown-trigger'), {
     coverTrigger: false,
     constrainWidth: false
   });
+}
 
-  // Verifica sessão no servidor
-  const status = await fetch('/api/auth/status', {
+// --------------------
+// SESSÃO
+// --------------------
+async function verificarSessao() {
+  const res = await fetch('/api/auth/status', {
     credentials: 'include'
-  }).then(r => r.json());
+  });
 
-  if (status.autenticado) {
-    showMenu();
+  const data = await res.json();
+
+  if (data.autenticado) {
+    ativarSessao();
   } else {
-    hideMenu();
+    desativarSessao();
   }
+}
 
-  // ABRIR MODAL LOGIN (desktop + mobile)
+function ativarSessao() {
+  showMenu();
+  iniciarMonitorSessao();
+}
+
+function desativarSessao() {
+  hideMenu();
+  pararMonitorSessao();
+}
+
+// --------------------
+// MONITORAMENTO
+// --------------------
+function iniciarMonitorSessao() {
+  pararMonitorSessao();
+
+  sessionTimer = setInterval(async () => {
+    const res = await fetch('/api/auth/status', {
+      credentials: 'include'
+    });
+
+    const data = await res.json();
+
+    if (!data.autenticado) {
+      encerrarSessao();
+    }
+  }, 60000); // 1 minuto
+}
+
+function pararMonitorSessao() {
+  if (sessionTimer) {
+    clearInterval(sessionTimer);
+    sessionTimer = null;
+  }
+}
+
+function encerrarSessao() {
+  desativarSessao();
+  alert('Sessão encerrada por inatividade.');
+  window.location.href = '/';
+}
+
+// --------------------
+// EVENTOS
+// --------------------
+function bindEventos() {
+
+  // ABRIR MODAL LOGIN
   document.querySelectorAll('#modal-login-link, #modal-login-link-mobile')
     .forEach(btn => {
+
       btn.addEventListener('click', (e) => {
+
         e.preventDefault();
 
         const modalEl = document.getElementById('modal-login');
+
         const instance = M.Modal.getInstance(modalEl);
 
-        if (instance) instance.open();
+        if (instance) {
+          instance.open();
+        }
+
       });
+
     });
 
   // LOGIN
-  const formLogin = document.getElementById('form-login');
+  const form = document.getElementById('form-login');
 
-  if (formLogin) {
-    formLogin.addEventListener('submit', async (e) => {
+  if (form) {
+
+    form.addEventListener('submit', async (e) => {
+
       e.preventDefault();
 
-      const email = document.getElementById('email').value;
-      const senha = document.getElementById('password').value;
+      const email = document.getElementById('email').value.trim();
 
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
-        credentials: 'include'
-      });
+      const senha = document.getElementById('password').value.trim();
 
-      if (res.ok) {
-        location.reload(); // garante sincronização correta do menu
-      } else {
-        alert('Usuário ou senha inválidos');
+      if (!email || !senha) {
+
+        M.toast({
+          html: 'Informe e-mail e senha',
+          classes: 'orange'
+        });
+
+        return;
       }
+
+      try {
+
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify({ email, senha })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+
+          M.toast({
+            html: data.message || 'Erro ao realizar login',
+            classes: 'red'
+          });
+
+          return;
+        }
+
+        // SUCESSO
+        M.toast({
+          html: data.message,
+          classes: 'green'
+        });
+
+        // fecha modal
+        const modalEl = document.getElementById('modal-login');
+
+        const instance = M.Modal.getInstance(modalEl);
+
+        if (instance) {
+          instance.close();
+        }
+
+        // limpa campos
+        form.reset();
+
+        // ativa sessão sem reload
+        ativarSessao();
+
+      } catch (error) {
+
+        console.error(error);
+
+        M.toast({
+          html: 'Erro ao conectar ao servidor',
+          classes: 'red'
+        });
+
+      }
+
     });
+
   }
 
-  // LOGOUT (desktop + mobile)
-  document.querySelectorAll('#logout-link, #logout-link-mobile, #logout-link-mobile-action')
+  // LOGOUT
+  document.querySelectorAll('#logout-link, #logout-link-mobile')
     .forEach(btn => {
+
       btn.addEventListener('click', async (e) => {
+
         e.preventDefault();
 
         await fetch('/api/auth/logout', {
@@ -68,72 +198,37 @@ document.addEventListener('DOMContentLoaded', async () => {
           credentials: 'include'
         });
 
-        //location.reload();
         window.location.href = '/';
+
       });
+
     });
 
-});
+}
 
-// ======================
-// CONTROLE DO MENU ADMIN
-// ======================
+// --------------------
+// MENU
+// --------------------
 function showMenu() {
 
-  // DESKTOP
-  const adminMenu = document.getElementById('admin-menu');
-  const logout = document.getElementById('logout-link-container');
-  const login = document.getElementById('login-link-container');
+  document.querySelectorAll('.admin-item').forEach(el => {
+    el.classList.remove('hidden');
+  });
 
-  // MOBILE
-  const adminMobile1 = document.getElementById('admin-menu-mobile');
-  const adminMobile2 = document.getElementById('admin-menu-mobile-2');
-  const adminMobile3 = document.getElementById('admin-menu-mobile-3');
-  const adminMobile4 = document.getElementById('admin-menu-mobile-4');
-  const adminMobile5 = document.getElementById('admin-menu-mobile-5');
-  const logoutMobile = document.getElementById('logout-link-mobile');
-  const loginMobile = document.getElementById('login-link-container-mobile');
+  document.querySelectorAll('.login-item').forEach(el => {
+    el.classList.add('hidden');
+  });
 
-  if (adminMenu) adminMenu.style.display = 'block';
-  if (logout) logout.style.display = 'block';
-  if (login) login.style.display = 'none';
-
-  if (adminMobile1) adminMobile1.style.display = 'block';
-  if (adminMobile2) adminMobile2.style.display = 'block';
-  if (adminMobile3) adminMobile3.style.display = 'block';
-  if (adminMobile4) adminMobile4.style.display = 'block';
-  if (adminMobile5) adminMobile5.style.display = 'block';
-
-  if (logoutMobile) logoutMobile.style.display = 'block';
-  if (loginMobile) loginMobile.style.display = 'none';
 }
 
 function hideMenu() {
 
-  // DESKTOP
-  const adminMenu = document.getElementById('admin-menu');
-  const logout = document.getElementById('logout-link-container');
-  const login = document.getElementById('login-link-container');
+  document.querySelectorAll('.admin-item').forEach(el => {
+    el.classList.add('hidden');
+  });
 
-  // MOBILE
-  const adminMobile1 = document.getElementById('admin-menu-mobile');
-  const adminMobile2 = document.getElementById('admin-menu-mobile-2');
-  const adminMobile3 = document.getElementById('admin-menu-mobile-3');
-  const adminMobile4 = document.getElementById('admin-menu-mobile-4');
-  const adminMobile5 = document.getElementById('admin-menu-mobile-5');
-  const logoutMobile = document.getElementById('logout-link-mobile');
-  const loginMobile = document.getElementById('login-link-container-mobile');
+  document.querySelectorAll('.login-item').forEach(el => {
+    el.classList.remove('hidden');
+  });
 
-  if (adminMenu) adminMenu.style.display = 'none';
-  if (logout) logout.style.display = 'none';
-  if (login) login.style.display = 'block';
-
-  if (adminMobile1) adminMobile1.style.display = 'none';
-  if (adminMobile2) adminMobile2.style.display = 'none';
-  if (adminMobile3) adminMobile3.style.display = 'none';
-  if (adminMobile4) adminMobile4.style.display = 'none';
-  if (adminMobile5) adminMobile5.style.display = 'none';
-
-  if (logoutMobile) logoutMobile.style.display = 'none';
-  if (loginMobile) loginMobile.style.display = 'block';
 }

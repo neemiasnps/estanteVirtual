@@ -1,5 +1,5 @@
 let alunoValidado = null;
-let estrelasSelecionadas = 5;
+let estrelasSelecionadas = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -522,6 +522,15 @@ async function enviarAvaliacao() {
 
         const estrelas = estrelasSelecionadas;
 
+        // VALIDAR ESTRELAS
+        if (estrelas <= 0) {
+
+            return M.toast({
+                html: 'Selecione uma quantidade de estrelas'
+            });
+
+        }
+
         const comentario = document
             .getElementById('comentario')
             .value
@@ -575,6 +584,9 @@ async function enviarAvaliacao() {
         document.getElementById('comentario').value = '';
 
         document.getElementById('identificacao').value = '';
+
+        // RESETAR ESTRELAS
+        estrelasSelecionadas = 0;
 
         M.toast({
             html: 'Avaliação enviada com sucesso!'

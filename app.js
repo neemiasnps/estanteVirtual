@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const sequelize = require("./config/database"); // Verifique o caminho
 const cors = require("cors");
-const garantirAutenticado = require("./routes/auth");
+const authMiddleware = require("./middlewares/authMiddleware");
 const session = require("express-session");
 const sessionStore = new session.MemoryStore();
 const axios = require("axios");
@@ -20,13 +20,14 @@ app.set('views', path.join(__dirname, 'views'));
 // Configuração do middleware de sessão
 app.use(
   session({
-    secret: 'biblioteca_nichele',
+    secret: process.env.SESSION_SECRET || 'biblioteca_nichele',
     resave: false,
     saveUninitialized: false,
-    rolling: true, // renova tempo a cada requisição
+    rolling: true,
     cookie: {
       maxAge: 30 * 60 * 1000, // 30 minutos
-      httpOnly: true
+      httpOnly: true,
+      sameSite: 'lax'
     }
   })
 );
@@ -76,49 +77,49 @@ app.use("/livro", require("./routes/public/livro"));
 
 
 // ROTAS ADMIN (COM AUTENTICAÇÃO)
-app.use("/api/admin/livros", garantirAutenticado, require("./routes/admin/livros"));
-app.use("/api/admin/ebooks", garantirAutenticado, require("./routes/admin/ebooks"));
-app.use("/api/admin/alunos", garantirAutenticado, require("./routes/admin/alunos"));
-app.use("/api/admin/generos", garantirAutenticado, require("./routes/admin/generos"));
-app.use("/api/admin/subgeneros", garantirAutenticado, require("./routes/admin/subgeneros"));
-app.use("/api/admin/estoques", garantirAutenticado, require("./routes/admin/estoques"));
-app.use("/api/admin/emprestimos", garantirAutenticado, require("./routes/admin/emprestimos"));
-app.use("/api/admin/avaliacoes", garantirAutenticado, require("./routes/admin/avaliacoes"));
+app.use("/api/admin/livros", authMiddleware, require("./routes/admin/livros"));
+app.use("/api/admin/ebooks", authMiddleware, require("./routes/admin/ebooks"));
+app.use("/api/admin/alunos", authMiddleware, require("./routes/admin/alunos"));
+app.use("/api/admin/generos", authMiddleware, require("./routes/admin/generos"));
+app.use("/api/admin/subgeneros", authMiddleware, require("./routes/admin/subgeneros"));
+app.use("/api/admin/estoques", authMiddleware, require("./routes/admin/estoques"));
+app.use("/api/admin/emprestimos", authMiddleware, require("./routes/admin/emprestimos"));
+app.use("/api/admin/avaliacoes", authMiddleware, require("./routes/admin/avaliacoes"));
 
 
 // APIs protegidas
 //Livros
-app.get("/gerenciar_livros/novo", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_livros/novo", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "livro-form.html"));
 });
-app.get("/gerenciar_livros/editar/:id", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_livros/editar/:id", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "livro-form.html"));
 });
 
 //Ebook
-app.get("/gerenciar_ebooks/novo", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_ebooks/novo", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "ebook-form.html"));
 });
-app.get("/gerenciar_ebooks/editar/:id", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_ebooks/editar/:id", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "ebook-form.html"));
 });
 
 //Alunos
-app.get("/gerenciar_alunos/novo", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_alunos/novo", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "aluno-form.html"));
 });
-app.get("/gerenciar_alunos/editar/:id", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_alunos/editar/:id", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "aluno-form.html"));
 });
 
-app.use("/api/generos", garantirAutenticado, require("./routes/admin/generos"));
-app.use("/api/subgeneros", garantirAutenticado, require("./routes/admin/subgeneros"));
+app.use("/api/generos", authMiddleware, require("./routes/admin/generos"));
+app.use("/api/subgeneros", authMiddleware, require("./routes/admin/subgeneros"));
 
 //Emprestimos
-app.get("/gerenciar_emprestimos/novo", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_emprestimos/novo", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "requisicao-form.html"));
 });
-app.get("/gerenciar_emprestimos/editar/:id", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_emprestimos/editar/:id", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "requisicao-form.html"));
 });
 
@@ -128,23 +129,23 @@ app.get("/", (req, res) => {
 });
 
 // Rotas Autenticadas
-app.get("/gerenciar_alunos", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_alunos", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_alunos.html"));
 });
 
-app.get("/gerenciar_livros", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_livros", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_livros.html"));
 });
 
-app.get("/gerenciar_ebooks", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_ebooks", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_ebooks.html"));
 });
 
-app.get("/gerenciar_emprestimos", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_emprestimos", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_emprestimos.html"));
 });
 
-app.get("/gerenciar_avaliacoes", garantirAutenticado, (req, res) => {
+app.get("/gerenciar_avaliacoes", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_avaliacoes.html"));
 });
 

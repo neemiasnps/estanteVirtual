@@ -32,20 +32,32 @@
             <!-- MENU DESKTOP -->
             <ul class="right hide-on-med-and-down">
 
-                <li><a href="/">Home</a></li>
+                <li>
+                    <a href="/">Home</a>
+                </li>
 
-                <li><a href="/livros">Livros</a></li>
+                <li>
+                    <a href="/livros">Livros</a>
+                </li>
 
-                <li><a href="/ebooks">eBooks</a></li>
+                <li>
+                    <a href="/ebooks">eBooks</a>
+                </li>
 
-                <li><a href="/audiobooks">Audiobooks</a></li>
+                <li>
+                    <a href="/audiobooks">Audiobooks</a>
+                </li>
 
-                <li><a href="/contato">Contato</a></li>
+                <li>
+                    <a href="/contato">Contato</a>
+                </li>
 
-                <li><a href="/como_funciona">Como funciona</a></li>
+                <li>
+                    <a href="/como_funciona">Como funciona</a>
+                </li>
 
                 <!-- ADMIN -->
-                <li id="admin-menu" style="display:none;">
+                <li class="admin-item hidden">
 
                     <a
                         class="dropdown-trigger"
@@ -53,6 +65,7 @@
                         data-target="dropdown-menu"
                     >
                         Menu
+                        <i class="material-icons right">arrow_drop_down</i>
                     </a>
 
                     <ul id="dropdown-menu" class="dropdown-content">
@@ -73,7 +86,7 @@
 
                         <li>
                             <a href="/gerenciar_ebooks">
-                                <i class="material-icons">book</i>
+                                <i class="material-icons">menu_book</i>
                                 eBooks
                             </a>
                         </li>
@@ -97,22 +110,22 @@
                 </li>
 
                 <!-- LOGOUT -->
-                <li id="logout-link-container" style="display:none;">
-                    <a href="#" id="logout-link">
+                <li class="admin-item hidden">
+                    <a href="#" id="logout-link" title="Sair">
                         <i class="material-icons">logout</i>
                     </a>
                 </li>
 
                 <!-- LOGIN -->
-                <li id="login-link-container">
-                    <a href="#" id="modal-login-link">
+                <li class="login-item">
+                    <a href="#" id="modal-login-link" title="Login">
                         <i class="material-icons">login</i>
                     </a>
                 </li>
 
             </ul>
 
-            <!-- MOBILE -->
+            <!-- MENU MOBILE -->
             <ul class="sidenav" id="mobile-demo">
 
                 <li>
@@ -131,7 +144,7 @@
 
                 <li>
                     <a href="/ebooks">
-                        <i class="material-icons">book</i>
+                        <i class="material-icons">menu_book</i>
                         eBooks
                     </a>
                 </li>
@@ -157,51 +170,54 @@
                     </a>
                 </li>
 
-                <li id="admin-menu-mobile" style="display:none;">
+                <!-- ADMIN -->
+                <li class="admin-item hidden">
                     <a href="/gerenciar_alunos">
                         <i class="material-icons">school</i>
                         Alunos
                     </a>
                 </li>
 
-                <li id="admin-menu-mobile-2" style="display:none;">
+                <li class="admin-item hidden">
                     <a href="/gerenciar_livros">
                         <i class="material-icons">book</i>
                         Livros
                     </a>
                 </li>
 
-                <li id="admin-menu-mobile-3" style="display:none;">
+                <li class="admin-item hidden">
                     <a href="/gerenciar_ebooks">
-                        <i class="material-icons">book</i>
+                        <i class="material-icons">menu_book</i>
                         eBooks
                     </a>
                 </li>
 
-                <li id="admin-menu-mobile-4" style="display:none;">
+                <li class="admin-item hidden">
                     <a href="/gerenciar_emprestimos">
                         <i class="material-icons">receipt</i>
                         Empréstimos
                     </a>
                 </li>
 
-                <li id="admin-menu-mobile-5" style="display:none;">
+                <li class="admin-item hidden">
                     <a href="/gerenciar_avaliacoes">
                         <i class="material-icons">rate_review</i>
                         Avaliações
                     </a>
                 </li>
 
-                <li class="divider"></li>
+                <li class="divider admin-item hidden"></li>
 
-                <li id="logout-link-mobile" style="display:none;">
-                    <a href="#" id="logout-link-mobile-action">
+                <!-- LOGOUT -->
+                <li class="admin-item hidden">
+                    <a href="#" id="logout-link-mobile">
                         <i class="material-icons">logout</i>
                         Sair
                     </a>
                 </li>
 
-                <li id="login-link-container-mobile">
+                <!-- LOGIN -->
+                <li class="login-item">
                     <a href="#" id="modal-login-link-mobile">
                         <i class="material-icons">login</i>
                         Login
