@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSearch = this.value.trim();
                 currentPage = 1;
                 listarAudiobooks(1, currentSearch);
-            }, 500);
+            }, 700);
 
         });
     }
@@ -71,8 +71,12 @@ async function listarAudiobooks(page = 1, searchQuery = '') {
 
                     <div class="card-image waves-effect waves-block waves-light">
                         <img class="activator livro-imagem"
-                             src="${livro.image}"
-                             alt="${livro.title}">
+                            loading="lazy"
+                            decoding="async"
+                            fetchpriority="low"
+                            src="${livro.image}"
+                            alt="${livro.title}"
+                            onerror="this.onerror=null;this.src='/images/sem-capa.jpg';">
                     </div>
 
                     <div class="card-content">
@@ -94,7 +98,7 @@ async function listarAudiobooks(page = 1, searchQuery = '') {
                         <div>
                             <p style="margin:0;">
                                 <strong>Duração:</strong>
-                                <span id="dur-${livro.id}">Carregando...</span>
+                                <span>${livro.duration}</span>
                             </p>
                         </div>
 
@@ -124,17 +128,6 @@ async function listarAudiobooks(page = 1, searchQuery = '') {
 
             container.appendChild(card);
 
-            // 🔥 duração async
-            fetch(`/api/public/audiobooks/duration/${livro.id}`)
-                .then(res => res.json())
-                .then(data => {
-                    const el = document.getElementById(`dur-${livro.id}`);
-                    if (el) el.innerText = data.duration || 'N/A';
-                })
-                .catch(() => {
-                    const el = document.getElementById(`dur-${livro.id}`);
-                    if (el) el.innerText = 'N/A';
-                });
         });
 
         renderPaginacaoAudiobooks(data.total || 0);
@@ -149,6 +142,7 @@ async function listarAudiobooks(page = 1, searchQuery = '') {
         if (preloader) preloader.style.display = 'none';
     }
 }
+
 
 /* =========================
    PAGINAÇÃO

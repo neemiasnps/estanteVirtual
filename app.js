@@ -5,9 +5,7 @@ const sequelize = require("./config/database"); // Verifique o caminho
 const cors = require("cors");
 const authMiddleware = require("./middlewares/authMiddleware");
 const session = require("express-session");
-const sessionStore = new session.MemoryStore();
 const axios = require("axios");
-//const { parseString } = require('xml2js');
 const xml2js = require("xml2js");
 
 const app = express();
@@ -44,7 +42,7 @@ app.use(express.urlencoded({ extended: true })); // Para dados de formulários
 
 app.use(
     cors({
-        origin: "http://bibliotecanichele.com.br/",
+        origin: "https://bibliotecanichele.com.br",
         methods: ["GET", "POST"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true, // Permite cookies se necessário

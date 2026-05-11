@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const axios = require("axios");
+const fs = require("fs");
+const fsPromises = require("fs/promises");
+const path = require("path");
 
 // CACHE simples em memória
 const cache = new Map();
@@ -24,12 +27,18 @@ router.get("/", async (req, res) => {
 
     try {
 
+        let query = `collection:"librivoxaudio" AND language:"por"`;
+
+        if (search) {
+            query += ` AND (title:"${search}*" OR creator:"${search}*")`;
+        }
+
         const response = await axios.get(
             "https://archive.org/advancedsearch.php",
             {
                 params: {
-                    q: `collection:"librivoxaudio" AND language:"por" AND (title:"${search}*" OR creator:"${search}*")`,
-                    fl: "creator,description,genre,identifier,language,title,item_size",
+                    q: query,
+                    fl: "creator,description,genre,identifier,language,title,item_size,runtime,length",
                     rows: limit,
                     page,
                     output: "json",
@@ -48,12 +57,15 @@ router.get("/", async (req, res) => {
             genre: doc.genre ? doc.genre.split("; ") : ["Não informado"],
             language: doc.language || "Desconhecido",
             description: doc.description || "Sem descrição",
-            image: `https://archive.org/services/img/${doc.identifier}`,
+            image: `/api/public/audiobooks/cover/${doc.identifier}`,
             link: `https://archive.org/details/${doc.identifier}`,
             item_size: doc.item_size
                 ? (doc.item_size / 1048576).toFixed(2) + " MB"
                 : "N/D",
-            duration: "Carregando..."
+            duration:
+            doc.runtime ||
+            doc.length ||
+            "Duração não disponível"
         }));
 
         const result = {
@@ -79,41 +91,57 @@ router.get("/", async (req, res) => {
     }
 });
 
+
 /* =========================
-   DURAÇÃO INDIVIDUAL
+   CACHE DE CAPAS
 ========================= */
-router.get("/duration/:id", async (req, res) => {
+router.get("/cover/:id", async (req, res) => {
 
     const { id } = req.params;
 
     try {
 
-        const response = await axios.get(
-            `https://archive.org/metadata/${id}`,
-            { timeout: 10000 }
-        );
+        const cacheDir = path.join(__dirname, "../../public/cache/audiobooks");
 
-        const meta = response.data?.metadata || {};
-        const files = response.data?.files || [];
+        // cria pasta se não existir
+        await fsPromises.mkdir(cacheDir, { recursive: true });
 
-        const runtime =
-            meta.runtime ||
-            meta.length ||
-            files.find(f => f.length)?.length ||
-            null;
+        const imagePath = path.join(cacheDir, `${id}.jpg`);
 
-        res.json({
-            id,
-            duration: runtime || "Duração não disponível"
+        // se já existe no cache
+        if (fs.existsSync(imagePath)) {
+            return res.sendFile(imagePath);
+        }
+
+        // baixa do archive.org
+        const response = await axios({
+            method: "GET",
+            url: `https://archive.org/services/img/${id}`,
+            responseType: "stream",
+            timeout: 10000
+        });
+
+        const writer = fs.createWriteStream(imagePath);
+
+        response.data.pipe(writer);
+
+        writer.on("finish", () => {
+            return res.sendFile(imagePath);
+        });
+
+        writer.on("error", () => {
+            return res.sendFile(
+                path.join(__dirname, "../../public/images/sem-capa.jpg")
+            );
         });
 
     } catch (error) {
-        console.error("Erro duration:", error.message);
 
-        res.status(200).json({
-            id,
-            duration: "Duração não disponível"
-        });
+        console.error("Erro capa:", error.message);
+
+        return res.sendFile(
+            path.join(__dirname, "../../public/images/sem-capa.jpg")
+        );
     }
 });
 
