@@ -30,7 +30,7 @@ router.post('/', async (req, res) => {
             aluno_id,
             estrelas,
             comentario,
-            aprovado: false
+            aprovado: null
 
         });
 

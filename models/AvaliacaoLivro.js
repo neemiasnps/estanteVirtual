@@ -27,8 +27,9 @@ const AvaliacaoLivro = sequelize.define('AvaliacaoLivro', {
     },
 
     aprovado: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: null
     }
 
 }, {
