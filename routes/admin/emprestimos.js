@@ -321,7 +321,10 @@ router.put('/livro/:id/finalizar', async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
-    const item = await EmprestimoLivro.findByPk(req.params.id, { transaction });
+    const item = await EmprestimoLivro.findByPk(req.params.id, {
+      transaction,
+      lock: transaction.LOCK.UPDATE
+    });
 
     if (!item) {
       await transaction.rollback();

@@ -2,6 +2,7 @@ let listaEmprestimos = [];
 let currentPage = 1;
 const limit = 10;
 let timeout;
+let finalizando = false;
 
 // =========================
 // INIT
@@ -406,6 +407,8 @@ function formatarStatus(status) {
 // FINALIZAR
 function finalizar(itemId, emprestimoId, alunoNome, livroNome) {
 
+  if (finalizando) return;
+
   if (!confirm(
     `Deseja finalizar o empréstimo?\n\n` +
     `Solicitação: ${emprestimoId}\n` +
@@ -414,6 +417,8 @@ function finalizar(itemId, emprestimoId, alunoNome, livroNome) {
   )) {
     return;
   }
+
+  finalizando = true;
 
   fetch(`/api/admin/emprestimos/livro/${itemId}/finalizar`, {
     method: 'PUT'
@@ -428,6 +433,9 @@ function finalizar(itemId, emprestimoId, alunoNome, livroNome) {
   })
   .catch(() => {
     M.toast({ html: 'Erro ao finalizar empréstimo' });
+  })
+  .finally(() => {
+    finalizando = false;
   });
 }
 
