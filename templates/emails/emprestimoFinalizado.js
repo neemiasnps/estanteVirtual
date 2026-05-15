@@ -25,7 +25,8 @@
         <td style="padding:6px; border:1px solid #ddd; text-align:center; width:120px;">
   
           <a 
-            href="bibliotecanichele.com.br/livro/${l.id}"
+            href="https://bibliotecanichele.com.br/livro/${l.id}"
+            target="_blank"
             style="
               background:#f9a825;
               color:#000;
