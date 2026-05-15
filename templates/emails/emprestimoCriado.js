@@ -51,7 +51,7 @@ function comporEmailEmprestimoCriado(dados) {
     <ul style="padding-left:18px;">
       <li>O prazo padrão de empréstimo é de <strong>40 dias</strong>.</li>
       <li>Se precisar de mais tempo, solicite ao setor de <strong>T&D</strong>.</li>
-      <li>Em caso de extravio, será cobrada uma taxa simbólica de <strong>R$ 30,00</strong>, podendo ser descontada em folha ou rescisão.</li>
+      <li>Em caso de extravio, poderá ser aplicada taxa de reposição.</li>
       <li>Você receberá lembretes automáticos <strong>5 dias antes</strong> e <strong>no dia da devolução</strong>.</li>
     </ul>
 

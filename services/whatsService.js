@@ -53,8 +53,7 @@ async function gerarMensagemWhatsEmprestimo(emprestimoId) {
   mensagem += `\n📌 *Informações importantes*\n`;
   mensagem += `- Prazo padrão: 40 dias\n`;
   mensagem += `- Caso precise de mais tempo, procure o T&D\n`;
-  mensagem += `- Em caso de extravio, taxa de R$ 30,00\n`;
-  mensagem += `- Pode ser descontado em folha ou rescisão\n`;
+  mensagem += `- Em caso de extravio, poderá ser aplicada taxa de reposição\n`;
   mensagem += `- Lembretes serão enviados automaticamente\n`;
 
   return {
