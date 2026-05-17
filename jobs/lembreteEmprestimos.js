@@ -5,262 +5,87 @@ const EmprestimoLivro = require('../models/emprestimo_livro');
 const Emprestimo = require('../models/emprestimo');
 const Livro = require('../models/livro');
 
-const {
-  enviarEmailLembreteEmprestimo,
-  enviarEmailEmprestimoAtrasado
-} = require('../services/emailService');
+const { notificar } = require('../services/notificationEngine');
 
-// ================================
-// FUNÇÃO AUXILIAR
-// ================================
-function getInicioEFimDoDia(data) {
-
-  const inicio = new Date(data);
-  inicio.setHours(0, 0, 0, 0);
-
-  const fim = new Date(data);
-  fim.setHours(23, 59, 59, 999);
-
-  return { inicio, fim };
-
+function zerarHora(data) {
+  const d = new Date(data);
+  d.setHours(0, 0, 0, 0);
+  return d;
 }
 
-// ================================
-// CRON - TODOS OS DIAS ÀS 08:00
-// ================================
+
 cron.schedule('0 8 * * *', async () => {
 
-  console.log('🔵 [CRON] Início do processamento');
+  console.log('📅 [CRON] Lembretes iniciados');
 
-  const hoje = new Date();
+  const hoje = zerarHora(new Date());
 
-  const {
-    inicio: hojeInicio,
-    fim: hojeFim
-  } = getInicioEFimDoDia(hoje);
+  const itens = await EmprestimoLivro.findAll({
+    where: {
+      status: 'pendente'
+    },
+    include: [
+      { model: Emprestimo, include: ['aluno'] },
+      { model: Livro }
+    ]
+  });
 
-  // ================================
-  // +5 DIAS
-  // ================================
-  const cincoDias = new Date();
+  for (const item of itens) {
 
-  cincoDias.setDate(hoje.getDate() + 5);
+    const dataPrevista = zerarHora(item.data_devolucao_prevista);
 
-  const {
-    inicio: cincoInicio,
-    fim: cincoFim
-  } = getInicioEFimDoDia(cincoDias);
+    const diffDias = Math.round(
+      (dataPrevista - hoje) / (1000 * 60 * 60 * 24)
+    );
 
-  // ================================
-  // SEGUNDA-FEIRA?
-  // ================================
-  const isSegundaFeira = hoje.getDay() === 1;
+    const ultimo = item.ultimo_lembrete
+      ? zerarHora(item.ultimo_lembrete)
+      : null;
 
-  try {
-
-    // ================================
-    // CONDIÇÕES DA CONSULTA
-    // ================================
-    const condicoes = [
-
-      // 📅 Vence hoje
-      {
-        data_devolucao_prevista: {
-          [Op.between]: [hojeInicio, hojeFim]
-        }
-      },
-
-      // ⏳ Vence em 5 dias
-      {
-        data_devolucao_prevista: {
-          [Op.between]: [cincoInicio, cincoFim]
-        }
-      }
-
-    ];
-
-    // 🚨 Atrasados apenas segunda-feira
-    if (isSegundaFeira) {
-
-      condicoes.push({
-        data_devolucao_prevista: {
-          [Op.lt]: hojeInicio
-        }
-      });
-
+    // ANTI-SPAM
+    if (ultimo && ultimo.getTime() === hoje.getTime()) {
+      console.log(`⏭️ Item ${item.id} já recebeu lembrete hoje`);
+      continue;
     }
 
-    // ================================
-    // BUSCA LIVROS PENDENTES
-    // ================================
-    const itens = await EmprestimoLivro.findAll({
-
-      where: {
-
-        status: 'pendente',
-
-        [Op.or]: condicoes
-
-      },
-
-      include: [
-
-        {
-          model: Emprestimo,
-          include: ['aluno']
-        },
-
-        {
-          model: Livro
-        }
-
-      ]
-
+    console.log({
+      itemId: item.id,
+      livro: item.Livro?.titulo,
+      dataPrevista,
+      diffDias
     });
 
-    console.log(`📚 [CRON] ${itens.length} itens encontrados`);
-
-    let enviados = 0;
-    let ignorados = 0;
-    let erros = 0;
-
     // ================================
-    // PROCESSAMENTO
+    // 5 DIAS ANTES
     // ================================
-    for (const item of itens) {
+    if (diffDias === 5) {
 
-      try {
+      console.log(`📨 Enviando lembrete 5 dias | Item ${item.id}`);
 
-        const aluno = item.Emprestimo?.aluno;
-
-        // ================================
-        // VALIDA E-MAIL
-        // ================================
-        if (!aluno?.email) {
-
-          console.warn(`⚠️ [CRON] Item ${item.id} sem e-mail válido`);
-
-          ignorados++;
-
-          continue;
-
-        }
-
-        // ================================
-        // DATAS
-        // ================================
-        const dataPrevista = new Date(item.data_devolucao_prevista);
-
-        dataPrevista.setHours(0, 0, 0, 0);
-
-        const isHoje =
-          dataPrevista >= hojeInicio &&
-          dataPrevista <= hojeFim;
-
-        const isCincoDias =
-          dataPrevista >= cincoInicio &&
-          dataPrevista <= cincoFim;
-
-        const isAtrasado =
-          dataPrevista < hojeInicio &&
-          isSegundaFeira;
-
-        // ================================
-        // CONTROLE DE REENVIO
-        // ================================
-        const ultimo = item.ultimo_lembrete
-          ? new Date(item.ultimo_lembrete)
-          : null;
-
-        if (ultimo) {
-
-          ultimo.setHours(0, 0, 0, 0);
-
-          const diffDias = Math.floor(
-            (hojeInicio - ultimo) / (1000 * 60 * 60 * 24)
-          );
-
-          // 🚨 Atrasados → 1x por semana
-          if (isAtrasado && diffDias < 7) {
-
-            console.log(
-              `⏭️ [CRON] Atrasado já avisado recentemente (${item.id})`
-            );
-
-            ignorados++;
-
-            continue;
-
-          }
-
-          // 📅 Hoje / 5 dias → apenas 1x no dia
-          if ((isHoje || isCincoDias) && diffDias < 1) {
-
-            console.log(
-              `⏭️ [CRON] Já enviado hoje (${item.id})`
-            );
-
-            ignorados++;
-
-            continue;
-
-          }
-
-        }
-
-        // ================================
-        // ENVIO DOS E-MAILS
-        // ================================
-        if (isAtrasado) {
-
-          console.log(`🚨 [CRON] Enviando atraso (${item.id})`);
-
-          await enviarEmailEmprestimoAtrasado(item);
-
-        } else if (isHoje || isCincoDias) {
-
-          console.log(`📧 [CRON] Enviando lembrete (${item.id})`);
-
-          await enviarEmailLembreteEmprestimo(item);
-
-        }
-
-        // ================================
-        // ATUALIZA CONTROLE
-        // ================================
-        item.ultimo_lembrete = new Date();
-
-        await item.save();
-
-        enviados++;
-
-      } catch (erroEnvio) {
-
-        erros++;
-
-        console.error(
-          `❌ [CRON] Erro ao enviar e-mail (ID: ${item.id})`,
-          erroEnvio
-        );
-
-      }
-
+      await notificar('lembrete_5dias', {
+        tipoContexto: 'item',
+        itemId: item.id
+      });
     }
 
     // ================================
-    // LOG FINAL
+    // HOJE
     // ================================
-    console.log('🟢 [CRON] Finalizado');
+    if (diffDias === 0) {
 
-    console.log(`✅ [CRON] Enviados: ${enviados}`);
-    console.log(`⏭️ [CRON] Ignorados: ${ignorados}`);
-    console.log(`❌ [CRON] Erros: ${erros}`);
+      console.log(`📨 Enviando lembrete HOJE | Item ${item.id}`);
 
-  } catch (error) {
+      await notificar('lembrete_hoje', {
+        tipoContexto: 'item',
+        itemId: item.id
+      });
+    }
 
-    console.error('❌ [CRON] Erro geral:', error);
-
+    item.ultimo_lembrete = new Date();
+    await item.save();
   }
+
+  console.log('🟢 [CRON] Lembretes finalizado');
 
 }, {
   timezone: 'America/Sao_Paulo'

@@ -7,6 +7,7 @@ const authMiddleware = require("./middlewares/authMiddleware");
 const session = require("express-session");
 const axios = require("axios");
 const xml2js = require("xml2js");
+const {inicializarConfiguracoes} = require('./services/configuracaoService');
 
 const app = express();
 const PORT = process.env.PORT || 3000; // Usa a variável de ambiente PORT fornecida pelo Replit
@@ -83,6 +84,7 @@ app.use("/api/admin/subgeneros", authMiddleware, require("./routes/admin/subgene
 app.use("/api/admin/estoques", authMiddleware, require("./routes/admin/estoques"));
 app.use("/api/admin/emprestimos", authMiddleware, require("./routes/admin/emprestimos"));
 app.use("/api/admin/avaliacoes", authMiddleware, require("./routes/admin/avaliacoes"));
+app.use("/api/admin/configuracoes", authMiddleware, require("./routes/admin/configuracoes"));
 
 
 // APIs protegidas
@@ -147,6 +149,10 @@ app.get("/gerenciar_avaliacoes", authMiddleware, (req, res) => {
     res.sendFile(path.join(__dirname, "views", "gerenciar_avaliacoes.html"));
 });
 
+app.get("/gerenciar_configuracoes", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "gerenciar_configuracoes.html"));
+});
+
 app.get("/contato", (req, res) => {
     res.sendFile(path.join(__dirname, "views", "contato.html"));
 });
@@ -182,6 +188,8 @@ sequelize
 sequelize
     .sync()
     .then(async () => {
+
+        await inicializarConfiguracoes();
 
          if (process.env.CRON === 'true') {
             console.log('Excecutando rotina de lembrete (CRON)...');

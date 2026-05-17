@@ -6,10 +6,13 @@ const sequelize = require('../../config/database');
 
 const router = express.Router();
 
+const { obterDadosEmprestimoPorItem } = require('../../utils/obterDadosEmprestimo');
+
 const { Emprestimo, EmprestimoLivro, Aluno, Livro, Estoque } = require('../../models');
 
-const { enviarEmailEmprestimoFinalizado, enviarEmailEmprestimoCriado } = require('../../services/emailService');
 const { gerarMensagemWhatsEmprestimo, gerarMensagemWhatsAvaliacao } = require('../../services/whatsService');
+
+const { notificar } = require('../../services/notificationEngine')
 
 const garantirAutenticado = require('../auth');
 
@@ -201,7 +204,9 @@ router.post('/', async (req, res) => {
       observacao: descricao || null
     }, { transaction });
 
-    // Atualiza estoque
+    // =========================
+    // ATUALIZA ESTOQUE
+    // =========================
     for (const livro of livros) {
 
       const estoque = await Estoque.findOne({
@@ -220,7 +225,9 @@ router.post('/', async (req, res) => {
       await estoque.save({ transaction });
     }
 
-    // Insere itens
+    // =========================
+    // ITENS DO EMPRÉSTIMO
+    // =========================
     const itens = livros.map(livro => {
 
       const dataBase = new Date(livro.data_retirada);
@@ -246,6 +253,16 @@ router.post('/', async (req, res) => {
     await EmprestimoLivro.bulkCreate(itens, { transaction });
 
     await transaction.commit();
+
+    // =========================
+    // NOTIFICAÇÃO (EMPRESTIMO)
+    // =========================
+    setImmediate(() => {
+      notificar('novo_emprestimo', {
+        tipoContexto: 'emprestimo',
+        emprestimoId: Number(emprestimo.id)
+      });
+    });
 
     return res.json({ message: 'Empréstimo criado com sucesso' });
 
@@ -369,9 +386,19 @@ router.put('/livro/:id/finalizar', async (req, res) => {
 
     await transaction.commit();
 
-    // Enviar e-mail
-    enviarEmailEmprestimoFinalizado(item.emprestimo_id)
-      .catch(err => console.error(err));
+    // =========================
+    // NOTIFICAÇÃO (ITEM)
+    // =========================
+    setImmediate(async () => {
+      try {
+        await notificar('finalizacao', {
+          tipoContexto: 'item',
+          itemId: item.id
+        });
+      } catch (err) {
+        console.error('[NOTIFY FINALIZACAO ERROR]', err);
+      }
+    });
 
     return res.json({ message: 'Devolução registrada com sucesso' });
 

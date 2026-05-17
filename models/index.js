@@ -10,6 +10,7 @@ const Genero = require('./genero');
 const Subgenero = require('./subgenero');
 const Ebook = require('./ebook');
 const AvaliacaoLivro = require('./AvaliacaoLivro');
+const Configuracao = require('./configuracao');
 
 /* =========================
    REGISTRO DOS MODELS
@@ -24,7 +25,8 @@ const models = {
   Genero,
   Subgenero,
   Ebook,
-  AvaliacaoLivro
+  AvaliacaoLivro,
+  Configuracao
 };
 
 /* =========================

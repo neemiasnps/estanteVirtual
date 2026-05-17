@@ -15,7 +15,8 @@ body {
 .card-title {
   font-size: 0.5rem;
   font-weight: bold;
-  color: #fff;
+  /*color: #fff;*/
+  color:black;
 }
 
 .card .card-image {

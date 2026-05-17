@@ -1,32 +1,33 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Como funciona</title>
-        <!-- Link para o jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<head>
 
-        <!-- Materialize CSS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
 
-        <!-- Material Icons -->
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Estilos customizados -->
-        <link href="/css/styles.css" rel="stylesheet">
+    <title>Configurações</title>
 
-        <!-- Favicon -->
-        <link rel="icon" href="./favicon-16x16.png" type="image/png">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 
-        <!-- Link para o jQuery Mask Plugin -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    </head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="/css/styles.css" rel="stylesheet">
+
+    <link rel="icon" href="./favicon-16x16.png" type="image/png">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/gerenciar_configuracoes.js" defer></script>
+
+</head>
 
 <body>
-    <!-- ================= NAV ================= -->
-    <nav>
+
+<!-- ================= NAV ================= -->
+<nav>
 
         <div class="nav-wrapper custom-navbar">
 
@@ -253,53 +254,103 @@
 
     </nav>
 
-    <!-- Modal de Login -->
-    <div id="modal-login" class="modal">
-        <div class="modal-content">
-            <h4>Login</h4>
-            <div class="row">
-                <form class="col s12" id="form-login">
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">email</i>
-                            <input id="email" type="text" class="validate" required>
-                            <label for="email">E-mail</label>
-                        </div>
-                        <div class="input-field col s12">
-                            <i class="material-icons prefix">lock</i>
-                            <input id="password" type="password" class="validate" required>
-                            <label for="password">Senha</label>
-                        </div>
-                    </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Login
-                        <i class="material-icons right">login</i>
-                    </button>
-                </form>
-            </div>
+<!-- ================= CONTEÚDO ================= -->
+<div class="container">
+
+    <div class="row">
+
+        <div class="col s12">
+
+            <h5>Configurações</h5>
+
+            <p class="grey-text">
+                Gerencie os envios automáticos da Biblioteca Nichele.
+            </p>
+
         </div>
+
     </div>
 
-    <div class="container" style="text-align: justify;">
-        <h5>Bem-vindo à Biblioteca Nichele!</h5>
-        <p>Olá, colaborador! É um prazer ter você aqui. A <strong>Biblioteca Nichele</strong> foi criada para promover um dos valores mais importantes do <strong>Grupo Nichele</strong>: o desenvolvimento profissional e pessoal de nossa equipe. Aqui você encontra uma coleção incrível de livros físicos e eBooks pensados para inspirar sua evolução.</p>
+    <div class="row">
 
-        <h6>Como funciona?</h6>
-        <ul>
-            <li><strong>Livros físicos:</strong> Solicite pelo WhatsApp e escolha como receber. Você pode optar pelo envio via malote para sua loja ou retirar no setor de Treinamento e Desenvolvimento, na loja do Xaxim.</li>
-            <li><strong>eBooks em PDF:</strong> Acesse, baixe e leia quando e onde quiser. Simples e prático!</li>
-        </ul>
+        <!-- WHATSAPP -->
+        <div class="col s12 m6">
 
-        <p>E tem mais: você pode contribuir com nosso acervo doando livros físicos ou digitais. Se estiver procurando um título específico, nossa equipe poderá verificar a possibilidade de incluí-lo no catálogo.</p>
+            <div class="card blue-grey lighten-5">
 
-        <p>A <strong>Biblioteca Nichele</strong> é mais uma iniciativa para apoiar a sua jornada de aprendizagem e crescimento. Então, que tal começar agora? Escolha seu próximo livro e aproveite ao máximo!</p>
+                <div class="card-content">
+
+                    <label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span><strong>Ativar WhatsApp</strong></span>
+
+                        <div class="switch">
+                            <label>
+                                <input type="checkbox"
+                                       id="whatsapp_ativo"
+                                       onchange="toggleServico('whatsapp', this.checked)">
+                                <span class="lever"></span>
+                            </label>
+                        </div>
+                    </label>
+
+                    <span class="card-title">
+                        <i class="material-icons left green-text">chat</i>
+                        WhatsApp (OmniChat)
+                    </span>
+
+                    <p class="grey-text">
+                        Controle dos envios automáticos via WhatsApp
+                    </p>
+
+                    <div id="whatsapp-configs" style="margin-top:15px;"></div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- EMAIL -->
+        <div class="col s12 m6">
+
+            <div class="card blue-grey lighten-5">
+
+                <div class="card-content">
+
+                    <label style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                        <span><strong>Ativar E-mail</strong></span>
+
+                        <div class="switch">
+                            <label>
+                                <input type="checkbox"
+                                       id="email_ativo"
+                                       onchange="toggleServico('email', this.checked)">
+                                <span class="lever"></span>
+                            </label>
+                        </div>
+                    </label>
+
+                    <span class="card-title">
+                        <i class="material-icons left orange-text">email</i>
+                        E-mails
+                    </span>
+
+                    <p class="grey-text">
+                        Controle dos envios automáticos por e-mail
+                    </p>
+
+                    <div id="email-configs" style="margin-top:15px;"></div>
+
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
+</div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-</body>
-
-    <footer class="page-footer custom-footer">
+<!-- ================= FOOTER ================= -->
+<footer class="page-footer custom-footer">
         <div class="container">
             <div class="row">
                 <div class="col l6 s12">
@@ -328,30 +379,40 @@
             </div>
         </div>
 
-        <div class="footer-copyright">
-                <div class="container" style="display: flex; justify-content: center; align-items: center;">
-                    <!--© 2024 <a href="https://www.instagram.com/nemisconsultoriaetreinamentos" target="_blank" class="grey-text text-lighten-4">Nemis Consultoria e Treinamentos</a>
-                    <a class="grey-text text-lighten-4 right" href="#!">Grupo Nichele ®</a>-->
-                    <img src="./images/grupo-nichele.png" alt="Grupo Nichele" style="height: 20px;">
-                </div>
-        </div>
+    <div class="footer-copyright">
+            <div class="container" style="display: flex; justify-content: center; align-items: center;">
+                <!--© 2024 <a href="https://www.instagram.com/nemisconsultoriaetreinamentos" target="_blank" class="grey-text text-lighten-4">Nemis Consultoria e Treinamentos</a>
+                <a class="grey-text text-lighten-4 right" href="#!">Grupo Nichele ®</a>-->
+                <img src="./images/grupo-nichele.png" alt="Grupo Nichele" style="height: 20px;">
+            </div>
+    </div>
     </footer>
 
-    <!-- Link para o jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- ================= LOGIN ================= -->
+<div id="modal-login" class="modal">
+            <div class="modal-content">
+                <h4>Login</h4>
+                <div class="row">
+                    <form class="col s12" id="form-login">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">email</i>
+                                <input id="email" type="text" class="validate" required>
+                                <label for="email">E-mail</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <i class="material-icons prefix">lock</i>
+                                <input id="password" type="password" class="validate" required>
+                                <label for="password">Senha</label>
+                            </div>
+                        </div>
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Login
+                            <i class="material-icons right">login</i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-    <!-- Link para o Materialize JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-    <!-- Seu arquivo de scripts customizados -->
-    <script src="/js/auth.js"></script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('.sidenav');
-        var instances = M.Sidenav.init(elems);
-    });
-</script>
-
+</body>
 </html>

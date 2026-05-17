@@ -11,9 +11,7 @@ const { obterDadosEmprestimo } = require('../utils/obterDadosEmprestimo');
 // ================================
 // FINALIZADO
 // ================================
-async function enviarEmailEmprestimoFinalizado(emprestimoId) {
-
-  const dados = await obterDadosEmprestimo(emprestimoId);
+async function enviarEmailEmprestimoFinalizado(dados) {
 
   const html = emprestimoFinalizadoTemplate(dados);
 
@@ -28,15 +26,16 @@ async function enviarEmailEmprestimoFinalizado(emprestimoId) {
 // ================================
 // CRIADO
 // ================================
-async function enviarEmailEmprestimoCriado(emprestimoId) {
+async function enviarEmailEmprestimoCriado(dados) {
 
-  const dados = await obterDadosEmprestimo(emprestimoId);
+  const emprestimo = dados.emprestimo || {};
+  const aluno = dados.aluno || {};
 
   const html = comporEmailEmprestimoCriado(dados);
 
   await sendMail({
-    to: dados.aluno.email,
-    subject: `Biblioteca Nichele - Empréstimo Nº ${dados.emprestimo.id}`,
+    to: aluno.email,
+    subject: `Biblioteca Nichele - Empréstimo Nº ${emprestimo.id}`,
     html
   });
 }
@@ -45,12 +44,14 @@ async function enviarEmailEmprestimoCriado(emprestimoId) {
 // ================================
 // LEMBRETE
 // ================================
-async function enviarEmailLembreteEmprestimo(item) {
+async function enviarEmailLembreteEmprestimo(dados) {
 
-  const html = emprestimoLembreteTemplate(item);
+  const aluno = dados.aluno || {};
+
+  const html = emprestimoLembreteTemplate(dados);
 
   await sendMail({
-    to: item.Emprestimo.aluno.email,
+    to: aluno.email,
     subject: `Biblioteca Nichele - Lembrete de devolução`,
     html
   });
@@ -60,16 +61,19 @@ async function enviarEmailLembreteEmprestimo(item) {
 // ================================
 // ATRASO
 // ================================
-async function enviarEmailEmprestimoAtrasado(item) {
+async function enviarEmailEmprestimoAtrasado(dados) {
 
-  const html = emprestimoAtrasadoTemplate(item);
+  const aluno = dados.aluno || {};
+
+  const html = emprestimoAtrasadoTemplate(dados);
 
   await sendMail({
-    to: item.Emprestimo.aluno.email,
+    to: aluno.email,
     subject: `Biblioteca Nichele - Empréstimo em atraso`,
     html
   });
 }
+
 
 // ================================
 // NOVA AVALIAÇÃO PENDENTE
