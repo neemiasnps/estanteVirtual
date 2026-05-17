@@ -10,93 +10,124 @@ document.addEventListener("DOMContentLoaded", function() {
 
 //Carregar os ultimos 5 ebooks adicionados
 function carregarUltimosEbooks() {
+
+    if (typeof renderSkeletonLista === "function") {
+        renderSkeletonLista("recent-ebooks", 5);
+    }
+
     fetch('/api/homes')
         .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro na rede ao buscar eBooks');
-            }
-            return response.json();
-        })
-        .then(ebooks => { // Aqui estamos assumindo que a resposta é diretamente um array de eBooks
-            console.log("Dados retornados pela API:", ebooks);
-
-            if (!Array.isArray(ebooks)) {
-                throw new TypeError('A resposta não contém um array de livros');
-            }
-
-            const collectionContainer = document.getElementById("recent-ebooks");
-            collectionContainer.innerHTML = ''; // Limpa o container antes de adicionar novos itens
-
-            ebooks.forEach(ebook => {
-                const li = document.createElement("li");
-                li.classList.add("collection-item", "avatar");
-                li.setAttribute("data-livro-id", ebook.id);  // Adiciona o ID do livro como atributo
-
-                li.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: flex-start;">
-                        <img src="${ebook.foto}" alt="${ebook.titulo}" class="responsive-img" style="width: 60px; height: auto; margin-right: 15px;">
-                        <div>
-                            <span class="title" style="font-size: 13px;">${ebook.titulo}</span>
-                            <p style="font-size: 12px;">${ebook.autor}</p>
-                            <p style="font-size: 11px;">${ebook.genero || '-'}</p>
-                        </div>
-                    </div>
-                    <a href="${ebook.url}" target="_blank" class="secondary-content" title="Baixar o livro" onclick="incrementarDownload(${ebook.id})"><i class="material-icons">file_download</i></a>
-                `;
-
-                collectionContainer.appendChild(li);
-            });
-        })
-        .catch(error => console.error('Erro ao carregar os últimos eBooks:', error));
-}
-
-//Carregar os 3 ebooks mais baixados
-function carregarEbooksMaisBaixados() {
-    fetch('/api/homes/mais-baixados')  // Substitua pela URL correta da sua API
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro na rede ao buscar eBooks mais baixados');
-            }
+            if (!response.ok) throw new Error('Erro na rede ao buscar eBooks');
             return response.json();
         })
         .then(ebooks => {
-            console.log("Dados retornados pela API:", ebooks);
 
-            if (!Array.isArray(ebooks)) {
-                throw new TypeError('A resposta não contém um array de eBooks');
-            }
+            const container = document.getElementById("recent-ebooks");
+            container.innerHTML = '';
 
-            const collectionContainer = document.getElementById("colecao-ebooks");
-            collectionContainer.innerHTML = '';  // Limpa o container antes de adicionar novos itens
+            if (!Array.isArray(ebooks)) return;
 
             ebooks.forEach(ebook => {
+
                 const li = document.createElement("li");
                 li.classList.add("collection-item", "avatar");
-                li.setAttribute("data-livro-id", ebook.id);  // Adiciona o ID do livro como atributo
+
+                li.style.cursor = "default"; // sem sensação de link
+                li.setAttribute("data-livro-id", ebook.id);
 
                 li.innerHTML = `
-                    <div style="display: flex; align-items: center;">
-                        <img src="${ebook.foto}" alt="${ebook.titulo}" class="responsive-img" style="width: 60px; height: auto; margin-right: 15px;">
+                    <div style="display:flex;align-items:center;justify-content:flex-start">
+
+                        <img 
+                            src="${ebook.foto}"
+                            class="responsive-img"
+                            style="width:60px;margin-right:15px"
+                        >
+
                         <div>
-                            <span class="title" style="font-size: 13px;">${ebook.titulo}</span>
-                            <p style="font-size: 12px;">${ebook.autor}</p>
-                            <p style="font-size: 11px;" class="livro-downloads">${ebook.download} downloads</p>  <!-- Classe para downloads -->
+                            <span class="title" style="font-size:13px">${ebook.titulo}</span>
+                            <p style="font-size:12px">${ebook.autor}</p>
+                            <p style="font-size:11px">${ebook.genero || '-'}</p>
                         </div>
+
                     </div>
-                    <a href="${ebook.url}" target="_blank" class="secondary-content" title="Baixar o livro" onclick="incrementarDownload(${ebook.id})">
+
+                    <a href="${ebook.url}" target="_blank"
+                       class="secondary-content"
+                       onclick="event.stopPropagation(); incrementarDownload(${ebook.id})">
                         <i class="material-icons">file_download</i>
                     </a>
                 `;
 
-                collectionContainer.appendChild(li);
+                container.appendChild(li);
             });
         })
-        .catch(error => console.error('Erro ao carregar os eBooks mais baixados:', error));
+        .catch(err => console.error(err));
 }
+
+
+//Carregar os 3 ebooks mais baixados
+function carregarEbooksMaisBaixados() {
+
+    if (typeof renderSkeletonLista === "function") {
+        renderSkeletonLista("colecao-ebooks", 3);
+    }
+
+    fetch('/api/homes/mais-baixados')
+        .then(response => {
+            if (!response.ok) throw new Error('Erro na rede');
+            return response.json();
+        })
+        .then(ebooks => {
+
+            const container = document.getElementById("colecao-ebooks");
+            container.innerHTML = '';
+
+            if (!Array.isArray(ebooks)) return;
+
+            ebooks.forEach(ebook => {
+
+                const li = document.createElement("li");
+                li.classList.add("collection-item", "avatar");
+
+                li.style.cursor = "default";
+                li.setAttribute("data-livro-id", ebook.id);
+
+                li.innerHTML = `
+                    <div style="display:flex;align-items:center">
+
+                        <img 
+                            src="${ebook.foto}"
+                            style="width:60px;margin-right:15px"
+                        >
+
+                        <div>
+                            <span class="title" style="font-size:13px">${ebook.titulo}</span>
+                            <p style="font-size:12px">${ebook.autor}</p>
+                            <p class="livro-downloads" style="font-size:11px">
+                                ${ebook.download} downloads
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <a href="${ebook.url}" target="_blank"
+                       class="secondary-content"
+                       onclick="event.stopPropagation(); incrementarDownload(${ebook.id})">
+                        <i class="material-icons">file_download</i>
+                    </a>
+                `;
+
+                container.appendChild(li);
+            });
+        })
+        .catch(err => console.error(err));
+}
+
 
 //Incrementar +1 download
 function incrementarDownload(livroId) {
-    fetch(`/api/ebooks/${livroId}/incrementar-download`, {
+    fetch(`/api/public/ebooks/${livroId}/incrementar-download`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -123,13 +154,21 @@ function incrementarDownload(livroId) {
     });
 }
 
+
 // Função para detectar tipo de navegador
 function isMobile() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+
 // Carregar os 5 livros mais locados
 function carregarLivrosMaisLocados() {
+
+    const sliderContainer = document.querySelector(".slider .slides");
+
+    // skeleton antes do fetch
+    renderSkeletonSlider(sliderContainer);
+
     const linkBanner = isMobile()
         ? "https://i.postimg.cc/bYKJW6h4/BANNER-1-MOBILE-BIBLIOTECA-NICHELE.png"
         : "https://i.postimg.cc/3NRzrdRP/BANNER-1-BIBLIOTECA-NICHELE.png";
@@ -138,12 +177,8 @@ function carregarLivrosMaisLocados() {
         .then(r => r.json())
         .then(livros => {
 
-            console.log("Dados retornados pela API:", livros);
-
-            const sliderContainer = document.querySelector(".slider .slides");
             sliderContainer.innerHTML = '';
 
-            // Banner fixo
             sliderContainer.innerHTML += `
                 <li>
                     <a href="/como_funciona">
@@ -152,35 +187,22 @@ function carregarLivrosMaisLocados() {
                 </li>
             `;
 
-            if (!Array.isArray(livros) || livros.length === 0) {
-                return;
+            if (Array.isArray(livros)) {
+                livros.slice(0, 5).forEach(livro => {
+                    sliderContainer.innerHTML += `
+                        <li>
+                            <img src="${livro.foto}" alt="${livro.titulo}">
+                            <div class="caption center-align">
+                                <h4>${livro.titulo}</h4>
+                                <h6 class="light grey-text text-lighten-3">${livro.autor}</h6>
+                            </div>
+                        </li>
+                    `;
+                });
             }
-
-            livros.slice(0, 5).forEach(livro => {
-
-                const titulo = livro.titulo || 'Sem título';
-                const autor = livro.autor || '';
-
-                sliderContainer.innerHTML += `
-                    <li>
-                        <img src="${livro.foto || '/images/default-book.png'}" alt="${titulo}">
-                        <div class="caption center-align">
-                            <h4>${titulo}</h4>
-                            <h6 class="light grey-text text-lighten-3">${autor}</h6>
-
-                            <a href="https://wa.me/5541998000484?text=Tenho%20interesse%20no%20livro%20${encodeURIComponent(titulo)}"
-                               target="_blank"
-                               class="btn-floating btn-small green">
-                                <i class="material-icons">add</i>
-                            </a>
-                        </div>
-                    </li>
-                `;
-            });
 
             const sliderEl = document.querySelector('.slider');
 
-            // evita duplicar inicialização
             const instance = M.Slider.getInstance(sliderEl);
             if (instance) instance.destroy();
 
@@ -190,57 +212,113 @@ function carregarLivrosMaisLocados() {
                 duration: 500,
                 interval: 6000
             });
+        });
+}
+
+
+// Carregar os 5 livros doados
+function carregarLivrosDoados() {
+
+    if (typeof renderSkeletonLivros === "function") {
+        renderSkeletonLivros();
+    } else if (typeof renderSkeletonLista === "function") {
+        renderSkeletonLista("doados-livros", 5);
+    }
+
+    fetch('/api/homes/doados')
+        .then(response => {
+            if (!response.ok) throw new Error('Erro na rede');
+            return response.json();
+        })
+        .then(livros => {
+
+            const container = document.getElementById("doados-livros");
+            container.innerHTML = '';
+
+            if (!Array.isArray(livros)) return;
+
+            livros.forEach(livro => {
+
+                const li = document.createElement("li");
+                li.classList.add("collection-item", "avatar");
+                li.style.cursor = "pointer";
+                li.style.position = "relative"; // 👈 necessário para o botão absoluto
+
+                li.onclick = () => window.location.href = `/livro/${livro.id}`;
+
+                li.innerHTML = `
+
+                    <!-- BOTÃO WHATSAPP TOPO DIREITO -->
+                    <a 
+                        href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}"
+                        target="_blank"
+                        onclick="event.stopPropagation();"
+                        style="
+                            position:absolute;
+                            top:10px;
+                            right:10px;
+                            color:#25D366;
+                        "
+                        title="WhatsApp"
+                    >
+                        <i class="material-icons">message</i>
+                    </a>
+
+                    <div style="display:flex;align-items:center">
+
+                        <img 
+                            src="${livro.foto}"
+                            style="width:60px;margin-right:15px;cursor:pointer"
+                            onclick="event.stopPropagation(); window.location.href='/livro/${livro.id}'"
+                        >
+
+                        <div>
+                            <span class="title" style="font-size:13px">${livro.titulo}</span>
+                            <p style="font-size:12px">${livro.autor}</p>
+                            <p style="font-size:11px">Doação: ${livro.gentileza}</p>
+                        </div>
+
+                    </div>
+                `;
+
+                container.appendChild(li);
+            });
         })
         .catch(err => console.error(err));
 }
 
-// Carregar os 5 livros doados
-function carregarLivrosDoados() {
-    fetch('/api/homes/doados')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro na rede ao buscar livros');
-            }
-            return response.json();
-        })
-        .then(livros => { // Aqui estamos assumindo que a resposta é diretamente um array de livros
-            console.log("Dados retornados pela API:", livros);
-
-            if (!Array.isArray(livros)) {
-                throw new TypeError('A resposta não contém um array de livros');
-            }
-
-            const collectionContainer = document.getElementById("doados-livros");
-            collectionContainer.innerHTML = ''; // Limpa o container antes de adicionar novos itens
-
-            livros.forEach(livro => { // Corrigido de 'ebooks' para 'livros'
-                const li = document.createElement("li");
-                li.classList.add("collection-item", "avatar");
-                li.setAttribute("data-livro-id", livro.id);  // Adiciona o ID do livro como atributo
-
-                li.innerHTML = `
-                    <div style="display: flex; align-items: center; justify-content: flex-start;">
-                        <img src="${livro.foto}" alt="${livro.titulo}" class="responsive-img" style="width: 60px; height: auto; margin-right: 15px;">
-                        <div>
-                            <span class="title" style="font-size: 13px;">${livro.titulo}</span>
-                            <p style="font-size: 12px;">${livro.autor}</p>
-                            <p style="font-size: 11px;">Doação: ${livro.gentileza}</p>
-                        </div>
-                    </div>
-
-                    <a href="https://wa.me/5541998000484?text=Estou%20interessado%20no%20livro%20${encodeURIComponent(livro.titulo)}" target="_blank" class="secondary-content" title="Enviar mensagem no WhatsApp">
-                        <i class="material-icons">message</i>
-                    </a>
-                `;
-
-                collectionContainer.appendChild(li);
-            });
-        })
-        .catch(error => console.error('Erro ao carregar os livros doados:', error));
-}
 
 // Carregar os 3 alunos que mais locaram livros
 function carregarTopAlunos() {
+
+    // ✔️ SKELETON ENQUANTO CARREGA
+    const container = document.getElementById("top-alunos-list");
+    container.innerHTML = '';
+
+    const ulSkeleton = document.createElement("ul");
+    ulSkeleton.classList.add("collapsible");
+
+    for (let i = 0; i < 3; i++) {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <div class="collapsible-header">
+                <div class="skeleton-circle"></div>
+                <div class="skeleton-line" style="width:60%; margin-left:10px;"></div>
+                <div class="skeleton-badge"></div>
+            </div>
+            <div class="collapsible-body">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+            </div>
+        `;
+
+        ulSkeleton.appendChild(li);
+    }
+
+    container.appendChild(ulSkeleton);
+
+    // ✔️ DADOS REAIS
     fetch('/api/homes/top-alunos-list')
         .then(response => {
             if (!response.ok) {
@@ -255,21 +333,17 @@ function carregarTopAlunos() {
                 throw new TypeError('A resposta não contém um array de alunos');
             }
 
-            // Ordena localmente os alunos por total de empréstimos (do maior para o menor)
             alunos.sort((a, b) => b.total_emprestimos - a.total_emprestimos);
 
-            const container = document.getElementById("top-alunos-list");
-            container.innerHTML = ''; // Limpa antes de adicionar novos itens
+            container.innerHTML = '';
 
-            // Cria a lista collapsible
             const ul = document.createElement("ul");
             ul.classList.add("collapsible");
 
-            // Ícones com cores para 1º, 2º e 3º lugares
             const medalhas = [
-                { icon: 'emoji_events', color: '#FFD700' }, // Ouro
-                { icon: 'military_tech', color: '#C0C0C0' }, // Prata
-                { icon: 'grade', color: '#cd7f32' }          // Bronze
+                { icon: 'emoji_events', color: '#FFD700' },
+                { icon: 'military_tech', color: '#C0C0C0' },
+                { icon: 'grade', color: '#cd7f32' }
             ];
 
             alunos.forEach((aluno, index) => {
@@ -281,8 +355,11 @@ function carregarTopAlunos() {
                     <div class="collapsible-header">
                         <i class="material-icons" style="color: ${color};">${icon}</i>
                         <span style="margin-left: 10px;">${aluno.nomeCompleto}</span>
-                        <span class="badge" data-badge-caption="empréstimos">${aluno.total_emprestimos}</span>
+                        <span class="badge" data-badge-caption="empréstimos">
+                            ${aluno.total_emprestimos}
+                        </span>
                     </div>
+
                     <div class="collapsible-body">
                         <ul style="margin: 0; padding-left: 1.2rem;">
                             ${aluno.livros && aluno.livros.length > 0 
@@ -297,10 +374,79 @@ function carregarTopAlunos() {
 
             container.appendChild(ul);
 
-            // Inicializa ou reinicializa o collapsible
             const elems = document.querySelectorAll('.collapsible');
             M.Collapsible.init(elems);
 
         })
-        .catch(error => console.error('Erro ao carregar os top alunos com livros:', error));
+        .catch(error => {
+            console.error('Erro ao carregar os top alunos com livros:', error);
+        });
+}
+
+
+function renderSkeletonLista(containerId, quantidade = 5) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+
+    for (let i = 0; i < quantidade; i++) {
+        const li = document.createElement("li");
+        li.classList.add("collection-item", "avatar");
+
+        li.innerHTML = `
+            <div style="display: flex; align-items: center;">
+
+                <div class="skeleton-img"></div>
+
+                <div style="flex: 1;">
+                    <div class="skeleton-line title"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line small"></div>
+                </div>
+
+            </div>
+        `;
+
+        container.appendChild(li);
+    }
+}
+
+function renderSkeletonSlider(container) {
+    container.innerHTML = '';
+
+    for (let i = 0; i < 3; i++) {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <div class="skeleton-slider"></div>
+        `;
+
+        container.appendChild(li);
+    }
+}
+
+function renderSkeletonTopAlunos(container) {
+
+    container.innerHTML = '';
+
+    const ul = document.createElement("ul");
+    ul.classList.add("collapsible");
+
+    for (let i = 0; i < 3; i++) {
+        const li = document.createElement("li");
+
+        li.innerHTML = `
+            <div class="collapsible-header">
+                <div class="skeleton-circle"></div>
+                <div class="skeleton-line" style="width:60%; margin-left:10px;"></div>
+            </div>
+            <div class="collapsible-body">
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line"></div>
+            </div>
+        `;
+
+        ul.appendChild(li);
+    }
+
+    container.appendChild(ul);
 }
