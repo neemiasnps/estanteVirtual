@@ -192,24 +192,11 @@ sequelize
         await inicializarConfiguracoes();
 
         if (process.env.CRON === 'true') {
+
             console.log('Executando rotinas automáticas (CRON)...');
 
-            try {
-                const executarLembretesEmprestimos = require("./jobs/lembreteEmprestimos");
-                const executarLembretesAtraso = require("./jobs/atrasoEmprestimos");
-
-                // Executa os dois jobs
-                await Promise.all([
-                    executarLembretesEmprestimos(),
-                    executarLembretesAtraso()
-                ]);
-
-                console.log('Rotinas de lembrete executadas com sucesso.');
-            } catch (error) {
-                console.error('Erro ao executar rotinas de CRON:', error);
-            }
-
-            return;
+            require("./jobs/lembreteEmprestimos");
+            require("./jobs/atrasoEmprestimos");
         }
 
         app.listen(PORT, () => {
