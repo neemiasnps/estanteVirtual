@@ -208,8 +208,7 @@ async function gerarTemplateEmprestimoAtrasado(dados) {
       aluno?.nome || '',
       livro?.titulo || '-',
       formatarData(livro?.data_devolucao_prevista),
-      calcularDiasAtraso(livro?.data_devolucao_prevista),
-      formatarData(new Date())
+      calcularDiasAtraso(livro?.data_devolucao_prevista)
     ]
   };
 }
