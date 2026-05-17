@@ -195,22 +195,11 @@ sequelize
             console.log('🟡 Iniciando CRONs...');
 
             try {
-                const iniciarLembretesEmprestimos = require("./jobs/lembreteEmprestimos");
-                const iniciarAtrasosEmprestimos = require("./jobs/atrasoEmprestimos");
+                require("./jobs/lembreteEmprestimos");
+                console.log('✔ lembreteEmprestimos iniciado');
 
-                if (typeof iniciarLembretesEmprestimos === 'function') {
-                    iniciarLembretesEmprestimos();
-                    console.log('✔ lembreteEmprestimos iniciado');
-                } else {
-                    console.error('❌ lembreteEmprestimos não é função');
-                }
-
-                if (typeof iniciarAtrasosEmprestimos === 'function') {
-                    iniciarAtrasosEmprestimos();
-                    console.log('✔ atrasoEmprestimos iniciado');
-                } else {
-                    console.error('❌ atrasoEmprestimos não é função');
-                }
+                require("./jobs/atrasoEmprestimos");
+                console.log('✔ atrasoEmprestimos iniciado');
 
             } catch (error) {
                 console.error('❌ Erro ao iniciar CRONs:', error);
