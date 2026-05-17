@@ -196,7 +196,7 @@ sequelize
 
             try {
                 const executarLembretesEmprestimos = require("./jobs/lembreteEmprestimos");
-                const executarLembretesAtraso = require("./jobs/atrasoLembretes");
+                const executarLembretesAtraso = require("./jobs/atrasoEmprestimos");
 
                 // Executa os dois jobs
                 await Promise.all([
