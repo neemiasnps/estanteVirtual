@@ -192,11 +192,18 @@ sequelize
         await inicializarConfiguracoes();
 
         if (process.env.CRON === 'true') {
+            console.log('🟡 Iniciando CRONs...');
 
-            console.log('Executando rotinas automáticas (CRON)...');
+            try {
+                require("./jobs/lembreteEmprestimos");
+                console.log('✔ lembreteEmprestimos carregado');
 
-            require("./jobs/lembreteEmprestimos");
-            require("./jobs/atrasoEmprestimos");
+                require("./jobs/atrasoEmprestimos");
+                console.log('✔ atrasoEmprestimos carregado');
+
+            } catch (error) {
+                console.error('❌ Erro ao iniciar CRONs:', error);
+            }
         }
 
         app.listen(PORT, () => {
