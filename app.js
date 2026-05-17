@@ -191,24 +191,36 @@ sequelize
 
         await inicializarConfiguracoes();
 
-         if (process.env.CRON === 'true') {
-            console.log('Excecutando rotina de lembrete (CRON)...');
-        // Inicia rotina automática de lembrete
+        if (process.env.CRON === 'true') {
+            console.log('Executando rotinas automáticas (CRON)...');
 
-	const executarLembretes = require("./jobs/lembreteEmprestimos");
+            try {
+                const executarLembretesEmprestimos = require("./jobs/lembreteEmprestimos");
+                const executarLembretesAtraso = require("./jobs/atrasoLembretes");
 
-	await executarLembretes();
+                // Executa os dois jobs
+                await Promise.all([
+                    executarLembretesEmprestimos(),
+                    executarLembretesAtraso()
+                ]);
 
-         return;
-	}
+                console.log('Rotinas de lembrete executadas com sucesso.');
+            } catch (error) {
+                console.error('Erro ao executar rotinas de CRON:', error);
+            }
+
+            return;
+        }
 
         app.listen(PORT, () => {
             console.log(`Servidor rodando na porta ${PORT}`);
         });
+
     })
     .catch((err) => {
         console.error("Erro ao sincronizar o banco de dados:", err);
     });
+
 
 // Tratamento de Rota Não Encontrada (404)
 app.use((req, res, next) => {
