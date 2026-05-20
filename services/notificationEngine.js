@@ -15,6 +15,17 @@ const {
   gerarTemplateEmprestimoAtrasado
 } = require('./whatsService');
 
+const {
+  logSucesso,
+  logErro
+} = require('./logNotificacaoService');
+
+const {
+  criarLog,
+  atualizarLog,
+  marcarErro
+} = require('./whatsappLogService');
+
 const { Emprestimo } = require('../models');
 const { obterDadosEmprestimoPorItem, obterDadosEmprestimo } = require('../utils/obterDadosEmprestimo');
 const { enviarMensagemOmnichat } = require('./omnichatService');
@@ -126,10 +137,13 @@ async function notificar(tipo, payload) {
 
     console.log(JSON.stringify(dados, null, 2));
 
+  
     // =========================
     // WHATSAPP
     // =========================
     if (canais.whatsapp && config.whatsapp) {
+
+      let log = null;
 
       try {
 
@@ -143,15 +157,63 @@ async function notificar(tipo, payload) {
 
         console.log('[WHATSAPP] Payload:', payloadOmni);
 
-        await enviarMensagemOmnichat(payloadOmni);
+        // =========================
+        // CRIA LOG PENDENTE
+        // =========================
+        log = await criarLog({
+          emprestimo_id: dados?.emprestimo?.id || null,
+          item_id: dados?.livro?.item_id || null,
+          aluno_id: dados?.aluno?.id || null,
+
+          telefone:
+            payloadOmni.platformId ||
+            payloadOmni.chatId ||
+            null,
+
+          template_id: template.templateId,
+
+          tipo,
+
+          status: 'pendente',
+
+          payload: payloadOmni
+        });
+
+        // =========================
+        // ENVIO
+        // =========================
+        const response = await enviarMensagemOmnichat(
+          payloadOmni
+        );
+
+        // =========================
+        // SUCESSO
+        // =========================
+        await atualizarLog(log.id, {
+          status: 'enviado',
+          response
+        });
 
         console.log('[WHATSAPP] Enviado');
 
       } catch (err) {
+
         console.error('[WHATSAPP ERROR]', err);
+
+        // =========================
+        // ERRO
+        // =========================
+        if (log) {
+
+          await marcarErro(
+            log.id,
+            err.response?.data || err.message
+          );
+        }
       }
     }
 
+    
     // =========================
     // EMAIL
     // =========================
@@ -170,12 +232,74 @@ async function notificar(tipo, payload) {
 
         console.log('[EMAIL] Dados:', dadosEmail);
 
-        await config.email(dadosEmail);
+        const response = await config.email(
+          dadosEmail
+        );
 
         console.log('[EMAIL] Enviado');
 
+        // =========================
+        // LOG SUCESSO
+        // =========================
+        await logSucesso({
+
+          emprestimo_id:
+            dados?.emprestimo?.id || null,
+
+          emprestimo_livro_id:
+            dados?.livro?.emprestimo_livro_id || null,
+
+          aluno_id:
+            dados?.aluno?.id || null,
+
+          canal: 'email',
+
+          tipo,
+
+          destinatario:
+            dados?.aluno?.email || null,
+
+          status: 'enviado',
+
+          payload: dadosEmail,
+
+          response
+        });
+
       } catch (err) {
+
         console.error('[EMAIL ERROR]', err);
+
+        // =========================
+        // LOG ERRO
+        // =========================
+        await logErro({
+
+          emprestimo_id:
+            dados?.emprestimo?.id || null,
+
+          emprestimo_livro_id:
+            dados?.livro?.emprestimo_livro_id || null,
+
+          aluno_id:
+            dados?.aluno?.id || null,
+
+          canal: 'email',
+
+          tipo,
+
+          destinatario:
+            dados?.aluno?.email || null,
+
+          erro:
+            err.message,
+
+          payload:
+            dados,
+
+          response:
+            err?.response?.data || null
+        });
       }
     }
 

@@ -1,6 +1,9 @@
 const sequelize = require('../config/database');
 
-// IMPORTAÇÃO DOS MODELS
+/* =========================
+   IMPORTAÇÃO DOS MODELS
+========================= */
+
 const Livro = require('./livro');
 const Estoque = require('./estoque');
 const Emprestimo = require('./emprestimo');
@@ -11,6 +14,7 @@ const Subgenero = require('./subgenero');
 const Ebook = require('./ebook');
 const AvaliacaoLivro = require('./AvaliacaoLivro');
 const Configuracao = require('./configuracao');
+const NotificacaoLog = require('./NotificacaoLog');
 
 /* =========================
    REGISTRO DOS MODELS
@@ -26,32 +30,34 @@ const models = {
   Subgenero,
   Ebook,
   AvaliacaoLivro,
-  Configuracao
+  Configuracao,
+  NotificacaoLog
 };
 
 /* =========================
-   ASSOCIAÇÕES AUTOMÁTICAS
+   ASSOCIAÇÕES AUTOMÁTICAS (PADRÃO)
 ========================= */
 
 Object.values(models).forEach(model => {
-  if (typeof model.associate === 'function') {
+  if (model && typeof model.associate === 'function') {
     model.associate(models);
   }
 });
 
 /* =========================
-   RELACIONAMENTOS EXTRAS (APENAS OS QUE NÃO ESTÃO NOS MODELS)
+   RELACIONAMENTOS EXTRAS
+   (evitar duplicação nos models)
 ========================= */
 
 // LIVRO → ESTOQUE
 Livro.hasOne(Estoque, { foreignKey: 'livro_id' });
 Estoque.belongsTo(Livro, { foreignKey: 'livro_id' });
 
-// ALUNO → EMPRESTIMO
+// ALUNO → EMPRÉSTIMO
 Aluno.hasMany(Emprestimo, { foreignKey: 'aluno_id', as: 'emprestimos' });
 Emprestimo.belongsTo(Aluno, { foreignKey: 'aluno_id', as: 'aluno' });
 
-// EMPRESTIMO ↔ LIVRO
+// EMPRESTIMO ↔ LIVRO (N:N)
 Emprestimo.belongsToMany(Livro, {
   through: EmprestimoLivro,
   foreignKey: 'emprestimo_id'
@@ -88,10 +94,45 @@ Ebook.belongsTo(Subgenero, { foreignKey: 'subgenero_id' });
 Subgenero.hasMany(Ebook, { foreignKey: 'subgenero_id' });
 
 /* =========================
+   NOTIFICAÇÕES (AJUSTADO)
+========================= */
+
+// EMPRESTIMO
+Emprestimo.hasMany(NotificacaoLog, {
+  foreignKey: 'emprestimo_id',
+  as: 'notificacoes'
+});
+
+NotificacaoLog.belongsTo(Emprestimo, {
+  foreignKey: 'emprestimo_id'
+});
+
+// EMPRESTIMO_LIVRO
+EmprestimoLivro.hasMany(NotificacaoLog, {
+  foreignKey: 'emprestimo_livro_id',
+  as: 'notificacoes'
+});
+
+NotificacaoLog.belongsTo(EmprestimoLivro, {
+  foreignKey: 'emprestimo_livro_id'
+});
+
+// ALUNO
+Aluno.hasMany(NotificacaoLog, {
+  foreignKey: 'aluno_id',
+  as: 'notificacoes'
+});
+
+NotificacaoLog.belongsTo(Aluno, {
+  foreignKey: 'aluno_id'
+});
+
+/* =========================
    SINCRONIZAÇÃO
 ========================= */
 
 sequelize.sync({ alter: false })
+//sequelize.sync()
   .then(() => {
     console.log('Modelos sincronizados com sucesso.');
   })

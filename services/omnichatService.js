@@ -1,14 +1,23 @@
 const axios = require('axios');
 const { buscarChatPorTelefone } = require('./omnichatChatService');
 
+const API_URL = 'https://api.omni.chat/v1/messages';
+
 function normalizarTelefone(telefone) {
+
   if (!telefone) return null;
 
-  const clean = String(telefone).replace(/\D/g, '');
+  const clean = String(telefone)
+    .replace(/\D/g, '');
 
-  return clean.startsWith('55')
-    ? clean
-    : `55${clean}`;
+  // Se já começa com 55
+  // mantém
+  if (clean.startsWith('55')) {
+    return clean;
+  }
+
+  // Senão adiciona 55
+  return `55${clean}`;
 }
 
 async function enviarMensagemOmnichat({
@@ -16,73 +25,152 @@ async function enviarMensagemOmnichat({
   platformId,
   chatId,
   templateId,
-  templateTokens,
-  integrationId = process.env.OMNICHAT_INTEGRATION_ID
+  templateTokens = [],
+  integrationId = process.env.OMNICHAT_INTEGRATION_ID,
+  type = 'TEXT',
+  forceSend = true
 }) {
 
   try {
 
+    const telefoneBase =
+      telefone || platformId;
+
+    const telefoneLimpo =
+      normalizarTelefone(telefoneBase);
+
     const payload = {
+      type,
       templateId,
       templateTokens,
-      integrationId
+      integrationId,
+      forceSend
     };
 
-    const telefoneBase = telefone || platformId;
-
-    const telefoneLimpo = normalizarTelefone(telefoneBase);
-
     // =========================
-    // CASO 1: chat existente
+    // PRIORIDADE:
+    // CHAT EXISTENTE
     // =========================
     if (chatId) {
+
       payload.chatId = chatId;
     }
 
     // =========================
-    // CASO 2: primeiro contato
+    // BUSCAR CHAT
     // =========================
     else {
 
-      const chat = await buscarChatPorTelefone(telefoneLimpo);
+      const chat =
+        await buscarChatPorTelefone(
+          telefoneLimpo
+        );
 
-      if (chat?.chatId) {
-        payload.chatId = chat.chatId;
+      console.log(
+        '[OMNICHAT CHAT]',
+        chat
+      );
+
+      if (chat?.objectId || chat?.chatId) {
+
+        payload.chatId =
+          chat.objectId || chat.chatId;
 
       } else {
-        payload.platform = 'WHATSAPP';
-        payload.platformId = telefoneLimpo;
+
+        // IMPORTANTE:
+        // alguns providers exigem:
+        // 5541999999999
+        // outros:
+        // 5541999999999@c.us
+
+        payload.platformId =
+          telefoneLimpo;
+
+        // payload.platformId =
+        // `${telefoneLimpo}@c.us`;
       }
     }
 
-    if (!payload.chatId && !payload.platformId) {
-      throw new Error('Payload inválido: sem chatId ou platformId');
+    // =========================
+    // VALIDAÇÃO
+    // =========================
+    if (
+      !payload.chatId &&
+      !payload.platformId
+    ) {
+
+      throw new Error(
+        'Destino inválido'
+      );
     }
 
-    const response = await axios.post(
-      'https://api.omni.chat/v1/messages',
-      payload,
-      {
-        headers: {
-          'x-api-key': process.env.OMNICHAT_API_KEY,
-          'x-api-secret': process.env.OMNICHAT_API_SECRET,
-          'Content-Type': 'application/json'
-        }
-      }
+    console.log(
+      '[OMNICHAT PAYLOAD]',
+      JSON.stringify(payload, null, 2)
     );
 
-    console.log('[OMNICHAT RESPONSE]', response.data);
-    console.log('[DEBUG TEMPLATE ID ENVIADO]', templateId);
+    const response =
+      await axios.post(
+        API_URL,
+        payload,
+        {
+          timeout: 20000,
 
-    return response.data;
+          headers: {
+            'x-api-key':
+              process.env.OMNICHAT_API_KEY,
+
+            'x-api-secret':
+              process.env.OMNICHAT_API_SECRET,
+
+            'Content-Type':
+              'application/json',
+
+            'Accept':
+              'application/json'
+          }
+        }
+      );
+
+    console.log(
+      '[OMNICHAT RESPONSE]',
+      response.data
+    );
+
+    return {
+      success: true,
+      payload,
+      data: response.data
+    };
 
   } catch (error) {
+
     console.error(
-      '[OMNICHAT SEND ERROR]',
-      error.response?.data || error.message
+      '[OMNICHAT FULL ERROR]',
+      error.response?.data || error
     );
 
-    throw error;
+    const erroTratado = {
+      success: false,
+
+      message:
+        error.response?.data?.message ||
+        error.message,
+
+      status:
+        error.response?.status || 500,
+
+      data:
+        error.response?.data || null
+    };
+
+    console.error(
+      '[OMNICHAT ERROR]',
+      erroTratado
+    );
+
+    throw erroTratado;
   }
 }
 
