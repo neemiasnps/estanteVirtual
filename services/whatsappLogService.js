@@ -1,16 +1,16 @@
-const { WhatsAppLog } = require('../models');
+const { NotificacaoLog } = require('../models');
 
 /* =========================
    CRIAR LOG
 ========================= */
 async function criarLog(dados) {
 
-  return await WhatsAppLog.create({
+  return await NotificacaoLog.create({
     emprestimo_id: dados.emprestimo_id || null,
-    item_id: dados.item_id || null,
+    emprestimo_livro_id: dados.item_id || null,
     aluno_id: dados.aluno_id || null,
 
-    telefone: dados.telefone || null,
+    //telefone: dados.telefone || null,
 
     template_id: dados.template_id || null,
 
@@ -32,7 +32,7 @@ async function criarLog(dados) {
 ========================= */
 async function atualizarLog(id, dados) {
 
-  const log = await WhatsAppLog.findByPk(id);
+  const log = await NotificacaoLog.findByPk(id);
 
   if (!log) return null;
 

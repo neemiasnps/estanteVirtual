@@ -51,6 +51,12 @@ NotificacaoLog.init({
     allowNull: true
   },
 
+  // TELEFONE (WHATSAPP)
+  telefone: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+
   // TEMPLATE / PROVIDER
   template_id: {
     type: DataTypes.STRING,

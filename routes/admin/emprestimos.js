@@ -12,7 +12,9 @@ const { Emprestimo, EmprestimoLivro, Aluno, Livro, Estoque } = require('../../mo
 
 const { gerarMensagemWhatsEmprestimo, gerarMensagemWhatsAvaliacao } = require('../../services/whatsService');
 
-const { notificar } = require('../../services/notificationEngine')
+const { notificar } = require('../../services/notificationEngine');
+
+const { enviarEmailEmprestimoCriado } = require('../../services/emailService');
 
 const garantirAutenticado = require('../auth');
 
