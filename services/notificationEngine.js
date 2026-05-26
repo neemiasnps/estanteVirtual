@@ -5,8 +5,8 @@ const {
   enviarEmailEmprestimoFinalizado,
   enviarEmailLembreteEmprestimo,
   enviarEmailEmprestimoAtrasado
-} = require('./emailService');
-
+  } = require('./emailService');
+  
 const {
   gerarTemplateNovoEmprestimo,
   gerarTemplateEmprestimoFinalizado,
@@ -162,11 +162,11 @@ async function notificar(tipo, payload) {
         // =========================
         log = await criarLog({
           emprestimo_id: dados?.emprestimo?.id || null,
-          item_id: dados?.livro?.item_id || null,
+          emprestimo_livro_id: dados?.livro?.item_id || null,
           aluno_id: dados?.aluno?.id || null,
 
           telefone:
-            payloadOmni.platformId ||
+            payloadOmni.platformId ||  
             payloadOmni.chatId ||
             null,
 

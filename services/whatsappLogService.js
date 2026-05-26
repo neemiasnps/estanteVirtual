@@ -10,7 +10,7 @@ async function criarLog(dados) {
     emprestimo_livro_id: dados.item_id || null,
     aluno_id: dados.aluno_id || null,
 
-    //telefone: dados.telefone || null,
+    telefone: dados.telefone || null,
 
     template_id: dados.template_id || null,
 
