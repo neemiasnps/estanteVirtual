@@ -6,6 +6,8 @@ const { NotificacaoLog } = require('../models');
 async function criarLog(dados) {
 
   return await NotificacaoLog.create({
+    canal: dados.canal || 'whatsapp',
+    
     emprestimo_id: dados.emprestimo_id || null,
     emprestimo_livro_id: dados.item_id || null,
     aluno_id: dados.aluno_id || null,
@@ -49,7 +51,7 @@ async function atualizarLog(id, dados) {
 ========================= */
 async function marcarErro(id, erro) {
 
-  const log = await WhatsAppLog.findByPk(id);
+  const log = await NotificacaoLog.findByPk(id);
 
   if (!log) return null;
 
