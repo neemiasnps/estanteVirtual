@@ -125,6 +125,42 @@ app.get("/gerenciar_configuracoes", authMiddleware, (req, res) =>
   res.sendFile(path.join(__dirname, "views", "gerenciar_configuracoes.html"))
 );
 
+// APIs protegidas
+//Livros
+app.get("/gerenciar_livros/novo", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "livro-form.html"));
+});
+app.get("/gerenciar_livros/editar/:id", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "livro-form.html"));
+});
+
+//Ebook
+app.get("/gerenciar_ebooks/novo", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "ebook-form.html"));
+});
+app.get("/gerenciar_ebooks/editar/:id", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "ebook-form.html"));
+});
+
+//Alunos
+app.get("/gerenciar_alunos/novo", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "aluno-form.html"));
+});
+app.get("/gerenciar_alunos/editar/:id", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "aluno-form.html"));
+});
+
+app.use("/api/generos", authMiddleware, require("./routes/admin/generos"));
+app.use("/api/subgeneros", authMiddleware, require("./routes/admin/subgeneros"));
+
+//Emprestimos
+app.get("/gerenciar_emprestimos/novo", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "requisicao-form.html"));
+});
+app.get("/gerenciar_emprestimos/editar/:id", authMiddleware, (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "requisicao-form.html"));
+});
+
 /**
  * PÁGINAS PÚBLICAS
  */

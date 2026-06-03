@@ -33,7 +33,21 @@ async function buscarChatPorTelefone(phone) {
     };
 
   } catch (error) {
-    console.error('[OMNICHAT] erro ao buscar chat:', error.message);
+
+    console.error(
+      '[OMNICHAT CHAT STATUS]',
+      error.response?.status
+    );
+
+    console.error(
+      '[OMNICHAT CHAT DATA]',
+      JSON.stringify(
+        error.response?.data,
+        null,
+        2
+      )
+    );
+
     return null;
   }
 }
