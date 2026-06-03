@@ -1,16 +1,16 @@
-document.addEventListener('DOMContentLoaded', () => {
-
-    M.FormSelect.init(document.querySelectorAll('select'));
-    M.Modal.init(document.querySelectorAll('.modal'));
+document.addEventListener("DOMContentLoaded", () => {
+    M.FormSelect.init(document.querySelectorAll("select"));
+    M.Modal.init(document.querySelectorAll(".modal"));
 
     carregarAvaliacoes();
 
-    document.getElementById('filtro-livro')
-        .addEventListener('input', carregarAvaliacoes);
+    document
+        .getElementById("filtro-livro")
+        .addEventListener("input", carregarAvaliacoes);
 
-    document.getElementById('filtro-status')
-        .addEventListener('change', carregarAvaliacoes);
-
+    document
+        .getElementById("filtro-status")
+        .addEventListener("change", carregarAvaliacoes);
 });
 
 let avaliacoes = [];
@@ -19,42 +19,35 @@ let avaliacoes = [];
    CARREGAR AVALIAÇÕES
 ========================= */
 async function carregarAvaliacoes() {
-
     try {
+        const livro = document.getElementById("filtro-livro").value;
+        const status = document.getElementById("filtro-status").value;
 
-        const livro = document.getElementById('filtro-livro').value;
-        const status = document.getElementById('filtro-status').value;
-
-        const res = await fetch(`/api/admin/avaliacoes?livro=${livro}&status=${status}`);
+        const res = await fetch(
+            `/api/admin/avaliacoes?livro=${livro}&status=${status}`,
+        );
 
         avaliacoes = await res.json();
 
         renderTabela(avaliacoes);
-
     } catch (error) {
-
         console.error(error);
 
         M.toast({
-            html: 'Erro ao carregar avaliações'
+            html: "Erro ao carregar avaliações",
         });
-
     }
-
 }
-
 
 /* =========================
    RENDER TABELA
 ========================= */
 function renderTabela(lista) {
+    const tbody = document.getElementById("avaliacoes-table-body");
 
-    const tbody = document.getElementById('avaliacoes-table-body');
-
-    tbody.innerHTML = '';
+    tbody.innerHTML = "";
 
     if (!lista.length) {
-
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="center">
@@ -64,36 +57,35 @@ function renderTabela(lista) {
         `;
 
         return;
-
     }
 
-    lista.forEach(item => {
+    lista.forEach((item) => {
+        let status = "pendente";
 
-        let status = 'pendente';
+        if (item.aprovado === true) status = "aprovado";
 
-        if (item.aprovado === true) status = 'aprovado';
+        if (item.aprovado === false) status = "reprovado";
 
-        if (item.aprovado === false) status = 'reprovado';
-
-        const tr = document.createElement('tr');
+        const tr = document.createElement("tr");
 
         tr.innerHTML = `
 
             <td>${item.id}</td>
 
-            <td>${item.Livro?.titulo || '-'}</td>
+            <td>${item.Livro?.titulo || "-"}</td>
 
-            <td>${item.Aluno?.nomeCompleto || '-'}</td>
+            <td>${item.Aluno?.nomeCompleto || "-"}</td>
 
             <td>
-                ${'⭐'.repeat(item.estrelas)}
+                ${"⭐".repeat(item.estrelas)}
                 (${item.estrelas})
             </td>
 
             <td class="center">
 
-                ${item.comentario
-                    ? `
+                ${
+                    item.comentario
+                        ? `
                         <a href="#!"
                            onclick="abrirComentario(${item.id})"
                            title="Ver comentário">
@@ -104,7 +96,7 @@ function renderTabela(lista) {
 
                         </a>
                     `
-                    : `
+                        : `
                         <i class="material-icons grey-text">
                             remove
                         </i>
@@ -119,134 +111,121 @@ function renderTabela(lista) {
                 </span>
             </td>
 
-            <td>
+            <td class="center">
 
-                ${
-                    status === 'pendente'
-                        ? `
+    ${
+        status === "pendente"
+            ? `
+                <div style="display:flex;justify-content:center;gap:10px;">
 
-                            <a href="#!"
-                                onclick="abrirComentario(${item.id})"
-                                title="Ver comentário">
+                    <a href="#!"
+                       onclick="aprovar(${item.id})"
+                       title="Aprovar">
 
-                                <i class="material-icons blue-text">
-                                    chat
-                                </i>
+                        <i class="material-icons green-text">
+                            check
+                        </i>
 
-                            </a>
-                            
-                            <a href="#" onclick="aprovar(${item.id})" title="Aprovar">
-                                <i class="material-icons green-text">check</i>
-                            </a>
+                    </a>
 
-                            <a href="#" onclick="reprovar(${item.id})" title="Reprovar">
-                                <i class="material-icons red-text">close</i>
-                            </a>
-                        `
-                        : `
-                            <i class="material-icons grey-text" title="Finalizado">
-                                block
-                            </i>
-                        `
-                }
+                    <a href="#!"
+                       onclick="reprovar(${item.id})"
+                       title="Reprovar">
 
-            </td>
+                        <i class="material-icons red-text">
+                            close
+                        </i>
+
+                    </a>
+
+                </div>
+            `
+            : `
+                <i class="material-icons grey-text" title="Finalizado">
+                    block
+                </i>
+            `
+    }
+
+</td>
 
         `;
 
         tbody.appendChild(tr);
-
     });
-
 }
 
 /* =========================
    APROVAR
 ========================= */
 async function aprovar(id) {
-
     await alterarStatus(id, true);
-
 }
 
 /* =========================
    REPROVAR
 ========================= */
 async function reprovar(id) {
-
     await alterarStatus(id, false);
-
 }
 
 /* =========================
    ALTERAR STATUS
 ========================= */
 async function alterarStatus(id, aprovado) {
-
     try {
-
         const res = await fetch(`/api/admin/avaliacoes/${id}/status`, {
-
-            method: 'PUT',
+            method: "PUT",
 
             headers: {
-                'Content-Type': 'application/json'
+                "Content-Type": "application/json",
             },
 
             body: JSON.stringify({
-                aprovado
-            })
-
+                aprovado,
+            }),
         });
 
         const data = await res.json();
 
         if (!data.sucesso) {
-
             return M.toast({
-                html: data.mensagem
+                html: data.mensagem,
             });
-
         }
 
         M.toast({
-            html: 'Status atualizado'
+            html: "Status atualizado",
         });
 
         carregarAvaliacoes();
-
     } catch (error) {
-
         console.error(error);
 
         M.toast({
-            html: 'Erro ao atualizar status'
+            html: "Erro ao atualizar status",
         });
-
     }
-
 }
-
 
 /* =========================
    ABRIR COMENTÁRIO
    ======================= */
 function abrirComentario(id) {
-
-    const avaliacao = avaliacoes.find(a => a.id === id);
+    const avaliacao = avaliacoes.find((a) => a.id === id);
 
     if (!avaliacao) return;
 
-    document.getElementById('conteudo-comentario').innerHTML = `
+    document.getElementById("conteudo-comentario").innerHTML = `
 
         <p>
             <strong>Livro:</strong>
-            ${avaliacao.Livro?.titulo || '-'}
+            ${avaliacao.Livro?.titulo || "-"}
         </p>
 
         <p>
             <strong>Aluno:</strong>
-            ${avaliacao.Aluno?.nomeCompleto || '-'}
+            ${avaliacao.Aluno?.nomeCompleto || "-"}
         </p>
 
         <p>
@@ -257,15 +236,14 @@ function abrirComentario(id) {
         <hr>
 
         <p>
-            ${avaliacao.comentario || 'Nenhum comentário informado'}
+            ${avaliacao.comentario || "Nenhum comentário informado"}
         </p>
 
     `;
 
     const modal = M.Modal.getInstance(
-        document.getElementById('modal-comentario')
+        document.getElementById("modal-comentario"),
     );
 
     modal.open();
-
 }
