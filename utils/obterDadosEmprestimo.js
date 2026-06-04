@@ -52,7 +52,8 @@ async function obterDadosEmprestimo(emprestimoId) {
           throw new Error(`ID inválido: ${JSON.stringify(emprestimoId)}`);
         }
 
-    const emprestimo = await Emprestimo.findByPk(emprestimoId, {
+    //const emprestimo = await Emprestimo.findByPk(emprestimoId, {
+      const emprestimo = await Emprestimo.findByPk(id, {
       include: [
         {
           model: Aluno,
@@ -98,6 +99,7 @@ async function obterDadosEmprestimo(emprestimoId) {
       },
       emprestimo: {
         id: emprestimo.id,
+        chat_id: emprestimo.chat_id,
         dataSolicitacao: formatarData(emprestimo.data_solicitacao),
         quantidadeLivros: emprestimo.quantidade_livros || livros.length,
         observacao: emprestimo.observacao || ''
@@ -155,6 +157,7 @@ async function obterDadosEmprestimoPorItem(itemId) {
       },
       emprestimo: {
         id: item.Emprestimo?.id || null,
+        chat_id: item.Emprestimo?.chat_id || null,
         dataSolicitacao: formatarData(item.Emprestimo?.data_solicitacao)
       },
       livro: {
