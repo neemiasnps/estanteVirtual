@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const { Op } = require('sequelize');
-
 const { enviarEmailNovaAvaliacao } = require('../../services/emailService');
 
-const { AvaliacaoLivro, Livro, Aluno } = require('../../models');
+const {
+    AvaliacaoLivro,
+    Livro,
+    Aluno
+} = require('../../models');
 
 router.post('/', async (req, res) => {
 
@@ -18,10 +20,40 @@ router.post('/', async (req, res) => {
             comentario
         } = req.body;
 
-        // BUSCAR DADOS
-        const livro = await Livro.findByPk(livro_id);
+        // VALIDAÇÕES BÁSICAS
+        if (!livro_id || !aluno_id) {
 
-        const aluno = await Aluno.findByPk(aluno_id);
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: 'Dados inválidos.'
+            });
+
+        }
+
+        // VERIFICAR SE JÁ EXISTE AVALIAÇÃO
+        const avaliacaoExistente = await AvaliacaoLivro.findOne({
+
+            where: {
+                livro_id,
+                aluno_id
+            }
+
+        });
+
+        if (avaliacaoExistente) {
+
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: 'Você já avaliou este livro.'
+            });
+
+        }
+
+        // BUSCAR DADOS
+        const [livro, aluno] = await Promise.all([
+            Livro.findByPk(livro_id),
+            Aluno.findByPk(aluno_id)
+        ]);
 
         // CRIAR AVALIAÇÃO
         const avaliacao = await AvaliacaoLivro.create({
@@ -35,27 +67,55 @@ router.post('/', async (req, res) => {
         });
 
         // ENVIAR E-MAIL
-        await enviarEmailNovaAvaliacao({
+        try {
 
-            livro: livro?.titulo || '-',
-            aluno: aluno?.nomeCompleto || aluno?.nome || '-',
-            estrelas,
-            comentario
+            await enviarEmailNovaAvaliacao({
 
-        });
+                livro: livro?.titulo || '-',
+                aluno: aluno?.nomeCompleto || aluno?.nome || '-',
+                estrelas,
+                comentario
 
-        res.json({
+            });
+
+        } catch (emailError) {
+
+            console.error(
+                '[AVALIACAO] Erro ao enviar e-mail:',
+                emailError
+            );
+
+        }
+
+        return res.json({
+
             sucesso: true,
             avaliacao
+
         });
 
     } catch (error) {
 
         console.error(error);
 
-        res.status(500).json({
+        // PROTEÇÃO CONTRA DUPLICIDADE
+        if (
+            error.name === 'SequelizeUniqueConstraintError' ||
+            error.original?.code === 'ER_DUP_ENTRY'
+        ) {
+
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: 'Você já avaliou este livro.'
+            });
+
+        }
+
+        return res.status(500).json({
+
             sucesso: false,
-            mensagem: error.message
+            mensagem: 'Erro ao salvar avaliação.'
+
         });
 
     }

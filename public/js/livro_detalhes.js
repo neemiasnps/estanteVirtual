@@ -513,12 +513,22 @@ async function validarAluno() {
 
 }
 
+
 /* =========================
    ENVIAR AVALIAÇÃO
 ========================= */
 async function enviarAvaliacao() {
 
+    const btn = document.getElementById('btn-enviar-avaliacao');
+
+    if (btn.disabled) {
+        return;
+    }
+
     try {
+
+        btn.disabled = true;
+        btn.classList.add('disabled');
 
         const estrelas = estrelasSelecionadas;
 
@@ -565,10 +575,10 @@ async function enviarAvaliacao() {
 
         const data = await res.json();
 
-        if (!data.sucesso) {
+        if (!res.ok || !data.sucesso) {
 
             return M.toast({
-                html: data.mensagem
+                html: data.mensagem || 'Erro ao enviar avaliação'
             });
 
         }
@@ -582,17 +592,19 @@ async function enviarAvaliacao() {
 
         // LIMPAR CAMPOS
         document.getElementById('comentario').value = '';
-
         document.getElementById('identificacao').value = '';
 
         // RESETAR ESTRELAS
         estrelasSelecionadas = 0;
+        alunoValidado = null;
 
         M.toast({
             html: 'Avaliação enviada com sucesso!'
         });
 
-        location.reload();
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
 
     } catch (error) {
 
@@ -601,6 +613,11 @@ async function enviarAvaliacao() {
         M.toast({
             html: 'Erro ao enviar avaliação'
         });
+
+    } finally {
+
+        btn.disabled = false;
+        btn.classList.remove('disabled');
 
     }
 
