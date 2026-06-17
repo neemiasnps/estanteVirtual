@@ -16,21 +16,18 @@ router.get('/', async (req, res) => {
 
     try {
 
-        const {
-            livro,
-            status
-        } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const offset = (page - 1) * limit;
+
+        const { livro, status } = req.query;
 
         let where = {};
 
-        // FILTRO STATUS
         if (status === 'aprovado') where.aprovado = true;
-
         if (status === 'reprovado') where.aprovado = false;
-
         if (status === 'pendente') where.aprovado = null;
 
-        // FILTRO LIVRO
         let includeLivro = {
             model: Livro
         };
@@ -45,7 +42,10 @@ router.get('/', async (req, res) => {
 
         }
 
-        const avaliacoes = await AvaliacaoLivro.findAll({
+        const {
+            rows: avaliacoes,
+            count
+        } = await AvaliacaoLivro.findAndCountAll({
 
             where,
 
@@ -56,11 +56,21 @@ router.get('/', async (req, res) => {
                 }
             ],
 
-            order: [['createdAt', 'DESC']]
+            limit,
+            offset,
+
+            order: [
+                ['createdAt', 'DESC']
+            ]
 
         });
 
-        res.json(avaliacoes);
+        const totalPages = Math.ceil(count / limit);
+
+        res.json({
+            avaliacoes,
+            totalPages
+        });
 
     } catch (error) {
 
