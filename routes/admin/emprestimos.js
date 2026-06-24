@@ -6,7 +6,7 @@ const sequelize = require('../../config/database');
 
 const router = express.Router();
 
-const { obterDadosEmprestimoPorItem } = require('../../utils/obterDadosEmprestimo');
+const { obterDadosEmprestimoPorItem, obterDadosEmprestimo } = require('../../utils/obterDadosEmprestimo');
 
 const { Emprestimo, EmprestimoLivro, Aluno, Livro, Estoque } = require('../../models');
 
@@ -284,7 +284,11 @@ router.post('/enviar-email/:id', async (req, res) => {
 
     const emprestimoId = req.params.id;
 
-    await enviarEmailEmprestimoCriado(emprestimoId);
+    //await enviarEmailEmprestimoCriado(emprestimoId);
+
+    const dados = await obterDadosEmprestimo(emprestimoId);
+
+    await enviarEmailEmprestimoCriado(dados);
 
     return res.json({ message: 'E-mail enviado com sucesso' });
 

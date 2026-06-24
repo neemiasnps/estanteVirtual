@@ -1,6 +1,7 @@
 const gerarTemplateEmail = require('../../utils/emailTemplate');
 
 function comporEmailEmprestimoCriado(dados) {
+
   const { aluno, emprestimo, livros } = dados;
 
   function formatarData(data) {
@@ -9,7 +10,8 @@ function comporEmailEmprestimoCriado(dados) {
     return `${dia}/${mes}/${ano}`;
   }
 
-  const linhasLivros = livros.map(livro => `
+  //const linhasLivros = livros.map(livro => `
+  const linhasLivros = (livros || []).map(livro => `
     <tr>
       <td style="padding:6px; border:1px solid #e0e0e0;">${livro.id}</td>
       <td style="padding:6px; border:1px solid #e0e0e0;">${livro.titulo}</td>
